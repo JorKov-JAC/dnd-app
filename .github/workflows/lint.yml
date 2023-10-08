@@ -1,0 +1,34 @@
+name: Testing Workflow
+
+# Step 1: Choose the branch or branches you want to run this workflow
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  testing:
+    name: Lint Check and Testing
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Clone Repo
+      uses: actions/checkout@v1
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v1
+      with:
+        java-version: '17'
+
+    # Step 3: Check the code with ktlint, you can remove this job if you don't use ktlint
+    - name: Run Kotlin Linter
+      run: ./gradlew ktlintCheck
+
+    # Step 3: Check the code with Android linter
+    - name: Run Android Linter
+      run: ./gradlew lint
+
+    # Step 4: Run your unit tests
+    - name: Run Unit Tests
+      run: ./gradlew test
