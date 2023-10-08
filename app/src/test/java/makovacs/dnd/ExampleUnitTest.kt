@@ -1,4 +1,4 @@
-package com.example.emptyactivity
+package makovacs.dnd
 
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
