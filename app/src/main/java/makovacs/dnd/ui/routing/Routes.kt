@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import makovacs.dnd.ui.screens.AboutScreen
+import makovacs.dnd.ui.screens.ContactScreen
 
 /**
  * [NavHostController] provider.
@@ -26,6 +27,9 @@ fun Router(modifier: Modifier = Modifier) {
         composable(Route.About.route) {
             AboutScreen()
         }
+        composable(Route.Contact.route) {
+            ContactScreen()
+        }
     }
 }
 
@@ -37,4 +41,5 @@ sealed class Route(val route: String) {
      * Route for [AboutScreen].
      */
     object About : Route("about")
+    object Contact : Route("contact")
 }
