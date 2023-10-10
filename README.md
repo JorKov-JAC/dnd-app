@@ -19,5 +19,5 @@ Contact screen:
 ![image](https://github.com/MakenaH/5A6-group-project/assets/98484926/061c65a1-6b22-4b65-8d45-190f1ab520e6)
 
 ## Team members
-- Makena Howat ()
+- Makena Howat (2139389@johnabbottcollege.net)
 - Jordan Kovacs (2088248@johnabbottcollege.net)
