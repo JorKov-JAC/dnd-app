@@ -8,6 +8,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import makovacs.dnd.ui.screens.AboutScreen
 import makovacs.dnd.ui.screens.ContactScreen
+import makovacs.dnd.ui.screens.magicitems.DetailScreen
+import makovacs.dnd.ui.screens.magicitems.InputForm
+import makovacs.dnd.ui.screens.magicitems.ItemScreen
 
 /**
  * [NavHostController] provider.
@@ -30,6 +33,15 @@ fun Router(modifier: Modifier = Modifier) {
         composable(Route.Contact.route) {
             ContactScreen()
         }
+        composable(Route.Form.route) {
+            InputForm()
+        }
+        composable(Route.ItemsList.route) {
+            ItemScreen()
+        }
+        composable(Route.SingleItem.route) {
+            DetailScreen(items = it.arguments?.getString("items") ?: "")
+        }
     }
 }
 
@@ -42,4 +54,9 @@ sealed class Route(val route: String) {
      */
     object About : Route("about")
     object Contact : Route("contact")
+    object Form : Route("FormRoute")
+    object SingleItem : Route("SingleItemRoute/{items}") {
+        fun go(items: String) = "SingleItemRoute/$items"
+    }
+    object ItemsList : Route("ItemsListRoute")
 }
