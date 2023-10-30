@@ -1,5 +1,7 @@
 package makovacs.dnd
 
+import android.content.res.Resources
+import android.content.res.loader.ResourcesProvider
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -8,17 +10,28 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import makovacs.dnd.ui.layouts.MainLayout
 import makovacs.dnd.ui.routing.LocalNavHostController
 import makovacs.dnd.ui.routing.Router
 import makovacs.dnd.ui.theme.AppTheme
+import makovacs.dnd.ui.util.toBitmap
+import makovacs.dnd.ui.viewmodels.MonstersViewModel
+import makovacs.dnd.ui.viewmodels.LocalMonstersViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            // TODO Temporary(?)
+            val defaultInitializedViewModel = MonstersViewModel().initializeToDefaultData()
+            val monstersVm = viewModel {
+                defaultInitializedViewModel
+            }
+
             AppTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
@@ -28,7 +41,8 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
 
                     CompositionLocalProvider(
-                        LocalNavHostController provides navController
+                        LocalNavHostController provides navController,
+                        LocalMonstersViewModel provides monstersVm
                     ) {
                         MainLayout {
                             Router(modifier = Modifier.padding(it))

@@ -1,3 +1,29 @@
 <resources>
     <string name="app_name">Dungeons &amp; Dragons Compendium</string>
+
+    <string name="ability_str">Str</string>
+    <string name="ability_dex">Dex</string>
+    <string name="ability_con">Con</string>
+    <string name="ability_int">Int</string>
+    <string name="ability_wis">Wis</string>
+    <string name="ability_cha">Cha</string>
+    <!-- Example: Str:\n12 (+1) -->
+    <string name="ability_name_score_format">%1$s:\n%2$d (%3$+d)</string>
+
+    <string name="create">Create</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="monstersList">Monsters List</string>
+    <string name="about">About</string>
+    <string name="newMonster">New Monster</string>
+
+    <string name="newMonster_imageDropdownIcon">Change monster image</string>
+    <string name="imageOf_format">Image of %1$s</string>
+    <string name="noImage">No image</string>
+    <string name="genericMonsterImageDesc">Image of the monster</string>
+
+    <string name="gnolls">Gnolls</string>
+    <string name="wolf">Wolf</string>
+    <string name="imp">Imp</string>
+
 </resources>
