@@ -33,6 +33,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import makovacs.dnd.R
 import makovacs.dnd.data.dnd.DamageType
+import makovacs.dnd.ui.components.InvalidFormInput
 import makovacs.dnd.ui.routing.LocalNavHostController
 import makovacs.dnd.ui.routing.Route
 
@@ -275,20 +276,6 @@ fun InputForm(add: (String, String, String, String, Int, String, DamageType) -> 
     }
 }
 
-/*
- * Creates a dialog box that displays the passed in error message about invalid input. Can be closed
- * by clicking on the screen behind it or clicking the Close button on the box.
- */
-
-@Composable
-fun InvalidFormInput(errorMessage: String) {
-    val builder = AlertDialog.Builder(LocalContext.current)
-    builder.setTitle("Invalid Input")
-    builder.setMessage(errorMessage)
-    builder.setNeutralButton("Close") { _, _ -> }
-
-    builder.show()
-}
 
 fun damageDiceIsValid(damageDice: String): Boolean {
     val regex = "^[0-9]+d[0-9]+$".toRegex()
