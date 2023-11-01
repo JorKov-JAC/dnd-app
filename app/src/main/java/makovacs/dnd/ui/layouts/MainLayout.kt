@@ -3,6 +3,7 @@ package makovacs.dnd.ui.layouts
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Phone
@@ -73,6 +74,18 @@ fun MainLayout(modifier: Modifier = Modifier, content: @Composable (padding: Pad
                         Route.Contact.route,
                         Icons.Default.Phone,
                         "Contact"
+                    ),
+                    NavButtonInfo(
+                        Route.ItemForm,
+                        Route.ItemForm.route,
+                        Icons.Default.Add,
+                        "Create Item"
+                    ),
+                    NavButtonInfo(
+                        Route.ItemsList,
+                        Route.ItemsList.route,
+                        Icons.Default.List,
+                        "Items List"
                     )
                 )
 
