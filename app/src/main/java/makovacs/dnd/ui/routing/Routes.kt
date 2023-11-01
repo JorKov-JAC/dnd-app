@@ -48,7 +48,7 @@ fun Router(modifier: Modifier = Modifier, magicItemsVM: MagicItemViewModel = vie
         }
         composable(Route.SingleItem.route) {
             DetailScreen(
-                name = it.arguments?.getString("name") ?: "",
+                name = it.arguments!!.getString("name")!!,
                 magicItemsVM::removeByName,
                 magicItemsVM::getByName
             )
