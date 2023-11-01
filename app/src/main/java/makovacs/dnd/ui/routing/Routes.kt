@@ -37,11 +37,7 @@ fun Router(modifier: Modifier = Modifier, magicItemsVM: MagicItemViewModel = vie
             ContactScreen()
         }
         composable(Route.Form.route) {
-            InputForm(
-                magicItemsVM::add,
-                magicItemsVM::removeByName,
-                magicItemsVM::getByName
-            )
+            InputForm(magicItemsVM::add)
         }
         composable(Route.ItemsList.route) {
             ItemScreen(
@@ -71,7 +67,7 @@ sealed class Route(val route: String) {
     object Contact : Route("contact")
     object Form : Route("FormRoute")
     object SingleItem : Route("SingleItemRoute/{name}") {
-        fun go(name: String, remove: (String) -> Unit, getByName: (String) -> MagicItem?) = "SingleItemRoute/$name"
+        fun go(name: String) = "SingleItemRoute/$name"
     }
     object ItemsList : Route("ItemsListRoute")
 }

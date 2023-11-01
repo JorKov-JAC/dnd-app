@@ -33,7 +33,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import makovacs.dnd.R
 import makovacs.dnd.data.DamageType
-import makovacs.dnd.data.MagicItem
 import makovacs.dnd.ui.routing.LocalNavHostController
 import makovacs.dnd.ui.routing.Route
 
@@ -47,7 +46,7 @@ import makovacs.dnd.ui.routing.Route
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InputForm(add: (String, String, String, String, Int, String, DamageType) -> Unit, remove: (String) -> Unit, getByName: (String) -> MagicItem?) {
+fun InputForm(add: (String, String, String, String, Int, String, DamageType) -> Unit) {
     var name by rememberSaveable { mutableStateOf("") }
     var sourceBook by rememberSaveable { mutableStateOf("") }
     var rarity by rememberSaveable { mutableStateOf("") }
@@ -245,7 +244,7 @@ fun InputForm(add: (String, String, String, String, Int, String, DamageType) -> 
                     errorMessage = "Incorrect format for damage dice. (ex. 4d10)"
                 } else {
                     add(name, sourceBook, rarity, description, drawableId, damageDice, damageType)
-                    navController.navigate(Route.SingleItem.go(name, remove, getByName))
+                    navController.navigate(Route.SingleItem.go(name))
                 }
             }) {
                 Text("Add Item")

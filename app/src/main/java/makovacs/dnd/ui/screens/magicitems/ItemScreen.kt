@@ -41,13 +41,7 @@ fun ItemScreen(magicItems: List<MagicItem>, remove: (String) -> Unit, getByName:
                     border = BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary),
                     colors = CardDefaults.cardColors(MaterialTheme.colorScheme.tertiaryContainer),
                     modifier = Modifier.clickable {
-                        navController.navigate(
-                            Route.SingleItem.go(
-                                item.name,
-                                remove,
-                                getByName
-                            )
-                        )
+                        navController.navigate(Route.SingleItem.go(item.name))
                     }
                 ) {
                     Row {
