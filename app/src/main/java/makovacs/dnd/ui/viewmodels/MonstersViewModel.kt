@@ -14,7 +14,7 @@ import makovacs.dnd.ui.util.toBitmap
 /**
  * [ViewModel] for the list of [monsters][Monster] stored in the encyclopedia.
  */
-class MonstersViewModel: ViewModel() {
+class MonstersViewModel : ViewModel() {
     private val _monsters = mutableStateListOf<Monster>()
 
     /**
@@ -25,28 +25,32 @@ class MonstersViewModel: ViewModel() {
     @Composable
     fun initializeToDefaultData(): MonstersViewModel {
         _monsters.clear()
-        _monsters.add(Monster(
-            "Gnoll",
-            "A scary monster.",
-            AbilityScores(14, 12, 11, 6, 10, 7),
-            listOf(
-                MonsterTag("Humanoid", "Stands on two legs."),
-                MonsterTag("Medium", "Has a medium size.")
-            ),
-            R.drawable.gnolls.toBitmap(),
-            imageDesc = stringResource(R.string.imageOf_format, stringResource(R.string.gnolls))
-        ))
-        _monsters.add(Monster(
-            "Wolf",
-            "A puppy gone mad.",
-            AbilityScores(12, 15, 12, 3, 12, 6),
-            listOf(
-                MonsterTag("Beast", "Is a beasty."),
-                MonsterTag("Medium", "Has a medium size.")
-            ),
-            R.drawable.wolf.toBitmap(),
-            imageDesc = stringResource(R.string.imageOf_format, stringResource(R.string.wolf))
-        ))
+        _monsters.add(
+            Monster(
+                "Gnoll",
+                "A scary monster.",
+                AbilityScores(14, 12, 11, 6, 10, 7),
+                listOf(
+                    MonsterTag("Humanoid", "Stands on two legs."),
+                    MonsterTag("Medium", "Has a medium size.")
+                ),
+                R.drawable.gnolls.toBitmap(),
+                imageDesc = stringResource(R.string.imageOf_format, stringResource(R.string.gnolls))
+            )
+        )
+        _monsters.add(
+            Monster(
+                "Wolf",
+                "A puppy gone mad.",
+                AbilityScores(12, 15, 12, 3, 12, 6),
+                listOf(
+                    MonsterTag("Beast", "Is a beasty."),
+                    MonsterTag("Medium", "Has a medium size.")
+                ),
+                R.drawable.wolf.toBitmap(),
+                imageDesc = stringResource(R.string.imageOf_format, stringResource(R.string.wolf))
+            )
+        )
 
         return this
     }

@@ -19,8 +19,8 @@ import kotlinx.parcelize.Parcelize
  * @param cha A charisma score.
  */
 @Parcelize
-data class AbilityScores(val str: Int, val dex: Int, val con: Int, val int: Int, val wis: Int, val cha: Int)
-    : Parcelable {
+data class AbilityScores(val str: Int, val dex: Int, val con: Int, val int: Int, val wis: Int, val cha: Int) :
+    Parcelable {
     /**
      * A list of functions which create a new instance with a changed property.
      *
@@ -42,7 +42,7 @@ data class AbilityScores(val str: Int, val dex: Int, val con: Int, val int: Int,
      * Ordering is the same as found in the primary constructor.
      */
     @IgnoredOnParcel
-    val scoreList = listOf( str, dex, con, int, wis, cha )
+    val scoreList = listOf(str, dex, con, int, wis, cha)
 
     companion object
 }

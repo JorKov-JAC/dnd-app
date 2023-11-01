@@ -8,7 +8,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import makovacs.dnd.ui.viewmodels.MagicItemsViewModel
 import makovacs.dnd.ui.routing.Route.Companion.NAME_KEY
 import makovacs.dnd.ui.screens.AboutScreen
 import makovacs.dnd.ui.screens.ContactScreen
@@ -19,6 +18,7 @@ import makovacs.dnd.ui.screens.monsters.MonsterDetailsScreen
 import makovacs.dnd.ui.screens.monsters.MonstersListScreen
 import makovacs.dnd.ui.screens.monsters.NewMonsterScreen
 import makovacs.dnd.ui.viewmodels.LocalMonstersViewModel
+import makovacs.dnd.ui.viewmodels.MagicItemsViewModel
 
 /**
  * [NavHostController] provider.
@@ -93,10 +93,10 @@ sealed class Route(val route: String) {
     object Contact : Route("contact")
 
     /** Route for [MonstersListScreen]. */
-    object MonstersListRoute: Route("monsters")
+    object MonstersListRoute : Route("monsters")
 
     /** Route for [MonsterDetailsScreen]. */
-    object MonsterDetailsRoute: Route("monster/{$NAME_KEY}") {
+    object MonsterDetailsRoute : Route("monster/{$NAME_KEY}") {
         /**
          * Creates a route string with the given arguments.
          * @param name The name of the monster the page is for.
@@ -105,7 +105,7 @@ sealed class Route(val route: String) {
     }
 
     /** Route for [NewMonsterScreen]. */
-    object NewMonsterRoute: Route("monsters/new")
+    object NewMonsterRoute : Route("monsters/new")
 
     object ItemForm : Route("ItemFormRoute")
     object SingleItem : Route("SingleItemRoute/{name}") {

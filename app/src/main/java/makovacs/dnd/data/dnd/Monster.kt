@@ -21,7 +21,8 @@ data class Monster(
     val abilityScores: AbilityScores,
     val tags: List<MonsterTag>,
     val imageBitmap: Bitmap?,
-    val imageDesc: String?) {
+    val imageDesc: String?
+) {
 
     val descriptionOrDefault get() = description.ifBlank { "No description." }
 

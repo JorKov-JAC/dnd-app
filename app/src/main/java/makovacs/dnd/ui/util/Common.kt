@@ -15,13 +15,12 @@ import androidx.compose.ui.platform.LocalContext
  */
 @Composable
 fun @receiver:DrawableRes Int.toBitmap(): Bitmap {
-        return BitmapFactory.decodeResource(LocalContext.current.resources, this)
+    return BitmapFactory.decodeResource(LocalContext.current.resources, this)
 }
 
 /**
  * Gets a [BitmapPainter] for this bitmap.
  */
 fun Bitmap.toPainter(): BitmapPainter {
-        return BitmapPainter(asImageBitmap())
+    return BitmapPainter(asImageBitmap())
 }
-

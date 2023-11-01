@@ -34,16 +34,16 @@ fun MonstersListScreen(modifier: Modifier = Modifier) {
         MonstersList(
             monsters = monstersVm.monsters,
             onClick = {
-                navHostController.navigate( Route.MonsterDetailsRoute.go(it.name) )
+                navHostController.navigate(Route.MonsterDetailsRoute.go(it.name))
             },
             onDelete = { monstersVm.removeMonster(it.name) }
         )
         Button(
-                onClick = { navHostController.navigate(Route.NewMonsterRoute.route) },
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(8.dp)
-            ) {
+            onClick = { navHostController.navigate(Route.NewMonsterRoute.route) },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(8.dp)
+        ) {
             Text("+")
         }
     }
@@ -62,7 +62,7 @@ fun MonstersList(
     monsters: List<Monster>,
     onClick: ((Monster) -> Unit)?,
     onDelete: ((Monster) -> Unit)?,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     LazyColumn(modifier = modifier) {
         items(monsters, key = { it.id }) {

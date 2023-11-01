@@ -13,14 +13,14 @@ import makovacs.dnd.data.dnd.abilityModifier
  */
 @Composable
 fun AbilityScores.abilityStrings() = (AbilityScores.abilityNames zip scoreList)
-        .map{(str, score) ->
-            stringResource(
-                R.string.ability_name_score_format,
-                str,
-                score,
-                score.abilityModifier
-            )
-        }
+    .map { (str, score) ->
+        stringResource(
+            R.string.ability_name_score_format,
+            str,
+            score,
+            score.abilityModifier
+        )
+    }
 
 /**
  * Gets localized names of each ability.
@@ -28,10 +28,10 @@ fun AbilityScores.abilityStrings() = (AbilityScores.abilityNames zip scoreList)
  * Ordering is the same as found in the primary constructor.
  */
 val AbilityScores.Companion.abilityNames @Composable get() = arrayOf(
-        R.string.ability_str,
-        R.string.ability_dex,
-        R.string.ability_con,
-        R.string.ability_int,
-        R.string.ability_wis,
-        R.string.ability_cha
-    ).map { stringResource(it) }
+    R.string.ability_str,
+    R.string.ability_dex,
+    R.string.ability_con,
+    R.string.ability_int,
+    R.string.ability_wis,
+    R.string.ability_cha
+).map { stringResource(it) }

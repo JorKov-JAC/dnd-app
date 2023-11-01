@@ -63,7 +63,8 @@ fun CreatureTags(tags: List<MonsterTag>, modifier: Modifier = Modifier) {
     Row(modifier = modifier) {
         for (tag in tags) {
             Text(
-                tag.name, modifier = Modifier
+                tag.name,
+                modifier = Modifier
                     .padding(4.dp)
                     .background(Color(0xFF80FF80))
                     .padding(4.dp, 0.dp)
@@ -85,8 +86,11 @@ fun CreatureImage(imageBitmap: Bitmap?, imageDesc: String?, modifier: Modifier =
     assert(if (imageBitmap == null) imageDesc == null else true)
 
     @Suppress("NAME_SHADOWING")
-    val imageDesc = if (imageBitmap == null) stringResource(R.string.noImage)
-        else imageDesc ?: stringResource(R.string.genericMonsterImageDesc)
+    val imageDesc = if (imageBitmap == null) {
+        stringResource(R.string.noImage)
+    } else {
+        imageDesc ?: stringResource(R.string.genericMonsterImageDesc)
+    }
 
     Image(
         painter = (imageBitmap ?: R.drawable.no_img.toBitmap()).toPainter(),
@@ -107,7 +111,6 @@ fun AbilityScoresDisplay(abilityScores: AbilityScores, modifier: Modifier = Modi
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = modifier.horizontalScroll(state = scrollState)
     ) {
-
         for (str in abilityScores.abilityStrings()) {
             Text(str, textAlign = TextAlign.Center, modifier = Modifier.padding(8.dp, 0.dp))
         }
@@ -123,7 +126,7 @@ fun AbilityScoresDisplay(abilityScores: AbilityScores, modifier: Modifier = Modi
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AbilityScoresInput(abilityScores: AbilityScores, setAbilityScores: (AbilityScores)->Unit, modifier: Modifier = Modifier) {
+fun AbilityScoresInput(abilityScores: AbilityScores, setAbilityScores: (AbilityScores) -> Unit, modifier: Modifier = Modifier) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = modifier

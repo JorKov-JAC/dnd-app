@@ -75,8 +75,8 @@ fun NewMonsterEditor(modifier: Modifier = Modifier, onSubmit: (newMonster: Monst
 
     Column(
         verticalArrangement = Arrangement.spacedBy(4.dp),
-        modifier = modifier.padding(4.dp)) {
-
+        modifier = modifier.padding(4.dp)
+    ) {
         // Monster image
         MonsterBitmapSelector(
             imageBitmap,
@@ -106,9 +106,13 @@ fun NewMonsterEditor(modifier: Modifier = Modifier, onSubmit: (newMonster: Monst
         )
 
         // Ability scores
-        AbilityScoresInput(abilityScores, { abilityScores = it }, modifier = Modifier
-            .fillMaxWidth()
-            .horizontalScroll(rememberScrollState()))
+        AbilityScoresInput(
+            abilityScores,
+            { abilityScores = it },
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState())
+        )
 
         // Show errors messages
         if (errorMsg !== null) {
@@ -117,14 +121,13 @@ fun NewMonsterEditor(modifier: Modifier = Modifier, onSubmit: (newMonster: Monst
 
         // Submit button
         Button(onClick = {
-                errorMsg = try {
-                    onSubmit(Monster(name, description, abilityScores, emptyList(), imageBitmap, imageDesc))
-                    null // No error
-                } catch(e: Exception) {
-                    e.localizedMessage
-                }
-            }, modifier = Modifier.align(Alignment.CenterHorizontally)) {
-
+            errorMsg = try {
+                onSubmit(Monster(name, description, abilityScores, emptyList(), imageBitmap, imageDesc))
+                null // No error
+            } catch (e: Exception) {
+                e.localizedMessage
+            }
+        }, modifier = Modifier.align(Alignment.CenterHorizontally)) {
             Text(stringResource(R.string.create))
         }
     }

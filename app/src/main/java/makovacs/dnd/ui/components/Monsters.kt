@@ -51,9 +51,11 @@ fun MonsterCard(monster: Monster, modifier: Modifier = Modifier) {
                     .align(Alignment.CenterVertically)
             )
 
-            Column(modifier = Modifier
-                .padding(8.dp)
-                .align(Alignment.CenterVertically)) {
+            Column(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .align(Alignment.CenterVertically)
+            ) {
                 CreatureName(name = monster.name)
                 Divider()
                 CreatureTags(tags = monster.tags)
@@ -108,7 +110,7 @@ fun MonsterDetails(monster: Monster, modifier: Modifier = Modifier) {
  * bitmap, and an optional description of the image as the second argument.
  */
 @Composable
-fun MonsterBitmapSelector(bitmap: Bitmap?, setBitmap: (Bitmap?, String?)->Unit, modifier: Modifier = Modifier) {
+fun MonsterBitmapSelector(bitmap: Bitmap?, setBitmap: (Bitmap?, String?) -> Unit, modifier: Modifier = Modifier) {
     // TODO This is gross, decodes image on every recompose:
     val defaultBitmap = R.drawable.no_img.toBitmap()
 
@@ -120,10 +122,11 @@ fun MonsterBitmapSelector(bitmap: Bitmap?, setBitmap: (Bitmap?, String?)->Unit, 
     }
 
     Card(modifier = modifier) {
-        Box(modifier = Modifier
+        Box(
+            modifier = Modifier
                 .padding(8.dp)
-                .clickable { dropdownExpanded = !dropdownExpanded }) {
-
+                .clickable { dropdownExpanded = !dropdownExpanded }
+        ) {
             Image(
                 painter = (bitmap ?: defaultBitmap).toPainter(),
                 contentDescription = null // Useless unless we implement user-provided descriptions
@@ -146,7 +149,7 @@ fun MonsterBitmapSelector(bitmap: Bitmap?, setBitmap: (Bitmap?, String?)->Unit, 
                 listOf(
                     stringResource(id = R.string.gnolls) to R.drawable.gnolls.toBitmap(),
                     stringResource(id = R.string.wolf) to R.drawable.wolf.toBitmap(),
-                    stringResource(id = R.string.imp) to R.drawable.imp.toBitmap(),
+                    stringResource(id = R.string.imp) to R.drawable.imp.toBitmap()
                 ).forEach { (itemName, itemBitmap) ->
                     val bitmapDesc = stringResource(R.string.imageOf_format, itemName)
                     DropdownMenuItem(
