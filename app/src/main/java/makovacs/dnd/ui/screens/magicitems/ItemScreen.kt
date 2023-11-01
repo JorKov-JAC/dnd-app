@@ -24,7 +24,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import makovacs.dnd.MagicItems
+import makovacs.dnd.R
+import makovacs.dnd.data.MagicItem
 import makovacs.dnd.ui.routing.LocalNavHostController
 import makovacs.dnd.ui.routing.Route
 
@@ -33,51 +34,46 @@ import makovacs.dnd.ui.routing.Route
  * detailed overview of just the clicked on item and allows the user to delete it. Contains a button to remove all the items from the list.
  */
 @Composable
-fun ItemScreen() {
+fun ItemScreen(magicItems : List<MagicItem>, remove: (String) -> Unit, getByName: (String) -> MagicItem?) {
     val navController = LocalNavHostController.current
-    val magicItems = MagicItems.current
+
     Column(Modifier.padding(5.dp)) {
-        Button(onClick = { magicItems.clear() }) {
-            Text(text = "Clear items")
-        }
 
         LazyColumn {
-            items(items = magicItems) { items ->
-                val info = items.split("_")
-                Card(
-                    border = BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary),
+            items(items = magicItems) { item ->
+                Card(border = BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary),
                     colors = CardDefaults.cardColors(MaterialTheme.colorScheme.tertiaryContainer),
-                    modifier = Modifier.clickable { navController.navigate(Route.SingleItem.go(items)) }
-                ) {
-                    Row {
-                        val name = info[4]
-                        val context = LocalContext.current
-                        val drawableId = remember(name) {
-                            context.resources.getIdentifier(
-                                name,
-                                "drawable",
-                                context.packageName
-                            )
-                        }
+                    modifier = Modifier.clickable{  navController.navigate(
+                        Route.SingleItem.go(
+                            item.name,
+                            remove,
+                            getByName
+                        )
+                    )}){
+                    Row{
+
                         val imageModifier = Modifier
                             .size(80.dp)
                             .border(BorderStroke(1.dp, Color.Black))
                             .background(Color.White)
 
                         Image(
-                            painterResource(id = drawableId),
+                            painterResource(id = item?.imageId ?: R.drawable.dndmisc),
                             contentDescription = "...",
                             modifier = imageModifier
                         )
-                        Text(
-                            "Name: ${info[0]}",
+                        Text("Name: ${item.name}",
                             Modifier
                                 .padding(10.dp)
-                                .fillMaxWidth()
-                        )
+                                .fillMaxWidth())
                     }
+
                 }
+
             }
         }
     }
+
+
+
 }

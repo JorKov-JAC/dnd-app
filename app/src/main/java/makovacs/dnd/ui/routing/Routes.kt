@@ -6,6 +6,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import makovacs.dnd.data.MagicItem
+import makovacs.dnd.data.MagicItemViewModel
 import makovacs.dnd.ui.screens.AboutScreen
 import makovacs.dnd.ui.screens.ContactScreen
 import makovacs.dnd.ui.screens.magicitems.DetailScreen
@@ -23,7 +25,7 @@ val LocalNavHostController = compositionLocalOf<NavHostController> {
  * Shows the appropriate page based on [LocalNavHostController].
  */
 @Composable
-fun Router(modifier: Modifier = Modifier) {
+fun Router(modifier: Modifier = Modifier, magicItemsVM:MagicItemViewModel = MagicItemViewModel()) {
     val navHostController = LocalNavHostController.current
 
     NavHost(navHostController, startDestination = Route.About.route, modifier = modifier) {
@@ -34,14 +36,23 @@ fun Router(modifier: Modifier = Modifier) {
             ContactScreen()
         }
         composable(Route.Form.route) {
-            InputForm()
+            InputForm(
+                magicItemsVM::add,
+                magicItemsVM :: removeByName,
+                magicItemsVM :: getByName)
         }
         composable(Route.ItemsList.route) {
-            ItemScreen()
+            ItemScreen(magicItemsVM.magicItems,
+                magicItemsVM :: removeByName,
+                magicItemsVM :: getByName)
         }
         composable(Route.SingleItem.route) {
-            DetailScreen(items = it.arguments?.getString("items") ?: "")
+            DetailScreen(
+                name = it.arguments?.getString("name") ?: "",
+                magicItemsVM :: removeByName,
+                magicItemsVM :: getByName)
         }
+
     }
 }
 
@@ -55,8 +66,8 @@ sealed class Route(val route: String) {
     object About : Route("about")
     object Contact : Route("contact")
     object Form : Route("FormRoute")
-    object SingleItem : Route("SingleItemRoute/{items}") {
-        fun go(items: String) = "SingleItemRoute/$items"
+    object SingleItem : Route("SingleItemRoute/{name}") {
+        fun go(name: String, remove: (String) -> Unit, getByName: (String) -> MagicItem?) = "SingleItemRoute/$name"
     }
-    object ItemsList : Route("ItemsListRoute")
+    object ItemsList: Route("ItemsListRoute")
 }
