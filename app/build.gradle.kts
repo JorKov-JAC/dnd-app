@@ -1,6 +1,7 @@
 import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 plugins {
     id("com.android.application")
+    id("kotlin-parcelize")
     id("org.jetbrains.kotlin.android")
     id("org.jlleitschuh.gradle.ktlint") version "11.6.0"
 }

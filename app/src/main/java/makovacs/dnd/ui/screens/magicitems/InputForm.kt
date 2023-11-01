@@ -32,7 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import makovacs.dnd.R
-import makovacs.dnd.data.DamageType
+import makovacs.dnd.data.dnd.DamageType
 import makovacs.dnd.ui.routing.LocalNavHostController
 import makovacs.dnd.ui.routing.Route
 

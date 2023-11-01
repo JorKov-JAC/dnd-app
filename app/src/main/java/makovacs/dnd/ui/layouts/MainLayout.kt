@@ -58,6 +58,12 @@ fun MainLayout(modifier: Modifier = Modifier, content: @Composable (padding: Pad
                 // Info for every nav button
                 val navButtonInfos = listOf(
                     NavButtonInfo(
+                        Route.MonstersListRoute,
+                        Route.MonstersListRoute.route,
+                        Icons.Default.List,
+                        "Monsters"
+                    ),
+                    NavButtonInfo(
                         Route.About,
                         Route.About.route,
                         Icons.Default.Info,

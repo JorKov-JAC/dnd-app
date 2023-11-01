@@ -1,4 +1,4 @@
-package makovacs.dnd.data
+package makovacs.dnd.data.dnd
 
 data class MagicItem(
     var name: String,
