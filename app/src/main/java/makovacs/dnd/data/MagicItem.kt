@@ -13,10 +13,10 @@ data class MagicItem(
 
     override fun toString(): String {
         return if (damageDice != "") {
-            "Name: $name \nSource: $sourceBook \nRarity: $rarity, \nDescription: $description \n" +
+            "Name: $name \nSource: $sourceBook \nRarity: $rarity \nDescription: $description \n" +
                 "Damage Type: ${damageType.name} \nDamage Dice: $damageDice"
         } else {
-            "Name: $name \nSource: $sourceBook \nRarity: $rarity, \nDescription: $description \n" +
+            "Name: $name \nSource: $sourceBook \nRarity: $rarity \nDescription: $description \n" +
                 "Damage Type: ${damageType.name}"
         }
     }
