@@ -3,6 +3,7 @@ package makovacs.dnd.ui.routing
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -25,7 +26,7 @@ val LocalNavHostController = compositionLocalOf<NavHostController> {
  * Shows the appropriate page based on [LocalNavHostController].
  */
 @Composable
-fun Router(modifier: Modifier = Modifier, magicItemsVM:MagicItemViewModel = MagicItemViewModel()) {
+fun Router(modifier: Modifier = Modifier, magicItemsVM:MagicItemViewModel = viewModel()) {
     val navHostController = LocalNavHostController.current
 
     NavHost(navHostController, startDestination = Route.About.route, modifier = modifier) {
