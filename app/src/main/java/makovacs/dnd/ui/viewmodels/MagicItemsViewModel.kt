@@ -1,8 +1,10 @@
-package makovacs.dnd.data
+package makovacs.dnd.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
+import makovacs.dnd.data.dnd.DamageType
+import makovacs.dnd.data.dnd.MagicItem
 
-class MagicItemViewModel : ViewModel() {
+class MagicItemsViewModel : ViewModel() {
     private val _magicItems = mutableListOf<MagicItem>()
     val magicItems: List<MagicItem>
         get() = _magicItems
