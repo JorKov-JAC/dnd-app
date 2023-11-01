@@ -7,7 +7,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import makovacs.dnd.data.MagicItem
 import makovacs.dnd.data.MagicItemViewModel
 import makovacs.dnd.ui.screens.AboutScreen
 import makovacs.dnd.ui.screens.ContactScreen
@@ -36,7 +35,7 @@ fun Router(modifier: Modifier = Modifier, magicItemsVM: MagicItemViewModel = vie
         composable(Route.Contact.route) {
             ContactScreen()
         }
-        composable(Route.Form.route) {
+        composable(Route.ItemForm.route) {
             InputForm(magicItemsVM::add)
         }
         composable(Route.ItemsList.route) {
@@ -65,7 +64,7 @@ sealed class Route(val route: String) {
      */
     object About : Route("about")
     object Contact : Route("contact")
-    object Form : Route("FormRoute")
+    object ItemForm : Route("ItemFormRoute")
     object SingleItem : Route("SingleItemRoute/{name}") {
         fun go(name: String) = "SingleItemRoute/$name"
     }

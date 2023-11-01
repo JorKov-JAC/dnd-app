@@ -70,16 +70,16 @@ fun MainLayout(modifier: Modifier = Modifier, content: @Composable (padding: Pad
                         "Contact"
                     ),
                     NavButtonInfo(
-                        Route.Form,
-                        Route.Form.route,
+                        Route.ItemForm,
+                        Route.ItemForm.route,
                         Icons.Default.Add,
-                        "Create"
+                        "Create Item"
                     ),
                     NavButtonInfo(
                         Route.ItemsList,
                         Route.ItemsList.route,
                         Icons.Default.List,
-                        "List"
+                        "Items List"
                     )
                 )
 
