@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -55,21 +54,21 @@ fun InputForm(add: (String, String, String, String, Int, String, DamageType) -> 
     var description by rememberSaveable { mutableStateOf("") }
     var selectedIndex by remember { mutableStateOf(0) }
     var damageDice by remember { mutableStateOf("") }
-    var damageType by remember { mutableStateOf(DamageType.None)}
+    var damageType by remember { mutableStateOf(DamageType.None) }
     val navController = LocalNavHostController.current
 
     Column {
         var invalidInput by rememberSaveable { mutableStateOf(false) }
         var errorMessage by rememberSaveable { mutableStateOf("") }
 
-        Row{
+        Row {
             TextField(
                 modifier = Modifier
                     .weight(1f)
                     .padding(4.dp),
                 value = name,
                 singleLine = true,
-                onValueChange =  { name = it },
+                onValueChange = { name = it },
                 label = { Text("Item name") }
             )
             TextField(
@@ -78,7 +77,7 @@ fun InputForm(add: (String, String, String, String, Int, String, DamageType) -> 
                     .padding(4.dp),
                 value = sourceBook,
                 singleLine = true,
-                onValueChange =  { sourceBook = it },
+                onValueChange = { sourceBook = it },
                 label = { Text("Item source") }
             )
 
@@ -88,24 +87,21 @@ fun InputForm(add: (String, String, String, String, Int, String, DamageType) -> 
                     .padding(4.dp),
                 value = rarity,
                 singleLine = true,
-                onValueChange =  { rarity = it },
+                onValueChange = { rarity = it },
                 label = { Text("Item rarity") }
             )
         }
-        Row{
+        Row {
             TextField(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(4.dp),
                 value = description,
-                onValueChange =  { description = it },
-                label = { Text("Item description") },
+                onValueChange = { description = it },
+                label = { Text("Item description") }
 
-                )
-
-
+            )
         }
-
 
         Spacer(
             modifier = Modifier
@@ -121,29 +117,36 @@ fun InputForm(add: (String, String, String, String, Int, String, DamageType) -> 
             R.drawable.dndshield,
             R.drawable.dndmisc
         )
-        Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer),
-            //border =BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
-            modifier = Modifier.padding(2.dp)){
+        Card(
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer),
+            // border =BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
+            modifier = Modifier.padding(2.dp)
+        ) {
             Text("Type of Magic Item Image", modifier = Modifier.padding(3.dp))
 
             var expanded by remember { mutableStateOf(false) }
             val items = listOf("Axe", "Bag", "Book", "Bow", "Potion", "Shield", "Other")
 
-
-            Box(modifier = Modifier
-                .padding(5.dp)
-                .border(BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary))
-                .padding(1.dp)) {
-                Text(items[selectedIndex],modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable(onClick = { expanded = true })
-                    .background(
-                        MaterialTheme.colorScheme.tertiaryContainer
-                    ))
+            Box(
+                modifier = Modifier
+                    .padding(5.dp)
+                    .border(BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary))
+                    .padding(1.dp)
+            ) {
+                Text(
+                    items[selectedIndex],
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable(onClick = { expanded = true })
+                        .background(
+                            MaterialTheme.colorScheme.tertiaryContainer
+                        )
+                )
                 DropdownMenu(
                     expanded = expanded,
                     onDismissRequest = {
-                        expanded = false },
+                        expanded = false
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(
@@ -154,52 +157,58 @@ fun InputForm(add: (String, String, String, String, Int, String, DamageType) -> 
                         DropdownMenuItem(onClick = {
                             selectedIndex = index
                             expanded = false
-                        }, text = { Text(s)})
+                        }, text = { Text(s) })
                     }
                 }
             }
-
         }
         Spacer(
             modifier = Modifier
                 .height(5.dp)
         )
 
-        Row{
+        Row {
             TextField(
                 modifier = Modifier
                     .weight(1f),
                 value = damageDice,
-                onValueChange =  { damageDice = it },
-                label = { Text("(Optional) Damage Dice") },
+                onValueChange = { damageDice = it },
+                label = { Text("(Optional) Damage Dice") }
 
-                )
+            )
 
-            Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer),
+            Card(
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer),
                 modifier = Modifier
                     .weight(1f)
-                    .padding(2.dp)){
+                    .padding(2.dp)
+            ) {
                 Text("Damage type", modifier = Modifier.padding(3.dp))
 
                 var expandedDamage by remember { mutableStateOf(false) }
                 val damages = DamageType.values()
                 var indexDamage = 0
 
-
-                Box(modifier = Modifier
-                    .padding(5.dp)
-                    .border(BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary))
-                    .padding(1.dp)) {
-                    Text(damageType.name,modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable(onClick = { expandedDamage = true })
-                        .background(
-                            MaterialTheme.colorScheme.tertiaryContainer
-                        ))
+                Box(
+                    modifier = Modifier
+                        .padding(5.dp)
+                        .border(BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary))
+                        .padding(1.dp)
+                ) {
+                    Text(
+                        damageType.name,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable(onClick = { expandedDamage = true })
+                            .background(
+                                MaterialTheme.colorScheme.tertiaryContainer
+                            )
+                    )
                     DropdownMenu(
                         expanded = expandedDamage,
                         onDismissRequest = {
-                            expandedDamage = false },
+                            expandedDamage = false
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(
@@ -211,16 +220,14 @@ fun InputForm(add: (String, String, String, String, Int, String, DamageType) -> 
                                 indexDamage = index
                                 damageType = s
                                 expandedDamage = false
-                            }, text = { Text(s.name)})
+                            }, text = { Text(s.name) })
                         }
                     }
                 }
-
             }
         }
 
-
-        Row{
+        Row {
             val context = LocalContext.current
             val drawableId = remember(name) {
                 context.resources.getIdentifier(
@@ -230,35 +237,28 @@ fun InputForm(add: (String, String, String, String, Int, String, DamageType) -> 
                 )
             }
             Button(onClick = {
-                if(name == "" || rarity == "" || sourceBook == "" || description == "")
-                {
+                if (name == "" || rarity == "" || sourceBook == "" || description == "") {
                     invalidInput = true
                     errorMessage = "No boxes may be empty."
-                }
-                else if(damageDice != "" && !damageDiceIsValid(damageDice))
-                {
+                } else if (damageDice != "" && !damageDiceIsValid(damageDice)) {
                     invalidInput = true
                     errorMessage = "Incorrect format for damage dice. (ex. 4d10)"
-                }
-                else
-                {
+                } else {
                     add(name, sourceBook, rarity, description, drawableId, damageDice, damageType)
-                    navController.navigate(Route.SingleItem.go(name,remove, getByName))
-
+                    navController.navigate(Route.SingleItem.go(name, remove, getByName))
                 }
-            })
-            {
+            }) {
                 Text("Add Item")
             }
             Button(onClick = {
-                name= ""
+                name = ""
                 rarity = ""
                 description = ""
                 sourceBook = ""
                 damageDice = ""
                 selectedIndex = 0
-                damageType = DamageType.None})
-            {
+                damageType = DamageType.None
+            }) {
                 Text("Clear Item Information")
             }
         }
@@ -269,13 +269,10 @@ fun InputForm(add: (String, String, String, String, Int, String, DamageType) -> 
                 .width(20.dp)
         )
 
-        if(invalidInput)
-        {
+        if (invalidInput) {
             invalidInput = false
             InvalidFormInput(errorMessage)
         }
-
-
     }
 }
 
@@ -285,29 +282,28 @@ fun InputForm(add: (String, String, String, String, Int, String, DamageType) -> 
  */
 
 @Composable
-fun InvalidFormInput(errorMessage: String)
-{
+fun InvalidFormInput(errorMessage: String) {
     val builder = AlertDialog.Builder(LocalContext.current)
     builder.setTitle("Invalid Input")
     builder.setMessage(errorMessage)
-    builder.setNeutralButton("Close"){ _, _ -> }
+    builder.setNeutralButton("Close") { _, _ -> }
 
     builder.show()
 }
 
-fun damageDiceIsValid(damageDice: String) : Boolean
-{
+fun damageDiceIsValid(damageDice: String): Boolean {
     val regex = "^[0-9]+d[0-9]+$".toRegex()
     val found = regex.find(damageDice) ?: return false
 
     val values = damageDice.split("d")
-    if(values[1].toInt() != 4 &&
+    if (values[1].toInt() != 4 &&
         values[1].toInt() != 6 &&
         values[1].toInt() != 8 &&
         values[1].toInt() != 10 &&
-        values[1].toInt() != 12)
+        values[1].toInt() != 12
+    ) {
         return false
+    }
 
     return true
 }
-

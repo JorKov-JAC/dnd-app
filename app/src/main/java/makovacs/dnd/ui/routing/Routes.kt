@@ -26,7 +26,7 @@ val LocalNavHostController = compositionLocalOf<NavHostController> {
  * Shows the appropriate page based on [LocalNavHostController].
  */
 @Composable
-fun Router(modifier: Modifier = Modifier, magicItemsVM:MagicItemViewModel = viewModel()) {
+fun Router(modifier: Modifier = Modifier, magicItemsVM: MagicItemViewModel = viewModel()) {
     val navHostController = LocalNavHostController.current
 
     NavHost(navHostController, startDestination = Route.About.route, modifier = modifier) {
@@ -39,21 +39,24 @@ fun Router(modifier: Modifier = Modifier, magicItemsVM:MagicItemViewModel = view
         composable(Route.Form.route) {
             InputForm(
                 magicItemsVM::add,
-                magicItemsVM :: removeByName,
-                magicItemsVM :: getByName)
+                magicItemsVM::removeByName,
+                magicItemsVM::getByName
+            )
         }
         composable(Route.ItemsList.route) {
-            ItemScreen(magicItemsVM.magicItems,
-                magicItemsVM :: removeByName,
-                magicItemsVM :: getByName)
+            ItemScreen(
+                magicItemsVM.magicItems,
+                magicItemsVM::removeByName,
+                magicItemsVM::getByName
+            )
         }
         composable(Route.SingleItem.route) {
             DetailScreen(
                 name = it.arguments?.getString("name") ?: "",
-                magicItemsVM :: removeByName,
-                magicItemsVM :: getByName)
+                magicItemsVM::removeByName,
+                magicItemsVM::getByName
+            )
         }
-
     }
 }
 
@@ -70,5 +73,5 @@ sealed class Route(val route: String) {
     object SingleItem : Route("SingleItemRoute/{name}") {
         fun go(name: String, remove: (String) -> Unit, getByName: (String) -> MagicItem?) = "SingleItemRoute/$name"
     }
-    object ItemsList: Route("ItemsListRoute")
+    object ItemsList : Route("ItemsListRoute")
 }

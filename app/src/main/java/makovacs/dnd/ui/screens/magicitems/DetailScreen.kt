@@ -23,12 +23,15 @@ import makovacs.dnd.data.MagicItem
     A screen showing a large formatted version of the passed in magic item string.
  */
 @Composable
-fun DetailScreen(name: String, remove: (String) -> Unit, getByName: (String) -> MagicItem?)
-{
+fun DetailScreen(name: String, remove: (String) -> Unit, getByName: (String) -> MagicItem?) {
     var item = getByName(name)
-    Card(border = BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary), colors = CardDefaults.cardColors(
-        MaterialTheme.colorScheme.tertiaryContainer)){
-        Column(horizontalAlignment = Alignment.CenterHorizontally){
+    Card(
+        border = BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary),
+        colors = CardDefaults.cardColors(
+            MaterialTheme.colorScheme.tertiaryContainer
+        )
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
             var id = item?.imageId ?: R.drawable.dndmisc
             Image(
                 painterResource(id = id),
@@ -37,26 +40,21 @@ fun DetailScreen(name: String, remove: (String) -> Unit, getByName: (String) -> 
                 modifier = Modifier
                     .padding(5.dp)
             )
-            Text(item?.toString() ?: "No item found",
+            Text(
+                item?.toString() ?: "No item found",
                 Modifier
                     .padding(10.dp)
-                    .fillMaxWidth())
-
+                    .fillMaxWidth()
+            )
         }
-
     }
-
 
     Button(onClick = {
-        try{
+        try {
             remove(name)
+        } catch (err: Throwable) {
         }
-        catch(err: Throwable)
-        {
-
-        }
-    }){
+    }) {
         Text("Remove item")
     }
-
 }
