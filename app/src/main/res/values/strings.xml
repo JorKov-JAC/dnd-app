@@ -10,8 +10,17 @@
     <!-- Example: Str:\n12 (+1) -->
     <string name="ability_name_score_format">%1$s:\n%2$d (%3$+d)</string>
 
+    <!-- Example: "Banana" -->
+    <string name="quoted_format">\"%1$s\"</string>
+
     <string name="create">Create</string>
     <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
+
+    <string name="confirm_deletion_title">Confirm Deletion</string>
+    <!-- Example: Are you sure you want to delete "Banana"? -->
+    <string name="confirm_deletion_body_format">Are you sure you want to delete %1$s?</string>
+    <string name="confirm_deletion_generic_item_name">that</string>
 
     <string name="monstersList">Monsters List</string>
     <string name="about">About</string>
