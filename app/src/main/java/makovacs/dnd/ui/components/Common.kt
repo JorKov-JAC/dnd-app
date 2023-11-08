@@ -13,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
@@ -22,7 +23,29 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import makovacs.dnd.R
+
+/**
+ * A dialog which displays its contents within a card.
+ *
+ * @param onDismissRequest Called when the user attempts to dismiss the dialog.
+ * @param content The content to display within the dialog.
+ */
+@Composable
+fun CardDialog(
+    onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
+    Dialog(onDismissRequest = onDismissRequest) {
+        ElevatedCard(modifier = modifier) {
+            Box(modifier = Modifier.padding(8.dp)) {
+                content()
+            }
+        }
+    }
+}
 
 /**
  * Shows a confirmation dialog for deleting something.
