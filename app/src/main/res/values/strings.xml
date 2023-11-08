@@ -14,6 +14,7 @@
     <string name="quoted_format">\"%1$s\"</string>
 
     <string name="create">Create</string>
+    <string name="save">Save</string>
     <string name="edit">Edit</string>
     <string name="cancel">Cancel</string>
     <string name="move_up">Move Up</string>
@@ -24,6 +25,8 @@
     <!-- Example: Are you sure you want to delete "Banana"? -->
     <string name="confirm_deletion_body_format">Are you sure you want to delete %1$s?</string>
     <string name="confirm_deletion_generic_item_name">that</string>
+    <!-- Example: "Banana" already exists! -->
+    <string name="already_exists_format">\"%1$s\" already exists!</string>
 
     <string name="monstersList">Monsters List</string>
     <string name="about">About</string>
