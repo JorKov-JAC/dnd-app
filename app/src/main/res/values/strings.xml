@@ -14,7 +14,10 @@
     <string name="quoted_format">\"%1$s\"</string>
 
     <string name="create">Create</string>
+    <string name="edit">Edit</string>
     <string name="cancel">Cancel</string>
+    <string name="move_up">Move Up</string>
+    <string name="move_down">Move Down</string>
     <string name="delete">Delete</string>
 
     <string name="confirm_deletion_title">Confirm Deletion</string>
