@@ -3,6 +3,7 @@
 package makovacs.dnd.ui.components
 
 import android.graphics.Bitmap
+import androidx.annotation.Size
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
@@ -11,24 +12,18 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import makovacs.dnd.R
 import makovacs.dnd.data.dnd.AbilityScores
-import makovacs.dnd.data.dnd.MonsterTag
-import makovacs.dnd.ui.util.abilityNames
 import makovacs.dnd.ui.util.abilityStrings
 import makovacs.dnd.ui.util.toBitmap
 import makovacs.dnd.ui.util.toPainter
@@ -59,11 +54,11 @@ fun CreatureDesc(desc: String, modifier: Modifier = Modifier) {
  * @param tags The tags to display.
  */
 @Composable
-fun CreatureTags(tags: List<MonsterTag>, modifier: Modifier = Modifier) {
-    Row(modifier = modifier) {
+fun CreatureTags(tags: List<String>, modifier: Modifier = Modifier) {
+    Row(modifier = modifier.horizontalScroll(rememberScrollState())) {
         for (tag in tags) {
             Text(
-                tag.name,
+                tag,
                 modifier = Modifier
                     .padding(4.dp)
                     .background(Color(0xFF80FF80))
@@ -120,44 +115,31 @@ fun AbilityScoresDisplay(abilityScores: AbilityScores, modifier: Modifier = Modi
 /**
  * Lets the user edit an [AbilityScores].
  *
- * @param abilityScores The current ability scores.
- * @param setAbilityScores Called when the user modifies the ability scores with the new ability
- * scores.
+ * @param abilityScores The current ability scores. Score may be null if not set.
+ * @param setScore Called when the user wants to replace the ability scores at the given index with
+ * the provided new score.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AbilityScoresInput(abilityScores: AbilityScores, setAbilityScores: (AbilityScores) -> Unit, modifier: Modifier = Modifier) {
+fun AbilityScoresInput(
+    @Size(6) abilityScores: List<Int?>,
+    setScore: (index: Int, score: Int?) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
         modifier = modifier
     ) {
         val abilityNames = AbilityScores.abilityNames
-        // Since AbilityScores is an immutable data class, we need to make copies instead.
-        // This is a list of copy functions for each ability score:
-        val abilityCopiers = abilityScores.abilityCopiers
 
-        for ((i, score) in abilityScores.scoreList.withIndex()) {
-            val abilityName = abilityNames[i]
-            val abilityCopier = abilityCopiers[i]
-
-            // Function to update the ability
-            val update: (String) -> Unit = {
-                val toInt = it.toIntOrNull()
-
-                if (toInt !== null) {
-                    setAbilityScores(abilityCopier(toInt))
-                }
-            }
-
+        for ((i, score) in abilityScores.withIndex()) {
             // Convert sp to dp rather than using dp directly
             // in case user is scaling their text:
-            val width = with(LocalDensity.current) { 60.sp.toDp() }
+            val width = with(LocalDensity.current) { 80.sp.toDp() }
 
-            TextField(
-                score.toString(),
-                update,
-                label = { Text(abilityName) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            NullableIntField(
+                score,
+                { setScore(i, it) },
+                label = abilityNames[i],
                 modifier = Modifier.width(width)
             )
         }
