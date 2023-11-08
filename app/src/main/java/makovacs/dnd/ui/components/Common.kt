@@ -79,9 +79,9 @@ fun CardDialog(
  */
 @Composable
 fun ConfirmDeleteDialog(
-    onCloseDialog: ()->Unit,
+    onCloseDialog: () -> Unit,
     itemStr: String?,
-    onDelete: ()->Unit
+    onDelete: () -> Unit
 ) {
     @Suppress("NAME_SHADOWING")
     val itemStr = if (itemStr == null) {
@@ -142,8 +142,8 @@ fun <T> SelectableList(
     LaunchedEffect(selectedIndex) {
         // Make sure item is visible
         if (
-            selectedIndex != null
-                && !listState.layoutInfo.visibleItemsInfo.any { it.index == selectedIndex }
+            selectedIndex != null &&
+            !listState.layoutInfo.visibleItemsInfo.any { it.index == selectedIndex }
         ) {
             listState.animateScrollToItem(selectedIndex)
         }
@@ -155,12 +155,14 @@ fun <T> SelectableList(
             .background(MaterialTheme.colorScheme.primaryContainer)
             .then(modifier)
     ) {
-        itemsIndexed(items, key = key?.let{ {_, item -> it(item)} }) { index, it ->
+        itemsIndexed(items, key = key?.let { { _, item -> it(item) } }) { index, it ->
             var cardModifier = Modifier.clickable { setSelectedIndex(index) }
 
             // Change background of selected item
-            if (selectedIndex == index) cardModifier = cardModifier
-                .background(MaterialTheme.colorScheme.tertiary)
+            if (selectedIndex == index) {
+                cardModifier = cardModifier
+                    .background(MaterialTheme.colorScheme.tertiary)
+            }
 
             cardModifier = cardModifier.padding(8.dp)
 
@@ -205,7 +207,7 @@ fun <T> EditableList(
     items: List<T>,
     onSwap: (from: Int, to: Int) -> Unit,
     modifier: Modifier = Modifier,
-    key: ((T)->Any)? = null,
+    key: ((T) -> Any)? = null,
     // The only way for callers to *optionally* interact with the selected index is to expose a
     // state for it. Having a value and a setter instead would force the caller to provide them:
     selectedIndexState: MutableState<Int?> = rememberSaveable {
@@ -213,12 +215,12 @@ fun <T> EditableList(
             null
         )
     },
-    onCreateDialogContent: (@Composable (insertionIndex: Int, onDone: ()->Unit)->Unit)? = null,
-    onDelete: ((Int)->Unit)? = null,
-    itemToName: ((T)->String)? = null,
-    onEditDialogContent: (@Composable (itemIndex: Int, item: T, onDone: ()->Unit) -> Unit)? = null,
+    onCreateDialogContent: (@Composable (insertionIndex: Int, onDone: () -> Unit) -> Unit)? = null,
+    onDelete: ((Int) -> Unit)? = null,
+    itemToName: ((T) -> String)? = null,
+    onEditDialogContent: (@Composable (itemIndex: Int, item: T, onDone: () -> Unit) -> Unit)? = null,
     title: String? = null,
-    itemContent: @Composable (T)->Unit,
+    itemContent: @Composable (T) -> Unit
 ) {
     var selectedIndex by selectedIndexState
 
@@ -233,7 +235,6 @@ fun <T> EditableList(
                     .background(MaterialTheme.colorScheme.primary)
                     .padding(8.dp)
             ) {
-
                 // Title
                 if (title != null) {
                     Text(
@@ -264,14 +265,17 @@ fun <T> EditableList(
                         )
                     }
 
-                    if (createDialogEnabled) CardDialog(
-                        onDismissRequest = { createDialogEnabled = false }) {
-                        val insertionIndex =
-                            selectedIndex?.let { it + 1 } ?: items.size
+                    if (createDialogEnabled) {
+                        CardDialog(
+                            onDismissRequest = { createDialogEnabled = false }
+                        ) {
+                            val insertionIndex =
+                                selectedIndex?.let { it + 1 } ?: items.size
 
-                        onCreateDialogContent(insertionIndex) {
-                            createDialogEnabled = false
-                            selectedIndex = insertionIndex
+                            onCreateDialogContent(insertionIndex) {
+                                createDialogEnabled = false
+                                selectedIndex = insertionIndex
+                            }
                         }
                     }
                 }
@@ -307,7 +311,7 @@ fun <T> EditableList(
             ) {
                 Icon(
                     Icons.Default.KeyboardArrowUp,
-                    stringResource(R.string.move_up),
+                    stringResource(R.string.move_up)
                 )
             }
 
@@ -321,7 +325,7 @@ fun <T> EditableList(
             ) {
                 Icon(
                     Icons.Default.KeyboardArrowDown,
-                    stringResource(R.string.move_down),
+                    stringResource(R.string.move_down)
                 )
             }
 
@@ -334,16 +338,19 @@ fun <T> EditableList(
                 ) {
                     Icon(
                         Icons.Default.Edit,
-                        stringResource(R.string.edit),
+                        stringResource(R.string.edit)
                     )
                 }
 
-                if (editDialogEnabled) CardDialog(
-                    onDismissRequest = { editDialogEnabled = false }) {
-                    onEditDialogContent(
-                        selectedIndex!!,
-                        items[selectedIndex!!]
-                    ) { editDialogEnabled = false }
+                if (editDialogEnabled) {
+                    CardDialog(
+                        onDismissRequest = { editDialogEnabled = false }
+                    ) {
+                        onEditDialogContent(
+                            selectedIndex!!,
+                            items[selectedIndex!!]
+                        ) { editDialogEnabled = false }
+                    }
                 }
             }
 
@@ -360,16 +367,18 @@ fun <T> EditableList(
                 ) {
                     Icon(
                         Icons.Default.Delete,
-                        stringResource(R.string.delete),
+                        stringResource(R.string.delete)
                     )
                 }
 
-                if (deleteConfirmationVisible) ConfirmDeleteDialog(
-                    onCloseDialog = { deleteConfirmationVisible = false },
-                    itemStr = itemToName?.invoke(items[selectedIndex!!])
-                ) {
-                    onDelete(selectedIndex!!)
-                    selectedIndex = null
+                if (deleteConfirmationVisible) {
+                    ConfirmDeleteDialog(
+                        onCloseDialog = { deleteConfirmationVisible = false },
+                        itemStr = itemToName?.invoke(items[selectedIndex!!])
+                    ) {
+                        onDelete(selectedIndex!!)
+                        selectedIndex = null
+                    }
                 }
             }
         }
@@ -400,9 +409,9 @@ fun EditableStringList(
     singleLine: Boolean,
     modifier: Modifier = Modifier,
     title: String? = null,
-    validator: ((String)->String?)? = null,
-    cleaner: ((String)->String)? = null,
-    uniqueOn: ((String)->Any)? = null
+    validator: ((String) -> String?)? = null,
+    cleaner: ((String) -> String)? = null,
+    uniqueOn: ((String) -> Any)? = null
 ) {
     @Suppress("NAME_SHADOWING")
     val validator = validator ?: { null } // Default to allow everything (null = no errors)
@@ -477,8 +486,8 @@ fun EditableStringList(
                         val comparableStr = uniqueOn(str)
                         val preexisting = mutableList.find { other -> comparableStr == uniqueOn(other) }
                         if (
-                            preexisting != null
-                            && preexisting != item // Ignore conflicts with itself
+                            preexisting != null &&
+                            preexisting != item // Ignore conflicts with itself
                         ) {
                             errorMsg = alreadyExistsFormat.format(preexisting)
                             return@Button
