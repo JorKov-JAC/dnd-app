@@ -18,12 +18,15 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import makovacs.dnd.ui.routing.LocalNavHostController
 import makovacs.dnd.ui.routing.Route
+import makovacs.dnd.ui.viewmodels.AuthViewModel
+import makovacs.dnd.ui.viewmodels.AuthViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignIn() {
+fun SignIn(authViewModel: AuthViewModel = viewModel(factory=AuthViewModelFactory())) {
     var username by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     val navController = LocalNavHostController.current
