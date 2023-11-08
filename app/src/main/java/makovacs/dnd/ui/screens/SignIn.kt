@@ -58,7 +58,7 @@ fun SignIn(authViewModel: AuthViewModel = viewModel(factory=AuthViewModelFactory
                 label = { Text("Password") })
 
             Button(modifier = Modifier.padding(15.dp), onClick = {
-
+                authViewModel.signIn(username, password)
             }) {
                 Text(text = "Sign In")
             }

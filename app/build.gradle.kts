@@ -70,7 +70,6 @@ android {
 dependencies {
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation(platform("com.google.firebase:firebase-bom:32.5.0"))
-    implementation("com.firebaseui:firebaseui-ui-auth:7.2.0")
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
     implementation("androidx.activity:activity-compose:1.7.2")

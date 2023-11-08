@@ -18,13 +18,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import makovacs.dnd.ui.components.InvalidFormInput
 import makovacs.dnd.ui.routing.LocalNavHostController
 import makovacs.dnd.ui.routing.Route
+import makovacs.dnd.ui.viewmodels.AuthViewModel
+import makovacs.dnd.ui.viewmodels.AuthViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignUp() {
+fun SignUp(authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory())) {
     var username by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }
@@ -68,7 +71,7 @@ fun SignUp() {
             Button(modifier = Modifier.padding(15.dp), onClick = {
                 if(isValidEmail(email) && isValidUsername(username))
                 {
-                    //submit things here
+                    authViewModel.signUp(email, password)
                 }
                 else
                 {
