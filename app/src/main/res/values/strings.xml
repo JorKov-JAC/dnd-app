@@ -13,6 +13,13 @@
     <!-- Example: "Banana" -->
     <string name="quoted_format">\"%1$s\"</string>
 
+    <string name="tiny">Tiny</string>
+    <string name="small">Small</string>
+    <string name="medium">Medium</string>
+    <string name="large">Large</string>
+    <string name="huge">Huge</string>
+    <string name="gargantuan">Gargantuan</string>
+
     <string name="create">Create</string>
     <string name="save">Save</string>
     <string name="edit">Edit</string>
@@ -37,8 +44,9 @@
     <string name="noImage">No image</string>
     <string name="genericMonsterImageDesc">Image of the monster</string>
 
+    <string name="tags">Tags</string>
+
     <string name="gnolls">Gnolls</string>
     <string name="wolf">Wolf</string>
     <string name="imp">Imp</string>
-
 </resources>

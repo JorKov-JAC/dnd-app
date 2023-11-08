@@ -16,16 +16,9 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -117,18 +110,26 @@ fun MonsterBitmapSelector(bitmap: Bitmap?, setBitmap: (Bitmap?, String?) -> Unit
     // TODO This is gross, decodes image on every recompose:
     val defaultBitmap = R.drawable.no_img.toBitmap()
 
-    var dropdownExpanded by rememberSaveable { mutableStateOf(false) }
-
-    fun setBitmapAndCloseDropdown(bitmap: Bitmap?, bitmapDesc: String?) {
-        setBitmap(bitmap, bitmapDesc)
-        dropdownExpanded = false
-    }
+    val imageOfFormat = stringResource(R.string.imageOf_format)
 
     Card(modifier = modifier) {
-        Box(
-            modifier = Modifier
-                .padding(8.dp)
-                .clickable { dropdownExpanded = !dropdownExpanded }
+        DropdownSelector(
+            listOf(
+                R.drawable.gnolls.toBitmap() to stringResource(id = R.string.gnolls),
+                R.drawable.wolf.toBitmap() to stringResource(id = R.string.wolf),
+                R.drawable.imp.toBitmap() to stringResource(id = R.string.imp)
+            ),
+            setValue = { _, it -> setBitmap(it.first, imageOfFormat.format(it.second)) },
+            reset = { setBitmap(null, null) },
+            choiceName = { it.second },
+            choiceIcon = {
+                Image(
+                    it.first.toPainter(),
+                    imageOfFormat.format(it.second),
+                    modifier = Modifier.sizeIn(maxWidth = 150.dp, maxHeight = 150.dp)
+                )
+            },
+            modifier = Modifier.padding(8.dp)
         ) {
             Image(
                 painter = (bitmap ?: defaultBitmap).toPainter(),
@@ -140,34 +141,6 @@ fun MonsterBitmapSelector(bitmap: Bitmap?, setBitmap: (Bitmap?, String?) -> Unit
                 stringResource(id = R.string.newMonster_imageDropdownIcon),
                 modifier = Modifier.align(Alignment.BottomEnd)
             )
-
-            DropdownMenu(
-                expanded = dropdownExpanded,
-                onDismissRequest = { dropdownExpanded = false }
-            ) {
-                DropdownMenuItem(
-                    text = { Text("None") },
-                    onClick = { setBitmapAndCloseDropdown(null, null) }
-                )
-                listOf(
-                    stringResource(id = R.string.gnolls) to R.drawable.gnolls.toBitmap(),
-                    stringResource(id = R.string.wolf) to R.drawable.wolf.toBitmap(),
-                    stringResource(id = R.string.imp) to R.drawable.imp.toBitmap()
-                ).forEach { (itemName, itemBitmap) ->
-                    val bitmapDesc = stringResource(R.string.imageOf_format, itemName)
-                    DropdownMenuItem(
-                        text = { Text(itemName) },
-                        onClick = { setBitmapAndCloseDropdown(itemBitmap, bitmapDesc) },
-                        trailingIcon = {
-                            Image(
-                                itemBitmap.toPainter(),
-                                bitmapDesc,
-                                modifier = Modifier.sizeIn(maxWidth = 150.dp, maxHeight = 150.dp)
-                            )
-                        }
-                    )
-                }
-            }
         }
     }
 }

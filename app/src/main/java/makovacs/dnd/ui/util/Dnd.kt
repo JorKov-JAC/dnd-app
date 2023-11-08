@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import makovacs.dnd.R
 import makovacs.dnd.data.dnd.AbilityScores
+import makovacs.dnd.data.dnd.CreatureSize
 import makovacs.dnd.data.dnd.abilityModifier
 
 /**
@@ -22,16 +23,33 @@ fun AbilityScores.abilityStrings() = (AbilityScores.abilityNames zip scoreList)
         )
     }
 
+// TODO Should use localized strings like this, but that only works in composables.
+//      Partial workaround: https://stackoverflow.com/questions/74044246/how-to-get-stringresource-if-not-in-a-composable-function
+//      Any workaround would also need to work with Errors.
+// /**
+// * Gets localized names of each ability.
+// *
+// * Ordering is the same as found in the primary constructor.
+// */
+// val AbilityScores.Companion.abilityNames @Composable get() = arrayOf(
+//    R.string.ability_str,
+//    R.string.ability_dex,
+//    R.string.ability_con,
+//    R.string.ability_int,
+//    R.string.ability_wis,
+//    R.string.ability_cha
+// ).map { stringResource(it) }
+
 /**
- * Gets localized names of each ability.
- *
- * Ordering is the same as found in the primary constructor.
+ * Gets this size's localized name.
  */
-val AbilityScores.Companion.abilityNames @Composable get() = arrayOf(
-    R.string.ability_str,
-    R.string.ability_dex,
-    R.string.ability_con,
-    R.string.ability_int,
-    R.string.ability_wis,
-    R.string.ability_cha
-).map { stringResource(it) }
+val CreatureSize.displayName @Composable get() = stringResource(
+    when (this) {
+        CreatureSize.TINY -> R.string.tiny
+        CreatureSize.SMALL -> R.string.small
+        CreatureSize.MEDIUM -> R.string.medium
+        CreatureSize.LARGE -> R.string.large
+        CreatureSize.HUGE -> R.string.huge
+        CreatureSize.GARGANTUAN -> R.string.gargantuan
+    }
+)

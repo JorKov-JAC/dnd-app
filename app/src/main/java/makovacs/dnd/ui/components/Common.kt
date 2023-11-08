@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,12 +12,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -24,6 +28,9 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -41,11 +48,15 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import makovacs.dnd.R
+import makovacs.dnd.logic.swap
 
 /**
  * A dialog which displays its contents within a card.
@@ -115,6 +126,113 @@ fun ConfirmDeleteDialog(
             Text(stringResource(R.string.confirm_deletion_body_format, itemStr))
         }
     )
+}
+
+/**
+ * Allows the user to select an item using a dropdown.
+ *
+ * @param choices The list of selectable values.
+ * @param setValue Called when the user selects the given choice.
+ * @param reset Provides a "reset" option to the user to reset the selection. If null, no such
+ * option is given.
+ * @param choiceName Converts an item from [choices] into a displayable name.
+ * @param choiceIcon Converts an item from [choices] into an icon. If null, no icon is shown.
+ * @param content The content which can be clicked to open the dropdown.
+ */
+@Composable
+fun <T : Any> DropdownSelector(
+    choices: Iterable<T>,
+    setValue: (index: Int, value: T) -> Unit,
+    reset: (() -> Unit)?,
+    choiceName: (T) -> String,
+    modifier: Modifier = Modifier,
+    choiceIcon: (@Composable (T) -> Unit)? = null,
+    content: @Composable BoxScope.() -> Unit
+) {
+    var dropdownExpanded by rememberSaveable { mutableStateOf(false) }
+
+    Box(modifier = modifier.clickable { dropdownExpanded = !dropdownExpanded }) {
+        content()
+
+        DropdownMenu(
+            expanded = dropdownExpanded,
+            onDismissRequest = { dropdownExpanded = false }
+        ) {
+            if (reset != null) {
+                DropdownMenuItem(
+                    text = { Text("Reset", fontStyle = FontStyle.Italic) },
+                    onClick = {
+                        reset()
+                        dropdownExpanded = false
+                    }
+                )
+            }
+
+            choices.forEachIndexed { index, item ->
+                DropdownMenuItem(
+                    text = { Text(choiceName(item)) },
+                    onClick = {
+                        setValue(index, item)
+                        dropdownExpanded = false
+                    },
+                    trailingIcon = choiceIcon?.let { { choiceIcon(item) } }
+                )
+            }
+        }
+    }
+}
+
+/**
+ * A [DropdownSelector] for items which are displayed to the user as strings.
+ *
+ * @param choices The list of selectable values.
+ * @param value The currently selected value.
+ * @param setValue Called when the user selects the given choice.
+ * @param reset Provides a "reset" option to the user to reset the selection. If null, no such
+ * option is given.
+ * @param label A label to put before the selector.
+ * @param choiceName Converts an item from [choices] into a displayable name.
+ * If null, defaults to [Any.toString].
+ */
+@Composable
+fun <T : Any> StringDropdownSelector(
+    choices: Iterable<T>,
+    value: T?,
+    setValue: (index: Int, value: T) -> Unit,
+    reset: (() -> Unit)?,
+    label: String?,
+    modifier: Modifier = Modifier,
+    choiceName: (T) -> String = { it.toString() }
+) {
+    Row(modifier = modifier) {
+        if (label != null) {
+            Text(
+                label,
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier
+                    .padding(end = 4.dp)
+                    .align(CenterVertically)
+            )
+        }
+        DropdownSelector(
+            choices = choices,
+            setValue = setValue,
+            reset = reset,
+            choiceName = choiceName,
+            modifier = Modifier.weight(1f)
+        ) {
+            Card {
+                Row(modifier = Modifier.padding(8.dp)) {
+                    Text(value?.let { choiceName(it) } ?: "", modifier = Modifier.widthIn(min = 32.dp).weight(1f))
+                    Icon(
+                        Icons.Default.ArrowDropDown,
+                        null /* Decorative */,
+                        modifier = Modifier.align(CenterVertically).padding(start = 4.dp)
+                    )
+                }
+            }
+        }
+    }
 }
 
 /**
@@ -199,6 +317,9 @@ fun <T> SelectableList(
  * or null if the user cannot edit items.
  * Is given the item and its index.
  * Should call onDone when an item has finished being edited.
+ * @param editingEnabled Called with the currently selected item and its index.
+ * If it returns true and [onEditDialogContent] is not null, the item can be editing.
+ * Defaults to always be true.
  * @param title Optional title to display.
  * @param itemContent Converts an item into a component.
  */
@@ -219,6 +340,7 @@ fun <T> EditableList(
     onDelete: ((Int) -> Unit)? = null,
     itemToName: ((T) -> String)? = null,
     onEditDialogContent: (@Composable (itemIndex: Int, item: T, onDone: () -> Unit) -> Unit)? = null,
+    editingEnabled: (index: Int, item: T) -> Boolean = { _, _ -> true },
     title: String? = null,
     itemContent: @Composable (T) -> Unit
 ) {
@@ -333,7 +455,8 @@ fun <T> EditableList(
             if (onEditDialogContent != null) {
                 var editDialogEnabled by rememberSaveable { mutableStateOf(false) }
                 IconButton(
-                    enabled = selectedIndex != null,
+                    enabled = selectedIndex != null &&
+                        editingEnabled(selectedIndex!!, items[selectedIndex!!]),
                     onClick = { editDialogEnabled = true }
                 ) {
                     Icon(
@@ -427,11 +550,7 @@ fun EditableStringList(
             .then(modifier),
         items = mutableList,
         key = uniqueOn,
-        onSwap = { a, b ->
-            val temp = mutableList[a]
-            mutableList[a] = mutableList[b]
-            mutableList[b] = temp
-        },
+        onSwap = mutableList::swap,
         onCreateDialogContent = { insertionIndex, onDone ->
             var str by rememberSaveable { mutableStateOf("") }
             var errorMsg by rememberSaveable { mutableStateOf<String?>(null) }
@@ -508,4 +627,34 @@ fun EditableStringList(
     ) {
         Text(it)
     }
+}
+
+/**
+ * An input field for ints that can be empty.
+ *
+ * @param value The current value.
+ * @param setValue Called when the user wants to change [value] to the provided value.
+ * @param label The label shown on the input field.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun NullableIntField(
+    value: Int?,
+    setValue: (Int?) -> Unit,
+    label: String,
+    modifier: Modifier = Modifier
+) {
+    TextField(
+        value?.toString() ?: "",
+        {
+            if (it.isBlank()) {
+                setValue(null)
+            } else {
+                it.toIntOrNull()?.let(setValue)
+            }
+        },
+        label = { Text(label) },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        modifier = modifier
+    )
 }
