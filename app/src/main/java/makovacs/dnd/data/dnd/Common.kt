@@ -4,9 +4,11 @@
 
 package makovacs.dnd.data.dnd
 
+import android.nfc.FormatException
 import android.os.Parcelable
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
+import makovacs.dnd.data.dnd.Dice.Companion.typicalPossibleSides
 
 /**
  * A collection of stats such as strength and dexterity.
@@ -70,3 +72,78 @@ data class MonsterTag(val name: String, val description: String?) {
  * Example: An strength score of 15 gives a modifier of +2.
  */
 val Int.abilityModifier get() = (this / 2 - 5).coerceIn(-5, 10)
+
+/**
+ * Represents a number of a dice, each with the same number of sides.
+ *
+ * @param count The number of dice. For example, in 3d6, the count is 3.
+ * Must be a positive number.
+ * @param sides The number of sides on each dice.
+ * For example, in 3d6, the sides are 6.
+ * Must be a valid number of sides (see [typicalPossibleSides]).
+ * @throws IllegalArgumentException Thrown when [count] or [sides] are invalid.
+ */
+data class Dice(val count: Int, val sides: Int) {
+    init {
+        if (count <= 0) throw IllegalArgumentException("Must have at least 1 die.")
+        if (sides < 2) throw IllegalArgumentException("Must have at least 2 sides.")
+    }
+
+    companion object {
+        /**
+         * List of sane [sides] values.
+         */
+        val typicalPossibleSides = listOf(2, 3, 4, 6, 8, 10, 12, 20, 100)
+
+        /**
+         * List of good values of [sides] for damage dice.
+         * This is a strict subset of [typicalPossibleSides].
+         */
+        val possibleDamageDiceSides = listOf(4, 6, 8, 10, 12)
+    }
+
+    /** Rolls all dice and returns their sum. */
+    fun roll() = (1..count).sumOf { (1..sides).random() }
+
+    /** Gets the average value of rolling all of these dice. */
+    val avg get() = (sides + 1f) / 2f * count
+
+    override fun toString() = "${count}d$sides"
+}
+
+/**
+ * Parses this string as [Dice].
+ *
+ * Example: "4d10" would return a [Dice] with a [Dice.count] of 4 and
+ * [Dice.sides] of 10.
+ *
+ * Surrounding whitespace is ignored.
+ *
+ * @param validSides A collection of valid values for [Dice.sides]. Values outside that range will
+ * cause a [FormatException].
+ *
+ * Typically, this should be [Dice.typicalPossibleSides].
+ * @throws FormatException Thrown when this string is invalid.
+ */
+fun String.toDice(validSides: Collection<Int>): Dice {
+    // Ensure format is valid
+    val regex = "^[0-9]*[dD][0-9]+$".toRegex()
+    regex.find(this)
+        ?: throw FormatException("\"$this\" is invalid dice notation (ex. 4d10 is 4 10-sided dice).")
+
+    // Extract values
+    val (countStr, sidesStr) = this.split('d', 'D')
+    val count = countStr.ifBlank { "1" }.toInt() // Default to 1 if absent
+    val sides = sidesStr.toInt()
+
+    // Validate sides
+    if (sides !in validSides) throw FormatException("Invalid number of sides: $sides. Must be one of {${validSides.joinToString(", ")}}.")
+
+    // Return instance
+    try {
+        return Dice(count, sides)
+    } catch (ex: IllegalArgumentException) {
+        // Rethrow as a format error:
+        throw FormatException(ex.message)
+    }
+}
