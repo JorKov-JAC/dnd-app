@@ -20,9 +20,14 @@ class AuthRepositoryFirebase(private val auth: FirebaseAuth) : AuthRepository
         }
     }
 
+    init {
+        auth.addAuthStateListener { firebaseAuth ->
+            currentUserStateFlow.value = firebaseAuth.currentUser?.toUser()
+        }
+    }
 
-    override fun currentUser(): StateFlow<User> {
-        TODO("Not yet implemented")
+    override fun currentUser(): StateFlow<User?> {
+        return currentUserStateFlow
     }
 
     override suspend fun signUp(email: String, password: String): Boolean {
