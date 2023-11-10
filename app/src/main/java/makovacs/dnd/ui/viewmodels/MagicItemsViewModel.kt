@@ -2,6 +2,7 @@ package makovacs.dnd.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import makovacs.dnd.data.dnd.DamageType
+import makovacs.dnd.data.dnd.Dice
 import makovacs.dnd.data.dnd.MagicItem
 
 class MagicItemsViewModel : ViewModel() {
@@ -22,7 +23,7 @@ class MagicItemsViewModel : ViewModel() {
         return magicItem?.copy()
     }
 
-    fun add(name: String, source: String, rarity: String, description: String, pictureId: Int, damageDice: String, damageType: DamageType) {
+    fun add(name: String, source: String, rarity: String, description: String, pictureId: Int, damageDice: Dice?, damageType: DamageType) {
         _magicItems.add(MagicItem(name, source, rarity, description, pictureId, damageDice, damageType))
     }
 }

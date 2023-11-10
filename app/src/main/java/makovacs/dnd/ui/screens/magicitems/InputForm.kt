@@ -33,6 +33,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import makovacs.dnd.R
 import makovacs.dnd.data.dnd.DamageType
+import makovacs.dnd.data.dnd.Dice
+import makovacs.dnd.data.dnd.toDice
 import makovacs.dnd.ui.routing.LocalNavHostController
 import makovacs.dnd.ui.routing.Route
 
@@ -46,13 +48,13 @@ import makovacs.dnd.ui.routing.Route
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InputForm(add: (String, String, String, String, Int, String, DamageType) -> Unit) {
+fun InputForm(add: (String, String, String, String, Int, Dice?, DamageType) -> Unit) {
     var name by rememberSaveable { mutableStateOf("") }
     var sourceBook by rememberSaveable { mutableStateOf("") }
     var rarity by rememberSaveable { mutableStateOf("") }
     var description by rememberSaveable { mutableStateOf("") }
     var selectedIndex by remember { mutableStateOf(0) }
-    var damageDice by remember { mutableStateOf("") }
+    var damageDiceStr by remember { mutableStateOf("") }
     var damageType by remember { mutableStateOf(DamageType.None) }
     val navController = LocalNavHostController.current
 
@@ -170,8 +172,8 @@ fun InputForm(add: (String, String, String, String, Int, String, DamageType) -> 
             TextField(
                 modifier = Modifier
                     .weight(1f),
-                value = damageDice,
-                onValueChange = { damageDice = it },
+                value = damageDiceStr,
+                onValueChange = { damageDiceStr = it },
                 label = { Text("(Optional) Damage Dice") }
 
             )
@@ -239,13 +241,24 @@ fun InputForm(add: (String, String, String, String, Int, String, DamageType) -> 
                 if (name == "" || rarity == "" || sourceBook == "" || description == "") {
                     invalidInput = true
                     errorMessage = "No boxes may be empty."
-                } else if (damageDice != "" && !damageDiceIsValid(damageDice)) {
-                    invalidInput = true
-                    errorMessage = "Incorrect format for damage dice. (ex. 4d10)"
-                } else {
-                    add(name, sourceBook, rarity, description, drawableId, damageDice, damageType)
-                    navController.navigate(Route.SingleItem.go(name))
+                    return@Button
                 }
+
+                // Get dice
+                var damageDice: Dice? = null
+
+                if (damageDiceStr.isNotBlank()) {
+                    damageDice = try {
+                        damageDiceStr.toDice(Dice.possibleDamageDiceSides)
+                    } catch (ex: Exception) {
+                        invalidInput = true
+                        errorMessage = ex.message ?: "Invalid dice."
+                        return@Button
+                    }
+                }
+
+                add(name, sourceBook, rarity, description, drawableId, damageDice, damageType)
+                navController.navigate(Route.SingleItem.go(name))
             }) {
                 Text("Add Item")
             }
@@ -254,7 +267,7 @@ fun InputForm(add: (String, String, String, String, Int, String, DamageType) -> 
                 rarity = ""
                 description = ""
                 sourceBook = ""
-                damageDice = ""
+                damageDiceStr = ""
                 selectedIndex = 0
                 damageType = DamageType.None
             }) {
@@ -288,21 +301,4 @@ fun InvalidFormInput(errorMessage: String) {
     builder.setNeutralButton("Close") { _, _ -> }
 
     builder.show()
-}
-
-fun damageDiceIsValid(damageDice: String): Boolean {
-    val regex = "^[0-9]+d[0-9]+$".toRegex()
-    val found = regex.find(damageDice) ?: return false
-
-    val values = damageDice.split("d")
-    if (values[1].toInt() != 4 &&
-        values[1].toInt() != 6 &&
-        values[1].toInt() != 8 &&
-        values[1].toInt() != 10 &&
-        values[1].toInt() != 12
-    ) {
-        return false
-    }
-
-    return true
 }
