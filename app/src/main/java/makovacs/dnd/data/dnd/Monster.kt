@@ -1,7 +1,7 @@
 package makovacs.dnd.data.dnd
 
 import android.graphics.Bitmap
-import kotlin.IllegalArgumentException
+import makovacs.dnd.logic.normalizeForInsensitiveComparisons
 
 /**
  * Contains information for a D&D monster.
@@ -35,7 +35,14 @@ data class Monster(
     /** Unique Monster ID */
     val id get() = name
 
-    override fun equals(other: Any?) = other is Monster && name == other.name
+    /**
+     * Checks if [other] is equal to this.
+     *
+     * Note that equality is based on whether the two objects would conflict
+     * (i.e. their [ids][id] would match), not necessarily that all values are equal.
+     */
+    override fun equals(other: Any?) = other is Monster
+        && id.normalizeForInsensitiveComparisons() == other.id.normalizeForInsensitiveComparisons()
     override fun hashCode() = name.hashCode()
     override fun toString() = name
 }

@@ -61,7 +61,9 @@ class MonstersViewModel : ViewModel() {
      * @param monster The monster to add.
      */
     fun addMonster(monster: Monster) {
-        if (_monsters.contains(monster)) error("Monster already exists!")
+        val preexisting = _monsters.find { it == monster }
+        if (_monsters.contains(monster)) error("\"$preexisting\" already exists!")
+
         _monsters.add(monster)
     }
 

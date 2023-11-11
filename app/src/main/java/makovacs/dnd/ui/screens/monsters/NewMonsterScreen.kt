@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import makovacs.dnd.R
 import makovacs.dnd.data.dnd.AbilityScores
 import makovacs.dnd.data.dnd.Monster
+import makovacs.dnd.logic.normalizeAndClean
 import makovacs.dnd.ui.components.AbilityScoresInput
 import makovacs.dnd.ui.components.MonsterBitmapSelector
 import makovacs.dnd.ui.routing.LocalNavHostController
@@ -122,7 +123,7 @@ fun NewMonsterEditor(modifier: Modifier = Modifier, onSubmit: (newMonster: Monst
         // Submit button
         Button(onClick = {
             errorMsg = try {
-                onSubmit(Monster(name, description, abilityScores, emptyList(), imageBitmap, imageDesc))
+                onSubmit(Monster(name.normalizeAndClean(), description, abilityScores, emptyList(), imageBitmap, imageDesc))
                 null // No error
             } catch (e: Exception) {
                 e.localizedMessage
