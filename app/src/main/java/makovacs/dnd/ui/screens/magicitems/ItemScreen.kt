@@ -5,13 +5,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -23,6 +20,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import makovacs.dnd.R
 import makovacs.dnd.data.dnd.MagicItem
+import makovacs.dnd.logic.normalizeForInsensitiveComparisons
+import makovacs.dnd.ui.components.StringSearchList
 import makovacs.dnd.ui.routing.LocalNavHostController
 import makovacs.dnd.ui.routing.Route
 
@@ -34,35 +33,38 @@ import makovacs.dnd.ui.routing.Route
 fun ItemScreen(magicItems: List<MagicItem>, remove: (String) -> Unit, getByName: (String) -> MagicItem?) {
     val navController = LocalNavHostController.current
 
-    Column(Modifier.padding(5.dp)) {
-        LazyColumn {
-            items(items = magicItems) { item ->
-                Card(
-                    border = BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary),
-                    colors = CardDefaults.cardColors(MaterialTheme.colorScheme.tertiaryContainer),
-                    modifier = Modifier.clickable {
-                        navController.navigate(Route.SingleItem.go(item.name))
-                    }
-                ) {
-                    Row {
-                        val imageModifier = Modifier
-                            .size(80.dp)
-                            .border(BorderStroke(1.dp, Color.Black))
-                            .background(Color.White)
+    StringSearchList(
+        items = magicItems,
+        queryModifier = String::normalizeForInsensitiveComparisons,
+        mapper = { query, item -> if (item.name.normalizeForInsensitiveComparisons().contains(query)) item.name else null },
+        key = /* TODO */ null,
+        label = "Item Name",
+        modifier = Modifier.padding(5.dp)
+    ) { _, item ->
+        Card(
+            border = BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary),
+            colors = CardDefaults.cardColors(MaterialTheme.colorScheme.tertiaryContainer),
+            modifier = Modifier.clickable {
+                navController.navigate(Route.SingleItem.go(item.name))
+            }
+        ) {
+            Row {
+                val imageModifier = Modifier
+                    .size(80.dp)
+                    .border(BorderStroke(1.dp, Color.Black))
+                    .background(Color.White)
 
-                        Image(
-                            painterResource(id = item?.imageId ?: R.drawable.dndmisc),
-                            contentDescription = "...",
-                            modifier = imageModifier
-                        )
-                        Text(
-                            "Name: ${item.name}",
-                            Modifier
-                                .padding(10.dp)
-                                .fillMaxWidth()
-                        )
-                    }
-                }
+                Image(
+                    painterResource(id = item?.imageId ?: R.drawable.dndmisc),
+                    contentDescription = "...",
+                    modifier = imageModifier
+                )
+                Text(
+                    "Name: ${item.name}",
+                    Modifier
+                        .padding(10.dp)
+                        .fillMaxWidth()
+                )
             }
         }
     }
