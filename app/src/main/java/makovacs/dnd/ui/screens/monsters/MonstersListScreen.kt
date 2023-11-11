@@ -11,6 +11,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -64,8 +68,12 @@ fun MonstersList(
     onDelete: ((Monster) -> Unit)?,
     modifier: Modifier = Modifier
 ) {
+    var queryStr by rememberSaveable { mutableStateOf("") }
+
     StringSearchList(
         items = monsters,
+        queryStr = queryStr,
+        setQueryStr = { queryStr = it },
         queryModifier = MonsterQuery::fromString,
         mapper = { query, monster -> if (query.matches(monster)) monster.name else null },
         label = "Query (ex: \"Gnoll +Humanoid -Small\")",

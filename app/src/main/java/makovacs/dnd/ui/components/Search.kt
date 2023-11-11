@@ -11,11 +11,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import kotlinx.coroutines.delay
@@ -64,6 +60,8 @@ fun <T, Q, R : Comparable<R>> search(
  * A list of items with a search box at the top.
  *
  * @param items The items to search through.
+ * @param queryStr The query string to use. This is converted by [queryModifier] before being used.
+ * @param setQueryStr Called when the user tries to set [queryStr] to the given string.
  * @param queryModifier Takes a query string and converts it to a query object that is then passed
  * to [mapper].
  * @param mapper Performs both filtering and sorting of items.
@@ -80,6 +78,8 @@ fun <T, Q, R : Comparable<R>> search(
 @Composable
 fun <T, Q, R : Comparable<R>> StringSearchList(
     items: List<T>,
+    queryStr: String,
+    setQueryStr: (String) -> Unit,
     queryModifier: (String) -> Q,
     mapper: (query: Q, item: T) -> R?,
     key: ((item: T) -> Any)?,
@@ -87,8 +87,7 @@ fun <T, Q, R : Comparable<R>> StringSearchList(
     label: String = "Query",
     itemContent: @Composable (index: Int, item: T) -> Unit
 ) {
-    var query by rememberSaveable { mutableStateOf("") }
-    val searchResults = search(items = items, query = queryModifier(query), mapper = mapper)
+    val searchResults = search(items = items, query = queryModifier(queryStr), mapper = mapper)
 
     Column(
         modifier = modifier
@@ -97,8 +96,8 @@ fun <T, Q, R : Comparable<R>> StringSearchList(
     ) {
         // Query input
         TextField(
-            query,
-            { query = it },
+            queryStr,
+            setQueryStr,
             label = { Text(label) },
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
