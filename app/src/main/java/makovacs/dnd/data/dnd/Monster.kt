@@ -41,8 +41,8 @@ data class Monster(
      * Note that equality is based on whether the two objects would conflict
      * (i.e. their [ids][id] would match), not necessarily that all values are equal.
      */
-    override fun equals(other: Any?) = other is Monster
-        && id.normalizeForInsensitiveComparisons() == other.id.normalizeForInsensitiveComparisons()
+    override fun equals(other: Any?) = other is Monster &&
+        id.normalizeForInsensitiveComparisons() == other.id.normalizeForInsensitiveComparisons()
     override fun hashCode() = name.hashCode()
     override fun toString() = name
 }

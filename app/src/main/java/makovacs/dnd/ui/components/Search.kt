@@ -33,7 +33,7 @@ import kotlinx.coroutines.flow.update
  * @return The ordered list of matching items, or null if a search is ongoing.
  */
 @Composable
-fun <T, Q, R: Comparable<R>> search(
+fun <T, Q, R : Comparable<R>> search(
     items: Iterable<T>,
     query: Q,
     mapper: (query: Q, item: T) -> R?
@@ -78,7 +78,7 @@ fun <T, Q, R: Comparable<R>> search(
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun <T, Q, R: Comparable<R>> StringSearchList(
+fun <T, Q, R : Comparable<R>> StringSearchList(
     items: List<T>,
     queryModifier: (String) -> Q,
     mapper: (query: Q, item: T) -> R?,
@@ -111,11 +111,13 @@ fun <T, Q, R: Comparable<R>> StringSearchList(
             // Done searching, show results
             if (searchResults.isEmpty()) {
                 Text("No results.", modifier = Modifier.align(CenterHorizontally))
-            } else LazyColumn(modifier = Modifier) {
-                itemsIndexed(
-                    searchResults,
-                    key = key?.let { { _, item -> key(item) } }
-                ) { index, item -> itemContent(index, item) }
+            } else {
+                LazyColumn(modifier = Modifier) {
+                    itemsIndexed(
+                        searchResults,
+                        key = key?.let { { _, item -> key(item) } }
+                    ) { index, item -> itemContent(index, item) }
+                }
             }
         }
     }

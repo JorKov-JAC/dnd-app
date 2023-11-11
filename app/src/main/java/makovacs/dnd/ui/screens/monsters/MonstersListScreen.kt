@@ -134,8 +134,11 @@ data class MonsterQuery(
                             val it = it.substring(1).normalizeForInsensitiveComparisons()
 
                             if (it.isNotEmpty()) {
-                                if (firstChar == '+') positiveTags.add(it)
-                                else negativeTags.add(it)
+                                if (firstChar == '+') {
+                                    positiveTags.add(it)
+                                } else {
+                                    negativeTags.add(it)
+                                }
                             }
                         }
                         else -> name = it // Only possible for first match
@@ -152,7 +155,7 @@ data class MonsterQuery(
      * @param monster The monster to test.
      * @return True if [monster] matches this query, otherwise false.
      */
-    fun matches(monster: Monster) = monster.name.normalizeForInsensitiveComparisons().contains(name)
-        && positiveTags.all { positiveTag -> monster.tags.any { it.name.normalizeForInsensitiveComparisons() == positiveTag } }
-        && monster.tags.all { it.name.normalizeForInsensitiveComparisons() !in negativeTags }
+    fun matches(monster: Monster) = monster.name.normalizeForInsensitiveComparisons().contains(name) &&
+        positiveTags.all { positiveTag -> monster.tags.any { it.name.normalizeForInsensitiveComparisons() == positiveTag } } &&
+        monster.tags.all { it.name.normalizeForInsensitiveComparisons() !in negativeTags }
 }
