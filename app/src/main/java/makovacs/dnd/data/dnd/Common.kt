@@ -4,7 +4,6 @@
 
 package makovacs.dnd.data.dnd
 
-import android.nfc.FormatException
 import android.os.Parcelable
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
@@ -120,16 +119,16 @@ data class Dice(val count: Int, val sides: Int) {
  * Surrounding whitespace is ignored.
  *
  * @param validSides A collection of valid values for [Dice.sides]. Values outside that range will
- * cause a [FormatException].
+ * cause a [IllegalArgumentException].
  *
  * Typically, this should be [Dice.typicalPossibleSides].
- * @throws FormatException Thrown when this string is invalid.
+ * @throws IllegalArgumentException Thrown when this string is invalid.
  */
 fun String.toDice(validSides: Collection<Int>): Dice {
     // Ensure format is valid
     val regex = "^[0-9]*[dD][0-9]+$".toRegex()
     regex.find(this)
-        ?: throw FormatException("\"$this\" is invalid dice notation (ex. 4d10 is 4 10-sided dice).")
+        ?: throw IllegalArgumentException("\"$this\" is invalid dice notation (ex. 4d10 is 4 10-sided dice).")
 
     // Extract values
     val (countStr, sidesStr) = this.split('d', 'D')
@@ -137,13 +136,8 @@ fun String.toDice(validSides: Collection<Int>): Dice {
     val sides = sidesStr.toInt()
 
     // Validate sides
-    if (sides !in validSides) throw FormatException("Invalid number of sides: $sides. Must be one of {${validSides.joinToString(", ")}}.")
+    if (sides !in validSides) throw IllegalArgumentException("Invalid number of sides: $sides. Must be one of {${validSides.joinToString(", ")}}.")
 
-    // Return instance
-    try {
-        return Dice(count, sides)
-    } catch (ex: IllegalArgumentException) {
-        // Rethrow as a format error:
-        throw FormatException(ex.message)
-    }
+    // Return instance (may throw IllegalArgumentException):
+    return Dice(count, sides)
 }
