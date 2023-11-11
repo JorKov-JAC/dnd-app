@@ -4,8 +4,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
@@ -17,7 +15,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import makovacs.dnd.data.dnd.Monster
+import makovacs.dnd.logic.normalizeForInsensitiveComparisons
 import makovacs.dnd.ui.components.MonsterCard
+import makovacs.dnd.ui.components.StringSearchList
 import makovacs.dnd.ui.routing.LocalNavHostController
 import makovacs.dnd.ui.routing.Route
 import makovacs.dnd.ui.viewmodels.LocalMonstersViewModel
@@ -64,25 +64,29 @@ fun MonstersList(
     onDelete: ((Monster) -> Unit)?,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(modifier = modifier) {
-        items(monsters, key = { it.id }) {
-            Box {
-                var cardModifier: Modifier = Modifier
+    StringSearchList(
+        items = monsters,
+        queryModifier = { it.normalizeForInsensitiveComparisons() },
+        mapper = { query, item -> if (item.name.normalizeForInsensitiveComparisons().contains(query)) item.name else null },
+        key = { it.id },
+        modifier = Modifier.padding(4.dp).then(modifier)
+    ) { _, it ->
+        Box {
+            var cardModifier: Modifier = Modifier
 
-                // Add clicking if a callback was provided
-                // (can't use "enabled" for accessibility reasons)
-                if (onClick != null) cardModifier = cardModifier.clickable { onClick(it) }
+            // Add clicking if a callback was provided
+            // (can't use "enabled" for accessibility reasons)
+            if (onClick != null) cardModifier = cardModifier.clickable { onClick(it) }
 
-                MonsterCard(it, cardModifier)
+            MonsterCard(it, cardModifier)
 
-                // Add delete button if a callback was provided
-                if (onDelete != null) {
-                    IconButton(
-                        onClick = { onDelete(it) },
-                        modifier = Modifier.align(Alignment.TopEnd)
-                    ) {
-                        Icon(Icons.Default.Delete, "Delete \"${it.name}\"")
-                    }
+            // Add delete button if a callback was provided
+            if (onDelete != null) {
+                IconButton(
+                    onClick = { onDelete(it) },
+                    modifier = Modifier.align(Alignment.TopEnd)
+                ) {
+                    Icon(Icons.Default.Delete, "Delete \"${it.name}\"")
                 }
             }
         }
