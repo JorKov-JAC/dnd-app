@@ -21,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import makovacs.dnd.data.dnd.users.ResultAuth
@@ -36,6 +37,9 @@ fun SignIn(authViewModel: AuthViewModel = viewModel(factory=AuthViewModelFactory
     var password by rememberSaveable { mutableStateOf("") }
     val navController = LocalNavHostController.current
     val userState = authViewModel.currentUser().collectAsState()
+    val signInResult by authViewModel.signInResult.collectAsState(ResultAuth.Inactive)
+    var message by rememberSaveable { mutableStateOf("") }
+
     Column {
         Button(onClick = {
             navController.navigate(Route.SignUp.route)
@@ -44,17 +48,10 @@ fun SignIn(authViewModel: AuthViewModel = viewModel(factory=AuthViewModelFactory
         }
         Spacer(modifier = Modifier.height(25.dp))
 
+        Text(message)
+
         Card(modifier = Modifier.padding(15.dp))
         {
-
-            if(userState.value == null) {
-                Text("Not logged in")
-            }
-            else {
-                Text("logged in")
-            }
-
-
 
             TextField(
                 modifier = Modifier
@@ -71,7 +68,8 @@ fun SignIn(authViewModel: AuthViewModel = viewModel(factory=AuthViewModelFactory
                 value = password,
                 singleLine = true,
                 onValueChange = { password = it },
-                label = { Text("Password") })
+                label = { Text("Password") },
+                visualTransformation = PasswordVisualTransformation())
 
             Button(modifier = Modifier.padding(15.dp), onClick = {
                 authViewModel.signIn(username, password)
@@ -79,6 +77,15 @@ fun SignIn(authViewModel: AuthViewModel = viewModel(factory=AuthViewModelFactory
                 password = ""
             }) {
                 Text(text = "Sign In")
+            }
+
+            signInResult?.let {
+                if (it is ResultAuth.Success && it.data) {
+                    navController.navigate(Route.Account.route)
+                }
+                if (it is ResultAuth.Success || it is ResultAuth.Failure) {
+                    message = "Incorrect sign in information."
+                }
             }
         }
     }

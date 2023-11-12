@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import makovacs.dnd.ui.routing.Route.Companion.NAME_KEY
 import makovacs.dnd.ui.screens.AboutScreen
+import makovacs.dnd.ui.screens.Account
 import makovacs.dnd.ui.screens.ContactScreen
 import makovacs.dnd.ui.screens.SignIn
 import makovacs.dnd.ui.screens.SignUp
@@ -82,6 +83,9 @@ fun Router(modifier: Modifier = Modifier, magicItemsVM: MagicItemsViewModel = vi
         composable(Route.SignIn.route) {
             SignIn()
         }
+        composable(Route.Account.route) {
+            Account()
+        }
     }
 }
 
@@ -124,4 +128,6 @@ sealed class Route(val route: String) {
     object SignIn : Route("SignIn")
 
     object SignUp : Route("SignUp")
+
+    object Account : Route("Account")
 }

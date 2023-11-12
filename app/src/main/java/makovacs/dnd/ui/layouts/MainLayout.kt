@@ -83,8 +83,8 @@ fun MainLayout(modifier: Modifier = Modifier, content: @Composable (padding: Pad
                         "Contact"
                     ),
                     NavButtonInfo(
-                        Route.SignIn,
-                        Route.SignIn.route,
+                        Route.Account,
+                        Route.Account.route,
                         Icons.Default.Person,
                         "Account"
                     )

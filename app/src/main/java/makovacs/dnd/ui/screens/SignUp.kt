@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.firebase.auth.AuthResult
 import makovacs.dnd.data.dnd.users.ResultAuth
 import makovacs.dnd.ui.components.InvalidFormInput
 import makovacs.dnd.ui.routing.LocalNavHostController
@@ -33,12 +34,12 @@ import makovacs.dnd.ui.viewmodels.AuthViewModelFactory
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUp(authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory())) {
-    var username by rememberSaveable { mutableStateOf("") }
+    var message by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }
     val navController = LocalNavHostController.current
     val signUpResult by authViewModel.signUpResult.collectAsState(ResultAuth.Inactive)
-    val snackbarHostState = remember { SnackbarHostState() } // Material 3 approach
+
     Column {
         Button(onClick = { navController.navigate(Route.SignIn.route) })
         {
@@ -46,35 +47,12 @@ fun SignUp(authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFacto
         }
 
         Spacer(modifier = Modifier.height(25.dp))
-    Card(modifier = Modifier.padding(10.dp))
-    {
+        Text(message)
+        Card(modifier = Modifier.padding(10.dp))
+        {
 
-        LaunchedEffect(signUpResult) {
-            signUpResult?.let {
-                if (it is ResultAuth.Inactive) {
-                    return@LaunchedEffect
-                }
-                if (it is ResultAuth.InProgress) {
-                    snackbarHostState.showSnackbar("Sign-up In Progress")
-                    return@LaunchedEffect
-                }
-                if (it is ResultAuth.Success && it.data) {
-                    snackbarHostState.showSnackbar("Sign-up Successful")
-                } else if (it is ResultAuth.Failure || it is ResultAuth.Success) { // success(false) case
-                    snackbarHostState.showSnackbar("Sign-up Unsuccessful")
-                }
-            }
-        }
+            var invalidInput by rememberSaveable { mutableStateOf(false) }
 
-        var invalidInput by rememberSaveable { mutableStateOf(false) }
-            TextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(15.dp),
-                value = username,
-                singleLine = true,
-                onValueChange = { username = it },
-                label = { Text("Username") })
             TextField(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -94,12 +72,9 @@ fun SignUp(authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFacto
 
 
             Button(modifier = Modifier.padding(15.dp), onClick = {
-                if(isValidEmail(email) && isValidUsername(username))
-                {
+                if (isValidEmail(email)) {
                     authViewModel.signUp(email, password)
-                }
-                else
-                {
+                } else {
                     invalidInput = true
                 }
 
@@ -107,20 +82,28 @@ fun SignUp(authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFacto
                 Text(text = "Sign Up")
             }
 
-        if (invalidInput) {
-            invalidInput = false
-            InvalidFormInput("Invalid user input")
-        }
+            signUpResult?.let {
+                if (it is ResultAuth.Success && it.data) {
+                    navController.navigate(Route.Account.route)
+                }
+                if (it is ResultAuth.Success || it is ResultAuth.Failure) {
+                    message = "Sign up unsuccessful, please try again."
+                }
+            }
+
+
+            if (invalidInput) {
+                invalidInput = false
+                InvalidFormInput("Invalid email")
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
 
 
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
-        
 
     }
-
-
 }
 
 fun isValidEmail(email: String) : Boolean
@@ -131,10 +114,3 @@ fun isValidEmail(email: String) : Boolean
     return true
 }
 
-fun isValidUsername(username: String) : Boolean
-{
-    val regex = "^[a-zA-Z]*$".toRegex()
-    val found = regex.find(username) ?: false
-
-    return true
-}
