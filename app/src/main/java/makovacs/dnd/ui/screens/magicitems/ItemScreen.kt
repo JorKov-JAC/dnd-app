@@ -22,12 +22,18 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import makovacs.dnd.R
 import makovacs.dnd.data.dnd.MagicItem
+import makovacs.dnd.logic.normalizeForInsensitiveComparisons
+import makovacs.dnd.ui.components.StringSearchList
 import makovacs.dnd.ui.routing.LocalNavHostController
 import makovacs.dnd.ui.routing.Route
 
@@ -39,35 +45,42 @@ import makovacs.dnd.ui.routing.Route
 fun ItemScreen(magicItems: List<MagicItem>, remove: (String) -> Unit, getByName: (String) -> MagicItem?) {
     val navController = LocalNavHostController.current
 
-    Column(Modifier.padding(5.dp)) {
-        LazyColumn {
-            items(items = magicItems) { item ->
-                Card(
-                    border = BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary),
-                    colors = CardDefaults.cardColors(MaterialTheme.colorScheme.tertiaryContainer),
-                    modifier = Modifier.clickable {
-                        navController.navigate(Route.SingleItem.go(item.name))
-                    }
-                ) {
-                    Row {
-                        val imageModifier = Modifier
-                            .size(80.dp)
-                            .border(BorderStroke(1.dp, Color.Black))
-                            .background(Color.White)
+    var queryStr by rememberSaveable { mutableStateOf("") }
 
-                        Image(
-                            painterResource(id = item?.imageId ?: R.drawable.dndmisc),
-                            contentDescription = "...",
-                            modifier = imageModifier
-                        )
-                        Text(
-                            "Name: ${item.name}",
-                            Modifier
-                                .padding(10.dp)
-                                .fillMaxWidth()
-                        )
-                    }
-                }
+    StringSearchList(
+        items = magicItems,
+        queryStr = queryStr,
+        setQueryStr = { queryStr = it },
+        queryModifier = String::normalizeForInsensitiveComparisons,
+        mapper = { query, item -> if (item.name.normalizeForInsensitiveComparisons().contains(query)) item.name else null },
+        key = /* TODO */ null,
+        label = "Item Name",
+        modifier = Modifier.padding(5.dp)
+    ) { _, item ->
+        Card(
+            border = BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary),
+            colors = CardDefaults.cardColors(MaterialTheme.colorScheme.tertiaryContainer),
+            modifier = Modifier.clickable {
+                navController.navigate(Route.SingleItem.go(item.name))
+            }
+        ) {
+            Row {
+                val imageModifier = Modifier
+                    .size(80.dp)
+                    .border(BorderStroke(1.dp, Color.Black))
+                    .background(Color.White)
+
+                Image(
+                    painterResource(id = item?.imageId ?: R.drawable.dndmisc),
+                    contentDescription = "...",
+                    modifier = imageModifier
+                )
+                Text(
+                    "Name: ${item.name}",
+                    Modifier
+                        .padding(10.dp)
+                        .fillMaxWidth()
+                )
             }
         }
     }

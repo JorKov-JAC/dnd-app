@@ -6,13 +6,13 @@ data class MagicItem(
     var rarity: String,
     var description: String,
     var imageId: Int,
-    var damageDice: String,
+    var damageDice: Dice?,
     var damageType: DamageType
 
 ) {
 
     override fun toString(): String {
-        return if (damageDice != "") {
+        return if (damageDice != null) {
             "Name: $name \nSource: $sourceBook \nRarity: $rarity \nDescription: $description \n" +
                 "Damage Type: ${damageType.name} \nDamage Dice: $damageDice"
         } else {
