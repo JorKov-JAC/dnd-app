@@ -34,13 +34,17 @@ fun MonstersListScreen(modifier: Modifier = Modifier) {
     val navHostController = LocalNavHostController.current
     val monstersVm = LocalMonstersViewModel.current
 
+    var query by rememberSaveable { mutableStateOf("") }
+
     Box(modifier = modifier.fillMaxSize()) {
         MonstersList(
             monsters = monstersVm.monsters,
             onClick = {
                 navHostController.navigate(Route.MonsterDetailsRoute.go(it.name))
             },
-            onDelete = { monstersVm.removeMonster(it.name) }
+            onDelete = { monstersVm.removeMonster(it.name) },
+            queryStr = query,
+            setQueryStr = { query = it }
         )
         Button(
             onClick = { navHostController.navigate(Route.NewMonsterRoute.route) },
@@ -60,20 +64,22 @@ fun MonstersListScreen(modifier: Modifier = Modifier) {
  * @param onClick Called when the user clicks on a Monster. Null if nothing should happen.
  * @param onDelete Called when the user tries to delete a Monster. Null if user cannot delete
  * monsters.
+ * @param queryStr The string to use as a search query.
+ * @param setQueryStr Called when the user tries to set [queryStr] to the provided value.
  */
 @Composable
 fun MonstersList(
     monsters: List<Monster>,
     onClick: ((Monster) -> Unit)?,
     onDelete: ((Monster) -> Unit)?,
+    queryStr: String,
+    setQueryStr: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var queryStr by rememberSaveable { mutableStateOf("") }
-
     StringSearchList(
         items = monsters,
         queryStr = queryStr,
-        setQueryStr = { queryStr = it },
+        setQueryStr = setQueryStr,
         queryModifier = MonsterQuery::fromString,
         mapper = { query, monster -> if (query.matches(monster)) monster.name else null },
         label = "Query (ex: \"Gnoll +Humanoid -Small\")",
