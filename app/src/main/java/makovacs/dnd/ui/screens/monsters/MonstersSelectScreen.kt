@@ -11,6 +11,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import makovacs.dnd.data.dnd.Monster
+import makovacs.dnd.ui.components.MonstersSearchList
 import makovacs.dnd.ui.viewmodels.LocalMonstersViewModel
 import makovacs.dnd.ui.viewmodels.MonstersViewModel
 
@@ -37,7 +38,7 @@ fun MonstersSelectScreen(
 
         var query by rememberSaveable { mutableStateOf(initialQuery) }
 
-        MonstersList(
+        MonstersSearchList(
             monsters = monstersVm.monsters,
             onClick = onSelect,
             onDelete = null,
