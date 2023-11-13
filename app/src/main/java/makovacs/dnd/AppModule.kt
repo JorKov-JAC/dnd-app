@@ -11,10 +11,10 @@ import makovacs.dnd.data.dnd.users.ProfileRepositoryDataStore
 class AppModule(
     private val appContext: Context
 ) {
-    val profileRepository : ProfileRepository by lazy {
+    val profileRepository: ProfileRepository by lazy {
         ProfileRepositoryDataStore(appContext)
     }
-    val authRepository : AuthRepository by lazy {
+    val authRepository: AuthRepository by lazy {
         AuthRepositoryFirebase(Firebase.auth)
     }
 }

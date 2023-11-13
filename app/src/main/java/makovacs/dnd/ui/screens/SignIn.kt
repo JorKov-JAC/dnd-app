@@ -1,7 +1,6 @@
 package makovacs.dnd.ui.screens
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -9,15 +8,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -32,7 +28,7 @@ import makovacs.dnd.ui.viewmodels.AuthViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignIn(authViewModel: AuthViewModel = viewModel(factory=AuthViewModelFactory())) {
+fun SignIn(authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory())) {
     var username by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     val navController = LocalNavHostController.current
@@ -50,9 +46,7 @@ fun SignIn(authViewModel: AuthViewModel = viewModel(factory=AuthViewModelFactory
 
         Text(message)
 
-        Card(modifier = Modifier.padding(15.dp))
-        {
-
+        Card(modifier = Modifier.padding(15.dp)) {
             TextField(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -60,7 +54,8 @@ fun SignIn(authViewModel: AuthViewModel = viewModel(factory=AuthViewModelFactory
                 value = username,
                 singleLine = true,
                 onValueChange = { username = it },
-                label = { Text("Username") })
+                label = { Text("Username") }
+            )
             TextField(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -69,7 +64,8 @@ fun SignIn(authViewModel: AuthViewModel = viewModel(factory=AuthViewModelFactory
                 singleLine = true,
                 onValueChange = { password = it },
                 label = { Text("Password") },
-                visualTransformation = PasswordVisualTransformation())
+                visualTransformation = PasswordVisualTransformation()
+            )
 
             Button(modifier = Modifier.padding(15.dp), onClick = {
                 authViewModel.signIn(username, password)
@@ -89,9 +85,4 @@ fun SignIn(authViewModel: AuthViewModel = viewModel(factory=AuthViewModelFactory
             }
         }
     }
-
-
 }
-
-
-

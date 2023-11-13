@@ -1,5 +1,5 @@
 package makovacs.dnd.data.dnd.users
 
-data class ProfileData  (
+data class ProfileData(
     var name: String = ""
 )

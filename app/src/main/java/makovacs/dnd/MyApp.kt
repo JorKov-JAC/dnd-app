@@ -5,7 +5,7 @@ import android.app.Application
 /** This file allows us to provide a single ("static") module that can be accessed
  *   everywhere in the code, and in turn provide the specific (singleton) objects we will inject.
  */
-class MyApp: Application() {
+class MyApp : Application() {
 
     /* Always be able to access the module ("static") */
     companion object {

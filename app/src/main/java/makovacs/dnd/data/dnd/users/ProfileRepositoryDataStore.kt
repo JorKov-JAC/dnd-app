@@ -9,9 +9,9 @@ import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-const val PROFILE_DATASTORE ="profile_datastore"
+const val PROFILE_DATASTORE = "profile_datastore"
 private val Context.dataStore: DataStore<androidx.datastore.preferences.core.Preferences> by preferencesDataStore(name = PROFILE_DATASTORE)
-class ProfileRepositoryDataStore (private val context: Context) : ProfileRepository  {
+class ProfileRepositoryDataStore(private val context: Context) : ProfileRepository {
     companion object {
         val NAME = stringPreferencesKey("NAME")
     }
@@ -24,7 +24,7 @@ class ProfileRepositoryDataStore (private val context: Context) : ProfileReposit
 
     override fun getProfile(): Flow<ProfileData> = context.dataStore.data.map {
         ProfileData(
-            name = it[NAME] ?: "",
+            name = it[NAME] ?: ""
         )
     }
 
@@ -33,7 +33,4 @@ class ProfileRepositoryDataStore (private val context: Context) : ProfileReposit
             it.clear()
         }
     }
-
 }
-
-

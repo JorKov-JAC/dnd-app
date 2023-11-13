@@ -7,16 +7,18 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.tasks.await
 import java.lang.Exception
 
-class AuthRepositoryFirebase(private val auth: FirebaseAuth) : AuthRepository
-{
+class AuthRepositoryFirebase(private val auth: FirebaseAuth) : AuthRepository {
     private val currentUserStateFlow = MutableStateFlow(auth.currentUser?.toUser())
 
     private fun FirebaseUser?.toUser(): User? {
-        return this?.let{
-            if (it.email == null) null else
+        return this?.let {
+            if (it.email == null) {
+                null
+            } else {
                 User(
                     email = it.email!!
                 )
+            }
         }
     }
 
@@ -33,9 +35,9 @@ class AuthRepositoryFirebase(private val auth: FirebaseAuth) : AuthRepository
     override suspend fun signUp(email: String, password: String): Boolean {
         return try {
             auth.createUserWithEmailAndPassword(email, password).await()
-            return true;
+            return true
         } catch (ex: Exception) {
-            return false;
+            return false
         }
     }
 
@@ -53,10 +55,8 @@ class AuthRepositoryFirebase(private val auth: FirebaseAuth) : AuthRepository
     }
 
     override suspend fun delete() {
-        if(auth.currentUser != null) {
+        if (auth.currentUser != null) {
             auth.currentUser!!.delete()
         }
     }
-
-
 }
