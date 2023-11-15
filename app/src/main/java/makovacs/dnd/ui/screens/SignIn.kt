@@ -29,7 +29,7 @@ import makovacs.dnd.ui.viewmodels.AuthViewModelFactory
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignIn(authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory())) {
-    var username by rememberSaveable { mutableStateOf("") }
+    var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     val navController = LocalNavHostController.current
     val userState = authViewModel.currentUser().collectAsState()
@@ -51,10 +51,10 @@ fun SignIn(authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFacto
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(15.dp),
-                value = username,
+                value = email,
                 singleLine = true,
-                onValueChange = { username = it },
-                label = { Text("Username") }
+                onValueChange = { email = it },
+                label = { Text("Email") }
             )
             TextField(
                 modifier = Modifier
@@ -68,8 +68,8 @@ fun SignIn(authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFacto
             )
 
             Button(modifier = Modifier.padding(15.dp), onClick = {
-                authViewModel.signIn(username, password)
-                username = ""
+                authViewModel.signIn(email, password)
+                email = ""
                 password = ""
             }) {
                 Text(text = "Sign In")

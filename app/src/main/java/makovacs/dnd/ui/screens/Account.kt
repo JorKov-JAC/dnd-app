@@ -28,7 +28,7 @@ import makovacs.dnd.ui.viewmodels.AuthViewModelFactory
 
 @Composable
 fun Account(authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory())) {
-    var username by rememberSaveable { mutableStateOf("") }
+    var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     val navController = LocalNavHostController.current
     val userState = authViewModel.currentUser().collectAsState()
