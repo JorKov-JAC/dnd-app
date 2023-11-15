@@ -1,13 +1,15 @@
 /**
- * Contains classes related to DnD stats.
+ * Contains common DnD classes and functions.
  */
 
 package makovacs.dnd.data.dnd
 
 import android.os.Parcelable
+import androidx.annotation.Size
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import makovacs.dnd.data.dnd.Dice.Companion.typicalPossibleSides
+import makovacs.dnd.logic.ellipsis
 
 /**
  * A collection of stats such as strength and dexterity.
@@ -22,6 +24,41 @@ import makovacs.dnd.data.dnd.Dice.Companion.typicalPossibleSides
 @Parcelize
 data class AbilityScores(val str: Int, val dex: Int, val con: Int, val int: Int, val wis: Int, val cha: Int) :
     Parcelable {
+    init {
+        // Validate ranges
+        arrayOf(str, dex, con, int, wis, cha)
+            .withIndex()
+            .forEach { (i, score) ->
+                if (score !in validScoreRange) {
+                    throw IllegalArgumentException("${abilityNames[i]} must be within $validScoreRange.")
+                }
+            }
+    }
+
+    companion object {
+        /**
+         * Creates an [AbilityScores] from an iterable of 6 scores.
+         *
+         * @param scores The 6 score values to use, in the order found in the primary constructor.
+         */
+        fun from(@Size(6) scores: Iterable<Int>): AbilityScores {
+            val s = scores.iterator()
+            return AbilityScores(s.next(), s.next(), s.next(), s.next(), s.next(), s.next())
+        }
+
+        /**
+         * The range of possible values for any score.
+         */
+        val validScoreRange = 1..30
+
+        /**
+         * The names of each ability.
+         *
+         * Ordering is the same as found in the primary constructor.
+         */
+        val abilityNames = arrayOf("Str", "Dex", "Con", "Int", "Wis", "Cha")
+    }
+
     /**
      * A list of functions which create a new instance with a changed property.
      *
@@ -44,24 +81,6 @@ data class AbilityScores(val str: Int, val dex: Int, val con: Int, val int: Int,
      */
     @IgnoredOnParcel
     val scoreList = listOf(str, dex, con, int, wis, cha)
-
-    companion object
-}
-
-/**
- * A tag which can be applied to a monster.
- *
- * Example: Gnolls would have the "Medium" and "Humanoid" tags.
- *
- * Two instances are considered equal when their [names][name] match.
- *
- * @param name The tag's name.
- * @param description A description of the tag.
- */
-data class MonsterTag(val name: String, val description: String?) {
-    override fun equals(other: Any?): Boolean = other is MonsterTag && name == other.name
-    override fun hashCode(): Int = name.hashCode()
-    override fun toString(): String = name
 }
 
 // TODO Make a separate Ability value class instead of using Ints?
@@ -140,4 +159,70 @@ fun String.toDice(validSides: Collection<Int>): Dice {
 
     // Return instance (may throw IllegalArgumentException):
     return Dice(count, sides)
+}
+
+/**
+ * Sealed class for types representing entries in a list of information.
+ */
+sealed class InformationEntry
+
+/**
+ * A text header.
+ *
+ * @param text The header's text.
+ */
+data class Header(val text: String) : InformationEntry() {
+    override fun toString() = this.text
+}
+
+/**
+ * A description.
+ *
+ * @param title An optional title for the description.
+ * @param text A textual description.
+ */
+data class Description(val title: String? = null, val text: String) : InformationEntry() {
+    override fun toString() = if (!title.isNullOrBlank()) title else text.ellipsis(20)
+}
+
+/**
+ * A separator which delimits sections of information.
+ */
+object Separator : InformationEntry() {
+    override fun toString() = "Separator"
+}
+
+/**
+ * Enum representing the types of [InformationEntry].
+ *
+ * @param displayName The name that should be shown to the user.
+ */
+enum class InformationEntryTypes(val displayName: String) {
+    SEPARATOR("Separator"),
+    HEADER("Header"),
+    DESCRIPTION("Description");
+
+    /**
+     * Returns [displayName].
+     */
+    override fun toString() = displayName
+}
+
+/**
+ * Contains information represented as a series of [InformationEntry] objects.
+ */
+data class Information(private var _entries: List<InformationEntry>) {
+    init {
+        // Quietly remove redundant separators:
+        _entries = _entries.filterIndexed { index, it ->
+            // Allow all non-separators
+            it !is Separator ||
+                // No consecutive separators or separators at the end:
+                entries.getOrNull(index + 1) !is Separator ||
+                // No separators at the start:
+                index != 0
+        }
+    }
+
+    val entries get() = _entries
 }
