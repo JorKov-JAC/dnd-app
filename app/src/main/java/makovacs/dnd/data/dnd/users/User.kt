@@ -1,5 +1,5 @@
 package makovacs.dnd.data.dnd.users
 
-class User(
-    var email: String
+data class User(
+    val email: String
 )
