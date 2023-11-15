@@ -43,7 +43,7 @@ fun SignUp(authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFacto
         Spacer(modifier = Modifier.height(25.dp))
         Text(message)
         Card(modifier = Modifier.padding(10.dp)) {
-            var invalidInput by rememberSaveable { mutableStateOf(false) }
+            var invalidEmail by rememberSaveable { mutableStateOf(false) }
 
             TextField(
                 modifier = Modifier
@@ -68,7 +68,7 @@ fun SignUp(authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFacto
                 if (isValidEmail(email)) {
                     authViewModel.signUp(email, password)
                 } else {
-                    invalidInput = true
+                    invalidEmail = true
                 }
             }) {
                 Text(text = "Sign Up")
@@ -83,8 +83,8 @@ fun SignUp(authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFacto
                 }
             }
 
-            if (invalidInput) {
-                invalidInput = false
+            if (invalidEmail) {
+                invalidEmail = false
                 InvalidFormInput("Invalid email")
             }
 
