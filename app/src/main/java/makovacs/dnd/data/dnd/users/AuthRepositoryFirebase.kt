@@ -4,6 +4,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.tasks.await
 import java.lang.Exception
 
@@ -24,7 +25,7 @@ class AuthRepositoryFirebase(private val auth: FirebaseAuth) : AuthRepository {
 
     init {
         auth.addAuthStateListener { firebaseAuth ->
-            currentUserStateFlow.value = firebaseAuth.currentUser?.toUser()
+            currentUserStateFlow.update { firebaseAuth.currentUser?.toUser() }
         }
     }
 

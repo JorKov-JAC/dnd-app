@@ -7,6 +7,7 @@ import com.google.firebase.auth.FirebaseAuthException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import makovacs.dnd.MyApp
 import makovacs.dnd.data.dnd.users.AuthRepository
@@ -23,17 +24,17 @@ class AuthViewModel(val authRepository: AuthRepository) : ViewModel() {
     val signUpResult: StateFlow<ResultAuth<Boolean>?> = _signUpResult
 
     fun signUp(email: String, password: String) {
-        _signUpResult.value = ResultAuth.InProgress
+        _signUpResult.update { ResultAuth.InProgress }
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val success = authRepository.signUp(email, password)
-                _signUpResult.value = ResultAuth.Success(success)
+                _signUpResult.update { ResultAuth.Success(success) }
             } catch (e: FirebaseAuthException) {
-                _signUpResult.value = ResultAuth.Failure(e)
+                _signUpResult.update { ResultAuth.Failure(e) }
             } finally {
-                _signInResult.value = ResultAuth.Inactive
-                _signOutResult.value = ResultAuth.Inactive
-                _deleteResult.value = ResultAuth.Inactive
+                _signInResult.update { ResultAuth.Inactive }
+                _signOutResult.update { ResultAuth.Inactive }
+                _deleteResult.update { ResultAuth.Inactive }
             }
         }
     }
@@ -41,17 +42,17 @@ class AuthViewModel(val authRepository: AuthRepository) : ViewModel() {
     private val _signInResult = MutableStateFlow<ResultAuth<Boolean>?>(ResultAuth.Inactive)
     val signInResult: StateFlow<ResultAuth<Boolean>?> = _signInResult
     fun signIn(email: String, password: String) {
-        _signInResult.value = ResultAuth.InProgress
+        _signInResult.update { ResultAuth.InProgress }
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val success = authRepository.signIn(email, password)
-                _signInResult.value = ResultAuth.Success(success)
+                _signInResult.update { ResultAuth.Success(success) }
             } catch (e: FirebaseAuthException) {
-                _signInResult.value = ResultAuth.Failure(e)
+                _signInResult.update { ResultAuth.Failure(e) }
             } finally {
-                _signUpResult.value = ResultAuth.Inactive
-                _signOutResult.value = ResultAuth.Inactive
-                _deleteResult.value = ResultAuth.Inactive
+                _signUpResult.update { ResultAuth.Inactive }
+                _signOutResult.update { ResultAuth.Inactive }
+                _deleteResult.update { ResultAuth.Inactive }
             }
         }
     }
@@ -59,34 +60,34 @@ class AuthViewModel(val authRepository: AuthRepository) : ViewModel() {
     private val _signOutResult = MutableStateFlow<ResultAuth<Boolean>?>(ResultAuth.Inactive)
     val signOutResult: StateFlow<ResultAuth<Boolean>?> = _signOutResult
     fun signOut() {
-        _signOutResult.value = ResultAuth.InProgress
+        _signOutResult.update { ResultAuth.InProgress }
 
         try {
             val success = authRepository.signOut()
-            _signOutResult.value = ResultAuth.Success(true)
+            _signOutResult.update { ResultAuth.Success(true) }
         } catch (e: FirebaseAuthException) {
-            _signOutResult.value = ResultAuth.Failure(e)
+            _signOutResult.update { ResultAuth.Failure(e) }
         } finally {
-            _signUpResult.value = ResultAuth.Inactive
-            _signInResult.value = ResultAuth.Inactive
-            _deleteResult.value = ResultAuth.Inactive
+            _signUpResult.update { ResultAuth.Inactive }
+            _signInResult.update { ResultAuth.Inactive }
+            _deleteResult.update { ResultAuth.Inactive }
         }
     }
 
     private val _deleteResult = MutableStateFlow<ResultAuth<Boolean>?>(ResultAuth.Inactive)
     val deleteResult: StateFlow<ResultAuth<Boolean>?> = _deleteResult
     fun delete() {
-        _deleteResult.value = ResultAuth.InProgress
+        _deleteResult.update { ResultAuth.InProgress }
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val success = authRepository.delete()
-                _deleteResult.value = ResultAuth.Success(true)
+                _deleteResult.update { ResultAuth.Success(true) }
             } catch (e: Exception) {
-                _deleteResult.value = ResultAuth.Failure(e)
+                _deleteResult.update { ResultAuth.Failure(e) }
             } finally {
-                _signUpResult.value = ResultAuth.Inactive
-                _signInResult.value = ResultAuth.Inactive
-                _signOutResult.value = ResultAuth.Inactive
+                _signUpResult.update { ResultAuth.Inactive }
+                _signInResult.update { ResultAuth.Inactive }
+                _signOutResult.update { ResultAuth.Inactive }
             }
         }
     }
