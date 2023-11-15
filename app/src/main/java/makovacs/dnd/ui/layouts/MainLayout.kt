@@ -3,9 +3,9 @@ package makovacs.dnd.ui.layouts
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -64,6 +64,12 @@ fun MainLayout(modifier: Modifier = Modifier, content: @Composable (padding: Pad
                         "Monsters"
                     ),
                     NavButtonInfo(
+                        Route.ItemsList,
+                        Route.ItemsList.route,
+                        Icons.Default.List,
+                        "Items"
+                    ),
+                    NavButtonInfo(
                         Route.About,
                         Route.About.route,
                         Icons.Default.Info,
@@ -76,16 +82,10 @@ fun MainLayout(modifier: Modifier = Modifier, content: @Composable (padding: Pad
                         "Contact"
                     ),
                     NavButtonInfo(
-                        Route.ItemForm,
-                        Route.ItemForm.route,
-                        Icons.Default.Add,
-                        "Create Item"
-                    ),
-                    NavButtonInfo(
-                        Route.ItemsList,
-                        Route.ItemsList.route,
-                        Icons.Default.List,
-                        "Items List"
+                        Route.Account,
+                        Route.Account.route,
+                        Icons.Default.Person,
+                        "Account"
                     )
                 )
 

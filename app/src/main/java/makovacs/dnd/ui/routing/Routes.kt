@@ -16,7 +16,10 @@ import androidx.navigation.navDeepLink
 import makovacs.dnd.ui.routing.Route.Companion.NAME_KEY
 import makovacs.dnd.ui.routing.Route.Companion.QUERY_KEY
 import makovacs.dnd.ui.screens.AboutScreen
+import makovacs.dnd.ui.screens.Account
 import makovacs.dnd.ui.screens.ContactScreen
+import makovacs.dnd.ui.screens.SignIn
+import makovacs.dnd.ui.screens.SignUp
 import makovacs.dnd.ui.screens.magicitems.DetailScreen
 import makovacs.dnd.ui.screens.magicitems.InputForm
 import makovacs.dnd.ui.screens.magicitems.ItemScreen
@@ -106,6 +109,15 @@ fun Router(modifier: Modifier = Modifier, magicItemsVM: MagicItemsViewModel = vi
                 magicItemsVM::getByName
             )
         }
+        composable(Route.SignUp.route) {
+            SignUp()
+        }
+        composable(Route.SignIn.route) {
+            SignIn()
+        }
+        composable(Route.Account.route) {
+            Account()
+        }
     }
 }
 
@@ -159,4 +171,10 @@ sealed class Route(val route: String) {
         fun go(name: String) = "SingleItemRoute/$name"
     }
     object ItemsList : Route("ItemsListRoute")
+
+    object SignIn : Route("SignIn")
+
+    object SignUp : Route("SignUp")
+
+    object Account : Route("Account")
 }
