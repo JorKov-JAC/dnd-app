@@ -68,6 +68,9 @@ data class Monster(
     /** Unique Monster ID */
     val id get() = name
 
+    /** [description] without modifications. */
+    val rawDescription get() = description
+
     /** [description], or a default description if it is blank. */
     val descriptionOrDefault get() = description.ifBlank { "No description." }
 
