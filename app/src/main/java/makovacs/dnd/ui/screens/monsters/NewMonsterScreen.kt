@@ -1,6 +1,5 @@
 package makovacs.dnd.ui.screens.monsters
 
-import android.graphics.Bitmap
 import android.icu.text.DecimalFormat
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -16,21 +15,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import makovacs.dnd.R
-import makovacs.dnd.data.dnd.AbilityScores
 import makovacs.dnd.data.dnd.CreatureSize
 import makovacs.dnd.data.dnd.Information
-import makovacs.dnd.data.dnd.InformationEntry
 import makovacs.dnd.data.dnd.Monster
 import makovacs.dnd.logic.normalizeAndClean
 import makovacs.dnd.logic.normalizeForInsensitiveComparisons
@@ -43,6 +35,7 @@ import makovacs.dnd.ui.components.StringDropdownSelector
 import makovacs.dnd.ui.components.common.InformationEditor
 import makovacs.dnd.ui.routing.LocalNavHostController
 import makovacs.dnd.ui.routing.Route
+import makovacs.dnd.ui.viewmodels.MonsterInfoViewModel
 
 /**
  * Allows the user to input information to create a new [Monster].
@@ -69,44 +62,6 @@ fun NewMonsterScreen(modifier: Modifier = Modifier, onSubmit: (newMonster: Monst
     }
 }
 
-class NewMonsterScreenViewModel : ViewModel() {
-    var name by mutableStateOf("")
-    var description by mutableStateOf("")
-    var size by mutableStateOf<CreatureSize?>(null)
-    var armorClass by mutableStateOf<Int?>(null)
-    var hitDiceCount by mutableStateOf<Int?>(null)
-    var speed by mutableStateOf<Int?>(null)
-    var abilityScores = mutableStateListOf<Int?>(null, null, null, null, null, null)
-    var challengeRating by mutableStateOf<Float?>(null)
-    var imageBitmap by mutableStateOf<Bitmap?>(null)
-    var imageDesc by mutableStateOf<String?>(null)
-    val tags = mutableStateListOf<String>()
-    val informationEntries = mutableStateListOf<InformationEntry>()
-
-    var errorMsg by mutableStateOf<String?>(null)
-
-    /**
-     * Tries to create an [AbilityScores] from [abilityScores].
-     *
-     * @throws [IllegalStateException] Thrown when an [AbilityScores] cannot be created.
-     */
-    fun getAbilityScores(): AbilityScores {
-        // Ensure all scores are set.
-        for ((i, score) in abilityScores.withIndex()) {
-            score ?: error("${AbilityScores.abilityNames[i]} must be set.")
-        }
-
-        try {
-            @Suppress("UNCHECKED_CAST")
-            return AbilityScores.from(abilityScores as Iterable<Int>)
-        } catch (ex: IllegalArgumentException) {
-            // Rethrow as an IllegalStateException:
-            @Suppress("UNREACHABLE_CODE") // No idea why it believes this is unreachable
-            throw error(ex)
-        }
-    }
-}
-
 /**
  * Allows the user to input information to create a new [Monster].
  *
@@ -117,7 +72,7 @@ class NewMonsterScreenViewModel : ViewModel() {
 @Composable
 fun NewMonsterEditor(
     modifier: Modifier = Modifier,
-    vm: NewMonsterScreenViewModel = viewModel(),
+    vm: MonsterInfoViewModel = viewModel(),
     onSubmit: (newMonster: Monster) -> Unit
 ) {
     Column(
