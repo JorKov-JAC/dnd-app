@@ -23,6 +23,7 @@ import makovacs.dnd.ui.screens.SignUp
 import makovacs.dnd.ui.screens.magicitems.DetailScreen
 import makovacs.dnd.ui.screens.magicitems.InputForm
 import makovacs.dnd.ui.screens.magicitems.ItemScreen
+import makovacs.dnd.ui.screens.monsters.EditMonsterScreen
 import makovacs.dnd.ui.screens.monsters.MonsterDetailsScreen
 import makovacs.dnd.ui.screens.monsters.MonstersListScreen
 import makovacs.dnd.ui.screens.monsters.MonstersSelectScreen
@@ -99,6 +100,27 @@ fun Router(modifier: Modifier = Modifier, magicItemsVM: MagicItemsViewModel = vi
             }
         }
 
+        composable(Route.EditMonsterRoute.route) {
+            val monstersVm = LocalMonstersViewModel.current
+            val name = it.arguments!!.getString(NAME_KEY)!! // Must have a name
+            val monster = monstersVm.getMonster(name)
+
+            if (monster == null) {
+                // Monster doesn't exist; this might happen if the monster is renamed/deleted at the
+                // same time. This would be really rare, we'll just pop back out.
+                navHostController.popBackStack()
+                return@composable
+            }
+
+            EditMonsterScreen(monster) { oldMonster, newMonster ->
+                monstersVm.updateMonster(oldMonster.name, newMonster)
+
+                // Go to the monster's page
+                navHostController.popBackStack()
+                navHostController.navigate(Route.MonsterDetailsRoute.go(newMonster.name))
+            }
+        }
+
         composable(Route.ItemForm.route) {
             InputForm(magicItemsVM::add)
         }
@@ -172,6 +194,11 @@ sealed class Route(val route: String) {
 
     /** Route for [NewMonsterScreen]. */
     object NewMonsterRoute : Route("monsters/new")
+
+    /** Route for [EditMonsterScreen]. */
+    object EditMonsterRoute : Route("monsters/edit/{name}") {
+        fun go(name: String) = "monsters/edit/${Uri.encode(name)}"
+    }
 
     object ItemForm : Route("ItemFormRoute")
     object SingleItem : Route("SingleItemRoute/{name}") {
