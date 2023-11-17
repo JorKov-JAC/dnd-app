@@ -33,8 +33,6 @@ import makovacs.dnd.ui.components.MonsterBitmapSelector
 import makovacs.dnd.ui.components.NullableIntField
 import makovacs.dnd.ui.components.StringDropdownSelector
 import makovacs.dnd.ui.components.common.InformationEditor
-import makovacs.dnd.ui.routing.LocalNavHostController
-import makovacs.dnd.ui.routing.Route
 import makovacs.dnd.ui.viewmodels.MonsterInfoViewModel
 
 /**
@@ -45,8 +43,6 @@ import makovacs.dnd.ui.viewmodels.MonsterInfoViewModel
  */
 @Composable
 fun NewMonsterScreen(modifier: Modifier = Modifier, onSubmit: (newMonster: Monster) -> Unit) {
-    val navHostController = LocalNavHostController.current
-
     Column(modifier = modifier.verticalScroll(rememberScrollState())) {
         Text(
             stringResource(id = R.string.newMonster),
@@ -54,25 +50,28 @@ fun NewMonsterScreen(modifier: Modifier = Modifier, onSubmit: (newMonster: Monst
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
 
-        NewMonsterEditor {
-            onSubmit(it)
-            navHostController.popBackStack()
-            navHostController.navigate(Route.MonsterDetailsRoute.go(it.name))
-        }
+        MonsterEditor(
+            submitButtonText = stringResource(R.string.create),
+            vm = viewModel(),
+            onSubmit = onSubmit
+        )
     }
 }
 
 /**
  * Allows the user to input information to create a new [Monster].
  *
+ * @param submitButtonText The text shown on the submit button.
+ * @param vm The view-model to use for storing the editor's current data.
  * @param onSubmit Called with the new [Monster].
  * Should throw with a user-readable error message on failure.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewMonsterEditor(
+fun MonsterEditor(
+    vm: MonsterInfoViewModel,
+    submitButtonText: String,
     modifier: Modifier = Modifier,
-    vm: MonsterInfoViewModel = viewModel(),
     onSubmit: (newMonster: Monster) -> Unit
 ) {
     Column(
@@ -214,7 +213,7 @@ fun NewMonsterEditor(
                 e.localizedMessage
             }
         }, modifier = Modifier.align(Alignment.CenterHorizontally)) {
-            Text(stringResource(R.string.create))
+            Text(submitButtonText)
         }
     }
 }

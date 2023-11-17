@@ -89,7 +89,14 @@ fun Router(modifier: Modifier = Modifier, magicItemsVM: MagicItemsViewModel = vi
 
         composable(Route.NewMonsterRoute.route) {
             val monstersVm = LocalMonstersViewModel.current
-            NewMonsterScreen(onSubmit = monstersVm::addMonster)
+
+            NewMonsterScreen {
+                monstersVm.addMonster(it)
+
+                // Go to the new monster's page
+                navHostController.popBackStack()
+                navHostController.navigate(Route.MonsterDetailsRoute.go(it.name))
+            }
         }
 
         composable(Route.ItemForm.route) {
