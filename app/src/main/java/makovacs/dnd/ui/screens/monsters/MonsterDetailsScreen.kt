@@ -8,6 +8,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -32,8 +36,14 @@ fun MonsterDetailsScreen(monster: Monster?, modifier: Modifier = Modifier) {
     val navHostController = LocalNavHostController.current
 
     if (monster == null) {
-        // Probably navigated backward, go further back
-        navHostController.navigateUp()
+        // Probably navigated backward to a deleted/moved entry, go further back
+
+        // We're fudging the "no side-effects" rule here by navigating like this, so make sure we
+        // only do it once:
+        var alreadyNavigatedUp by rememberSaveable { mutableStateOf(false) }
+        if (!alreadyNavigatedUp) navHostController.navigateUp()
+        alreadyNavigatedUp = true
+
         return
     }
 
