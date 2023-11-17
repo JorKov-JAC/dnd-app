@@ -5,6 +5,10 @@ import android.content.Intent
 import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -101,6 +105,13 @@ fun Router(modifier: Modifier = Modifier, magicItemsVM: MagicItemsViewModel = vi
         }
 
         composable(Route.EditMonsterRoute.route) {
+            /**
+             * True if the monster was *just* edited, in which case we shouldn't do anything since
+             * the monster might have been renamed. Just wait for navigation to kick in.
+             */
+            var updateOccurred by rememberSaveable { mutableStateOf(false) }
+            if (updateOccurred) return@composable
+
             val monstersVm = LocalMonstersViewModel.current
             val name = it.arguments!!.getString(NAME_KEY)!! // Must have a name
             val monster = monstersVm.getMonster(name)
@@ -109,11 +120,13 @@ fun Router(modifier: Modifier = Modifier, magicItemsVM: MagicItemsViewModel = vi
                 // Monster doesn't exist; this might happen if the monster is renamed/deleted at the
                 // same time. This would be really rare, we'll just pop back out.
                 navHostController.popBackStack()
+
                 return@composable
             }
 
             EditMonsterScreen(monster) { oldMonster, newMonster ->
                 monstersVm.updateMonster(oldMonster.name, newMonster)
+                updateOccurred = true
 
                 // Go to the monster's page
                 navHostController.popBackStack()
