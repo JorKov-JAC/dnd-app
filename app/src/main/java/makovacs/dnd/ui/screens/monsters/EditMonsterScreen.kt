@@ -12,7 +12,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import makovacs.dnd.R
 import makovacs.dnd.data.dnd.Monster
-import makovacs.dnd.ui.viewmodels.MonsterInfoViewModel
+import makovacs.dnd.ui.components.monsters.MonsterEditor
+import makovacs.dnd.ui.components.monsters.MonsterEditorViewModel
 
 /**
  * Allows the user to edit a monster's existing information.
@@ -36,7 +37,7 @@ fun EditMonsterScreen(
         )
 
         MonsterEditor(
-            vm = viewModel { MonsterInfoViewModel(monster) },
+            vm = viewModel { MonsterEditorViewModel(monster) },
             submitButtonText = stringResource(R.string.save)
         ) {
             onSubmit(monster, it)
