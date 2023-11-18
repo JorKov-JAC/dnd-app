@@ -13,26 +13,34 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import makovacs.dnd.R
 import makovacs.dnd.data.dnd.Monster
 import makovacs.dnd.ui.components.monsters.MonsterEditor
+import makovacs.dnd.ui.components.monsters.MonsterEditorViewModel
 
 /**
- * Allows the user to input information to create a new [Monster].
+ * Allows the user to edit a monster's existing information.
  *
- * @param onSubmit Called with the new [Monster].
+ * @param monster The monster to edit.
+ * @param onSubmit Called when the user submits their edits and is passed the original [monster] and
+ * the new monster.
  * Should throw with a user-readable error message on failure.
  */
 @Composable
-fun NewMonsterScreen(modifier: Modifier = Modifier, onSubmit: (newMonster: Monster) -> Unit) {
+fun EditMonsterScreen(
+    monster: Monster,
+    modifier: Modifier = Modifier,
+    onSubmit: (oldMonster: Monster, newMonster: Monster) -> Unit
+) {
     Column(modifier = modifier.verticalScroll(rememberScrollState())) {
         Text(
-            stringResource(id = R.string.newMonster),
+            "Editing \"${monster.name}\"",
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
 
         MonsterEditor(
-            submitButtonText = stringResource(R.string.create),
-            vm = viewModel(),
-            onSubmit = onSubmit
-        )
+            vm = viewModel { MonsterEditorViewModel(monster) },
+            submitButtonText = stringResource(R.string.save)
+        ) {
+            onSubmit(monster, it)
+        }
     }
 }

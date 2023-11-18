@@ -1,15 +1,25 @@
 package makovacs.dnd.ui.screens.monsters
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import makovacs.dnd.data.dnd.Monster
 import makovacs.dnd.ui.components.MonsterDetails
 import makovacs.dnd.ui.routing.LocalNavHostController
+import makovacs.dnd.ui.routing.Route
 
 /**
  * Shows detailed information about a given monster.
@@ -26,12 +36,30 @@ fun MonsterDetailsScreen(monster: Monster?, modifier: Modifier = Modifier) {
     val navHostController = LocalNavHostController.current
 
     if (monster == null) {
-        // Probably navigated backward, go further back
-        navHostController.navigateUp()
+        // Probably navigated backward to a deleted/moved entry, go further back
+
+        // We're fudging the "no side-effects" rule here by navigating like this, so make sure we
+        // only do it once:
+        var alreadyNavigatedUp by rememberSaveable { mutableStateOf(false) }
+        if (!alreadyNavigatedUp) navHostController.navigateUp()
+        alreadyNavigatedUp = true
+
         return
     }
 
     Column(modifier = modifier.verticalScroll(rememberScrollState())) {
-        MonsterDetails(monster = monster, modifier = Modifier.padding(8.dp))
+        Box {
+            Button(
+                { navHostController.navigate(Route.EditMonsterRoute.go(monster.name)) },
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .zIndex(1f)
+                    .padding(16.dp)
+            ) {
+                Text("Edit")
+            }
+
+            MonsterDetails(monster = monster, modifier = Modifier.padding(8.dp))
+        }
     }
 }

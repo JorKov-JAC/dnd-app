@@ -5,6 +5,10 @@ import android.content.Intent
 import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -23,6 +27,7 @@ import makovacs.dnd.ui.screens.SignUp
 import makovacs.dnd.ui.screens.magicitems.DetailScreen
 import makovacs.dnd.ui.screens.magicitems.InputForm
 import makovacs.dnd.ui.screens.magicitems.ItemScreen
+import makovacs.dnd.ui.screens.monsters.EditMonsterScreen
 import makovacs.dnd.ui.screens.monsters.MonsterDetailsScreen
 import makovacs.dnd.ui.screens.monsters.MonstersListScreen
 import makovacs.dnd.ui.screens.monsters.MonstersSelectScreen
@@ -89,7 +94,44 @@ fun Router(modifier: Modifier = Modifier, magicItemsVM: MagicItemsViewModel = vi
 
         composable(Route.NewMonsterRoute.route) {
             val monstersVm = LocalMonstersViewModel.current
-            NewMonsterScreen(onSubmit = monstersVm::addMonster)
+
+            NewMonsterScreen {
+                monstersVm.addMonster(it)
+
+                // Go to the new monster's page
+                navHostController.popBackStack()
+                navHostController.navigate(Route.MonsterDetailsRoute.go(it.name))
+            }
+        }
+
+        composable(Route.EditMonsterRoute.route) {
+            /**
+             * True if the monster was *just* edited, in which case we shouldn't do anything since
+             * the monster might have been renamed. Just wait for navigation to kick in.
+             */
+            var updateOccurred by rememberSaveable { mutableStateOf(false) }
+            if (updateOccurred) return@composable
+
+            val monstersVm = LocalMonstersViewModel.current
+            val name = it.arguments!!.getString(NAME_KEY)!! // Must have a name
+            val monster = monstersVm.getMonster(name)
+
+            if (monster == null) {
+                // Monster doesn't exist; this might happen if the monster is renamed/deleted at the
+                // same time. This would be really rare, we'll just pop back out.
+                navHostController.popBackStack()
+
+                return@composable
+            }
+
+            EditMonsterScreen(monster) { oldMonster, newMonster ->
+                monstersVm.updateMonster(oldMonster.name, newMonster)
+                updateOccurred = true
+
+                // Go to the monster's page
+                navHostController.popBackStack()
+                navHostController.navigate(Route.MonsterDetailsRoute.go(newMonster.name))
+            }
         }
 
         composable(Route.ItemForm.route) {
@@ -165,6 +207,11 @@ sealed class Route(val route: String) {
 
     /** Route for [NewMonsterScreen]. */
     object NewMonsterRoute : Route("monsters/new")
+
+    /** Route for [EditMonsterScreen]. */
+    object EditMonsterRoute : Route("monsters/edit/{name}") {
+        fun go(name: String) = "monsters/edit/${Uri.encode(name)}"
+    }
 
     object ItemForm : Route("ItemFormRoute")
     object SingleItem : Route("SingleItemRoute/{name}") {
