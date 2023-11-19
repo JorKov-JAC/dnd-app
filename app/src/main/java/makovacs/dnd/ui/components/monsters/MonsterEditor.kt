@@ -1,7 +1,6 @@
 package makovacs.dnd.ui.components.monsters
 
 import android.graphics.Bitmap
-import android.icu.text.DecimalFormat
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -133,7 +132,7 @@ fun MonsterEditor(
             setValue = { _, it -> vm.challengeRating = it },
             reset = { vm.challengeRating = null },
             label = "Challenge Rating",
-            choiceName = { DecimalFormat("0.###").format(it) }
+            choiceName = Monster::prettyChallengeRating
         )
 
         // Tags
