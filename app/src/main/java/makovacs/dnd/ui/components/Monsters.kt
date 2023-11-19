@@ -79,16 +79,27 @@ fun MonsterDetails(monster: Monster, modifier: Modifier = Modifier) {
                     .align(Alignment.CenterHorizontally)
             )
 
-            // Details
+            // Name and description
             CreatureName(name = monster.name)
             CreatureDesc(desc = monster.descriptionOrDefault)
 
             Divider()
 
+            // Tags
             CreatureTags(tags = monster.tags)
 
             Divider()
 
+            // AC and HP
+            CreatureArmorAndHp(
+                ac = monster.armorClass,
+                hitDice = monster.hitDice,
+                averageHp = monster.avgHitPoints
+            )
+
+            Divider()
+
+            // Ability scores
             AbilityScoresDisplay(
                 abilityScores = monster.abilityScores,
                 modifier = Modifier.fillMaxWidth()
@@ -172,7 +183,9 @@ fun MonstersSearchList(
         mapper = { query, monster -> if (query.matches(monster)) monster.name else null },
         label = "Query (ex: \"Gnoll +Humanoid -Small\")",
         key = { it.id },
-        modifier = Modifier.padding(4.dp).then(modifier)
+        modifier = Modifier
+            .padding(4.dp)
+            .then(modifier)
     ) { _, it ->
         Box {
             var cardModifier: Modifier = Modifier
