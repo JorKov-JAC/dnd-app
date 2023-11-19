@@ -83,10 +83,11 @@ fun MonsterDetails(monster: Monster, modifier: Modifier = Modifier) {
             CreatureName(name = monster.name)
             CreatureDesc(desc = monster.descriptionOrDefault)
 
-            Divider()
-
             // Tags
-            CreatureTags(tags = monster.tags)
+            if (monster.tags.isNotEmpty()) {
+                Divider()
+                CreatureTags(tags = monster.tags)
+            }
 
             Divider()
 
