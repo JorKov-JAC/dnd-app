@@ -8,7 +8,6 @@ import androidx.annotation.Size
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -173,11 +172,7 @@ fun CreatureImage(imageBitmap: Bitmap?, imageDesc: String?, modifier: Modifier =
  */
 @Composable
 fun AbilityScoresDisplay(abilityScores: AbilityScores, modifier: Modifier = Modifier) {
-    val scrollState = rememberScrollState()
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = modifier.horizontalScroll(state = scrollState)
-    ) {
+    EvenWidthGrid(modifier = modifier) {
         for (str in abilityScores.abilityStrings()) {
             Text(str, textAlign = TextAlign.Center, modifier = Modifier.padding(8.dp, 0.dp))
         }
@@ -197,10 +192,7 @@ fun AbilityScoresInput(
     setScore: (index: Int, score: Int?) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = modifier
-    ) {
+    EvenWidthGrid(modifier = modifier) {
         val abilityNames = AbilityScores.abilityNames
 
         for ((i, score) in abilityScores.withIndex()) {
@@ -212,7 +204,9 @@ fun AbilityScoresInput(
                 score,
                 { setScore(i, it) },
                 label = abilityNames[i],
-                modifier = Modifier.width(width)
+                modifier = Modifier
+                    .width(width)
+                    .padding(4.dp)
             )
         }
     }
