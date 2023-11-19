@@ -18,10 +18,16 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import makovacs.dnd.R
 import makovacs.dnd.data.dnd.Monster
@@ -105,6 +111,30 @@ fun MonsterDetails(monster: Monster, modifier: Modifier = Modifier) {
                 abilityScores = monster.abilityScores,
                 modifier = Modifier.fillMaxWidth()
             )
+
+            Divider()
+
+            // Misc Stats
+            val MiscFactText: @Composable (title: String, text: String) -> Unit = { title, text ->
+                Text(
+                    buildAnnotatedString {
+                        withStyle(SpanStyle(color = MaterialTheme.colorScheme.primary)) {
+                            append("$title: ")
+                        }
+                        append(text)
+                    },
+                    softWrap = false,
+                    maxLines = 1,
+                    textAlign = TextAlign.Left
+                )
+            }
+
+            EvenWidthGrid {
+                MiscFactText("CR", Monster.prettyChallengeRating(monster.challengeRating))
+                MiscFactText("Proficiency", "%+d".format(monster.proficiencyBonus))
+                MiscFactText("Size", monster.size.toString())
+                MiscFactText("Speed", "${monster.speed}' (${monster.speed / 5} tiles)")
+            }
         }
     }
 }
