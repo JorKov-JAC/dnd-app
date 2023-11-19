@@ -79,7 +79,7 @@ data class Monster(
      *
      * See [this table](https://www.dndbeyond.com/sources/basic-rules/monsters#ProficiencyBonusbyChallengeRating).
      */
-    val proficiencyBonus get() = truncate((challengeRating - 1) / 4) + 2
+    val proficiencyBonus get() = (truncate((challengeRating - 1) / 4) + 2).toInt()
 
     /**
      * The Experience Point reward based on [challengeRating].
