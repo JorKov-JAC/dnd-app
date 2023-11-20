@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import makovacs.dnd.R
 import makovacs.dnd.data.dnd.Monster
 import makovacs.dnd.data.dnd.MonsterQuery
+import makovacs.dnd.ui.components.common.InformationDisplay
 import makovacs.dnd.ui.util.toBitmap
 import makovacs.dnd.ui.util.toPainter
 
@@ -134,6 +135,13 @@ fun MonsterDetails(monster: Monster, modifier: Modifier = Modifier) {
                 MiscFactText("Proficiency", "%+d".format(monster.proficiencyBonus))
                 MiscFactText("Size", monster.size.toString())
                 MiscFactText("Speed", "${monster.speed}' (${monster.speed / 5} tiles)")
+            }
+
+            // Information
+            if (monster.information.entries.isNotEmpty()) {
+                Divider()
+
+                InformationDisplay(monster.information)
             }
         }
     }

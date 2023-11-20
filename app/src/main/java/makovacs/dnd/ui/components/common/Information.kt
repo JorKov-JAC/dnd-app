@@ -1,11 +1,13 @@
 package makovacs.dnd.ui.components.common
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -27,12 +29,80 @@ import androidx.compose.ui.unit.dp
 import makovacs.dnd.R
 import makovacs.dnd.data.dnd.Description
 import makovacs.dnd.data.dnd.Header
+import makovacs.dnd.data.dnd.Information
 import makovacs.dnd.data.dnd.InformationEntry
 import makovacs.dnd.data.dnd.InformationEntryTypes
 import makovacs.dnd.data.dnd.Separator
 import makovacs.dnd.logic.normalizeAndClean
 import makovacs.dnd.ui.components.EditableList
 import makovacs.dnd.ui.components.StringDropdownSelector
+
+/**
+ * Displays a [Description].
+ *
+ * @param description The description to display.
+ */
+@Composable
+fun DescriptionDisplay(description: Description, modifier: Modifier = Modifier) {
+    Text(description.toAnnotatedString(), modifier = modifier)
+}
+
+/**
+ * Displays a [Header].
+ *
+ * @param header The header to display.
+ */
+@Composable
+fun HeaderDisplay(header: Header, modifier: Modifier = Modifier) {
+    Text(
+        header.text,
+        style = MaterialTheme.typography.titleLarge,
+        modifier = modifier
+    )
+}
+
+/**
+ * Displays a [Separator].
+ */
+@Composable
+fun SeparatorDisplay(modifier: Modifier = Modifier) {
+    Divider(modifier = modifier)
+}
+
+/**
+ * Displays an [InformationEntry].
+ *
+ * @param informationEntry The entry to display.
+ */
+@Composable
+fun InformationEntryDisplay(
+    informationEntry: InformationEntry,
+    modifier: Modifier = Modifier
+) {
+    when (informationEntry) {
+        is Separator -> SeparatorDisplay(modifier = modifier)
+        is Header -> HeaderDisplay(informationEntry, modifier = modifier)
+        is Description -> DescriptionDisplay(informationEntry, modifier = modifier)
+    }
+}
+
+/**
+ * Displays the contents of an [Information].
+ *
+ * @param information The information to display.
+ */
+@Composable
+fun InformationDisplay(
+    information: Information,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = modifier
+    ) {
+        information.entries.forEach { InformationEntryDisplay(it) }
+    }
+}
 
 /**
  * Allows the user to edit a list of [information entries][InformationEntry].
@@ -91,10 +161,7 @@ fun InformationEditor(
             is Separator -> Box(modifier = Modifier.fillMaxWidth()) {
                 Text("---- Separator ----", modifier = Modifier.align(Alignment.Center))
             }
-            is Header -> Text(it.text, style = MaterialTheme.typography.titleLarge)
-            is Description -> {
-                Text(it.toAnnotatedString())
-            }
+            else -> InformationEntryDisplay(it)
         }
     }
 }
