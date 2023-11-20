@@ -10,6 +10,7 @@ import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import makovacs.dnd.data.dnd.Dice.Companion.typicalPossibleSides
 import makovacs.dnd.logic.ellipsis
+import kotlin.streams.asSequence
 
 /**
  * A collection of stats such as strength and dexterity.
@@ -210,19 +211,23 @@ enum class InformationEntryTypes(val displayName: String) {
 
 /**
  * Contains information represented as a series of [InformationEntry] objects.
+ *
+ * @param entries The information entries that will make up the new instance.
+ * Note that redundant entries (like duplicate separators) will be quietly filtered.
  */
-data class Information(private var _entries: List<InformationEntry>) {
+class Information(entries: List<InformationEntry>) {
+    val entries: List<InformationEntry>
+
     init {
         // Quietly remove redundant separators:
-        _entries = _entries.filterIndexed { index, it ->
-            // Allow all non-separators
-            it !is Separator ||
-                // No consecutive separators or separators at the end:
-                entries.getOrNull(index + 1) !is Separator ||
-                // No separators at the start:
-                index != 0
-        }
+        this.entries = entries.asSequence().withIndex()
+            .dropWhile { it.value is Separator }
+            .filterNot { (index, it) ->
+                it is Separator &&
+                    // Only keep the last of consecutive separators and drop any at the end
+                    entries.getOrElse(index + 1) { Separator } is Separator
+            }
+            .map { it.value }
+            .toList()
     }
-
-    val entries get() = _entries
 }
