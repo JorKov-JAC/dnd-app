@@ -61,7 +61,7 @@ fun MonsterCard(monster: Monster, modifier: Modifier = Modifier) {
             ) {
                 CreatureName(name = monster.name)
                 Divider()
-                CreatureTags(tags = monster.tags)
+                CreatureTags(tags = monster.tags, modifier = Modifier.padding(vertical = 4.dp))
             }
         }
     }
