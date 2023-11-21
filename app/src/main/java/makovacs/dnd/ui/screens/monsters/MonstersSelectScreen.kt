@@ -41,7 +41,6 @@ fun MonstersSelectScreen(
         MonstersSearchList(
             monsters = monstersVm.monsters,
             onClick = onSelect,
-            onDelete = null,
             queryStr = query,
             setQueryStr = { query = it }
         )

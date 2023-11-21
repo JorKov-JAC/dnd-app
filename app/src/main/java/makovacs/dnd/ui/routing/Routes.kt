@@ -89,7 +89,10 @@ fun Router(modifier: Modifier = Modifier, magicItemsVM: MagicItemsViewModel = vi
         composable(Route.MonsterDetailsRoute.route) {
             val monstersVm = LocalMonstersViewModel.current
             val name = it.arguments!!.getString(NAME_KEY)!! // Must have a name
-            MonsterDetailsScreen(monster = monstersVm.getMonster(name))
+            MonsterDetailsScreen(
+                monster = monstersVm.getMonster(name),
+                onDelete = { monstersVm.removeMonster(name) }
+            )
         }
 
         composable(Route.NewMonsterRoute.route) {

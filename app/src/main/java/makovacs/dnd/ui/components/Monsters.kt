@@ -13,11 +13,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -203,8 +201,6 @@ fun MonsterBitmapSelector(bitmap: Bitmap?, setBitmap: (Bitmap?, String?) -> Unit
  *
  * @param monsters The monsters to display.
  * @param onClick Called when the user clicks on a Monster. Null if nothing should happen.
- * @param onDelete Called when the user tries to delete a Monster. Null if user cannot delete
- * monsters.
  * @param queryStr The string to use as a search query.
  * @param setQueryStr Called when the user tries to set [queryStr] to the provided value.
  */
@@ -212,7 +208,6 @@ fun MonsterBitmapSelector(bitmap: Bitmap?, setBitmap: (Bitmap?, String?) -> Unit
 fun MonstersSearchList(
     monsters: List<Monster>,
     onClick: ((Monster) -> Unit)?,
-    onDelete: ((Monster) -> Unit)?,
     queryStr: String,
     setQueryStr: (String) -> Unit,
     modifier: Modifier = Modifier
@@ -237,16 +232,6 @@ fun MonstersSearchList(
             if (onClick != null) cardModifier = cardModifier.clickable { onClick(it) }
 
             MonsterCard(it, cardModifier)
-
-            // Add delete button if a callback was provided
-            if (onDelete != null) {
-                IconButton(
-                    onClick = { onDelete(it) },
-                    modifier = Modifier.align(Alignment.TopEnd)
-                ) {
-                    Icon(Icons.Default.Delete, "Delete \"${it.name}\"")
-                }
-            }
         }
     }
 }
