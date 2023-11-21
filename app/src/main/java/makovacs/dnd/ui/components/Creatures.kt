@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.sp
 import makovacs.dnd.R
 import makovacs.dnd.data.dnd.AbilityScores
 import makovacs.dnd.data.dnd.Dice
-import makovacs.dnd.ui.util.abilityStrings
+import makovacs.dnd.ui.util.abilityAnnotatedStrings
 import makovacs.dnd.ui.util.toBitmap
 import makovacs.dnd.ui.util.toPainter
 
@@ -173,8 +173,13 @@ fun CreatureImage(imageBitmap: Bitmap?, imageDesc: String?, modifier: Modifier =
 @Composable
 fun AbilityScoresDisplay(abilityScores: AbilityScores, modifier: Modifier = Modifier) {
     EvenWidthGrid(modifier = modifier) {
-        for (str in abilityScores.abilityStrings()) {
-            Text(str, textAlign = TextAlign.Center, modifier = Modifier.padding(8.dp, 0.dp))
+        for (str in abilityScores.abilityAnnotatedStrings()) {
+            Text(
+                str,
+                textAlign = TextAlign.Center,
+                fontSize = 18.sp,
+                modifier = Modifier.padding(8.dp)
+            )
         }
     }
 }
