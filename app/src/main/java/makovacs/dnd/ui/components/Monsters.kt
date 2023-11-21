@@ -74,6 +74,9 @@ fun MonsterCard(monster: Monster, modifier: Modifier = Modifier) {
  */
 @Composable
 fun MonsterDetails(monster: Monster, modifier: Modifier = Modifier) {
+    /** [Divider] component with vertical padding. */
+    val PaddedDivider = @Composable { Divider(modifier = Modifier.padding(vertical = 8.dp)) }
+
     Card(modifier = modifier) {
         Column(modifier = Modifier.padding(8.dp)) {
             // Image
@@ -92,11 +95,11 @@ fun MonsterDetails(monster: Monster, modifier: Modifier = Modifier) {
 
             // Tags
             if (monster.tags.isNotEmpty()) {
-                Divider()
+                PaddedDivider()
                 CreatureTags(tags = monster.tags)
             }
 
-            Divider()
+            PaddedDivider()
 
             // AC and HP
             CreatureArmorAndHp(
@@ -105,7 +108,7 @@ fun MonsterDetails(monster: Monster, modifier: Modifier = Modifier) {
                 averageHp = monster.avgHitPoints
             )
 
-            Divider()
+            PaddedDivider()
 
             // Ability scores
             AbilityScoresDisplay(
@@ -113,7 +116,7 @@ fun MonsterDetails(monster: Monster, modifier: Modifier = Modifier) {
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Divider()
+            PaddedDivider()
 
             // Misc Stats
             val MiscFactText: @Composable (title: String, text: String) -> Unit = { title, text ->
@@ -139,7 +142,7 @@ fun MonsterDetails(monster: Monster, modifier: Modifier = Modifier) {
 
             // Information
             if (monster.information.entries.isNotEmpty()) {
-                Divider()
+                PaddedDivider()
 
                 InformationDisplay(monster.information)
             }
