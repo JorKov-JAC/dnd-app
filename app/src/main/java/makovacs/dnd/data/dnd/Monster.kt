@@ -63,6 +63,18 @@ data class Monster(
          * Possible values for [challengeRating].
          */
         val validChallengeRatings = listOf(0f, .125f, .25f, .5f) + (1..30).map { it.toFloat() }
+
+        /**
+         * Converts a [Challenge Rating][Monster.challengeRating] number to a pretty string.
+         *
+         * @param cr The Challenge Rating to convert.
+         */
+        fun prettyChallengeRating(cr: Float) = when (cr) {
+            .125f -> "1/8"
+            .25f -> "1/4"
+            .5f -> "1/2"
+            else -> cr.toInt().toString()
+        }
     }
 
     /** Unique Monster ID */
@@ -79,7 +91,7 @@ data class Monster(
      *
      * See [this table](https://www.dndbeyond.com/sources/basic-rules/monsters#ProficiencyBonusbyChallengeRating).
      */
-    val proficiencyBonus get() = truncate((challengeRating - 1) / 4) + 2
+    val proficiencyBonus get() = (truncate((challengeRating - 1) / 4) + 2).toInt()
 
     /**
      * The Experience Point reward based on [challengeRating].

@@ -18,14 +18,21 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import makovacs.dnd.R
 import makovacs.dnd.data.dnd.Monster
 import makovacs.dnd.data.dnd.MonsterQuery
+import makovacs.dnd.ui.components.common.InformationDisplay
 import makovacs.dnd.ui.util.toBitmap
 import makovacs.dnd.ui.util.toPainter
 
@@ -54,7 +61,7 @@ fun MonsterCard(monster: Monster, modifier: Modifier = Modifier) {
             ) {
                 CreatureName(name = monster.name)
                 Divider()
-                CreatureTags(tags = monster.tags)
+                CreatureTags(tags = monster.tags, modifier = Modifier.padding(vertical = 4.dp))
             }
         }
     }
@@ -67,6 +74,9 @@ fun MonsterCard(monster: Monster, modifier: Modifier = Modifier) {
  */
 @Composable
 fun MonsterDetails(monster: Monster, modifier: Modifier = Modifier) {
+    /** [Divider] component with vertical padding. */
+    val PaddedDivider = @Composable { Divider(modifier = Modifier.padding(vertical = 8.dp)) }
+
     Card(modifier = modifier) {
         Column(modifier = Modifier.padding(8.dp)) {
             // Image
@@ -79,20 +89,63 @@ fun MonsterDetails(monster: Monster, modifier: Modifier = Modifier) {
                     .align(Alignment.CenterHorizontally)
             )
 
-            // Details
+            // Name and description
             CreatureName(name = monster.name)
             CreatureDesc(desc = monster.descriptionOrDefault)
 
-            Divider()
+            // Tags
+            if (monster.tags.isNotEmpty()) {
+                PaddedDivider()
+                CreatureTags(tags = monster.tags)
+            }
 
-            CreatureTags(tags = monster.tags)
+            PaddedDivider()
 
-            Divider()
+            // AC and HP
+            CreatureArmorAndHp(
+                ac = monster.armorClass,
+                hitDice = monster.hitDice,
+                averageHp = monster.avgHitPoints
+            )
 
+            PaddedDivider()
+
+            // Ability scores
             AbilityScoresDisplay(
                 abilityScores = monster.abilityScores,
                 modifier = Modifier.fillMaxWidth()
             )
+
+            PaddedDivider()
+
+            // Misc Stats
+            val MiscFactText: @Composable (title: String, text: String) -> Unit = { title, text ->
+                Text(
+                    buildAnnotatedString {
+                        withStyle(SpanStyle(color = MaterialTheme.colorScheme.primary)) {
+                            append("$title: ")
+                        }
+                        append(text)
+                    },
+                    softWrap = false,
+                    maxLines = 1,
+                    textAlign = TextAlign.Left
+                )
+            }
+
+            EvenWidthGrid {
+                MiscFactText("CR", Monster.prettyChallengeRating(monster.challengeRating))
+                MiscFactText("Proficiency", "%+d".format(monster.proficiencyBonus))
+                MiscFactText("Size", monster.size.toString())
+                MiscFactText("Speed", "${monster.speed}' (${monster.speed / 5} tiles)")
+            }
+
+            // Information
+            if (monster.information.entries.isNotEmpty()) {
+                PaddedDivider()
+
+                InformationDisplay(monster.information)
+            }
         }
     }
 }
@@ -172,7 +225,9 @@ fun MonstersSearchList(
         mapper = { query, monster -> if (query.matches(monster)) monster.name else null },
         label = "Query (ex: \"Gnoll +Humanoid -Small\")",
         key = { it.id },
-        modifier = Modifier.padding(4.dp).then(modifier)
+        modifier = Modifier
+            .padding(4.dp)
+            .then(modifier)
     ) { _, it ->
         Box {
             var cardModifier: Modifier = Modifier

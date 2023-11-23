@@ -1,14 +1,11 @@
 package makovacs.dnd.ui.components.monsters
 
 import android.graphics.Bitmap
-import android.icu.text.DecimalFormat
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -125,10 +122,7 @@ fun MonsterEditor(
         // Ability scores
         AbilityScoresInput(
             vm.abilityScores,
-            vm.abilityScores::set,
-            modifier = Modifier
-                .fillMaxWidth()
-                .horizontalScroll(rememberScrollState())
+            vm.abilityScores::set
         )
 
         // Challenge Rating
@@ -138,7 +132,7 @@ fun MonsterEditor(
             setValue = { _, it -> vm.challengeRating = it },
             reset = { vm.challengeRating = null },
             label = "Challenge Rating",
-            choiceName = { DecimalFormat("0.###").format(it) }
+            choiceName = Monster::prettyChallengeRating
         )
 
         // Tags
