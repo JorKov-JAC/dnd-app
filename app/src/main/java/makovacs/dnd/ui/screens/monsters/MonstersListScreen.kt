@@ -35,7 +35,6 @@ fun MonstersListScreen(modifier: Modifier = Modifier) {
             onClick = {
                 navHostController.navigate(Route.MonsterDetailsRoute.go(it.name))
             },
-            onDelete = { monstersVm.removeMonster(it.name) },
             queryStr = query,
             setQueryStr = { query = it }
         )
