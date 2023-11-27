@@ -232,10 +232,10 @@ fun InputForm(add: (String, String, String, String, Int, Dice?, DamageType) -> U
         Row {
             val context = LocalContext.current
             val drawableId = context.resources.getIdentifier(
-                    "${pictures[selectedIndex]}",
-                    "drawable",
-                    context.packageName
-                )
+                "${pictures[selectedIndex]}",
+                "drawable",
+                context.packageName
+            )
 
             Button(onClick = {
                 if (name == "" || rarity == "" || sourceBook == "" || description == "") {

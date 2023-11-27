@@ -86,19 +86,15 @@ fun ItemScreen(magicItems: List<MagicItem>, remove: (String) -> Unit, getByName:
         }
     }
 
-
     Box(modifier = Modifier.fillMaxSize()) {
         Button(
             onClick = {
-                if(userState.value != null)
-                {
+                if (userState.value != null) {
                     navController.navigate(Route.ItemForm.route)
-                }
-                else
-                {
+                } else {
                     invalidInput = true
                 }
-                      },
+            },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(8.dp)
