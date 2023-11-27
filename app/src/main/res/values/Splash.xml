@@ -3,6 +3,6 @@
     <style name="Theme.SplashScreen.Splash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground"> #332925</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/red20</item>
-        <item name="postSplashScreenTheme">@style/Theme.SplashScreen</item>
+        <item name="postSplashScreenTheme">@style/Theme.DnD</item>
     </style>
 </resources>
