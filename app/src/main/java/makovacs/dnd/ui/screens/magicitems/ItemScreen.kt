@@ -46,7 +46,7 @@ fun ItemScreen(magicItems: List<MagicItem>, remove: (String) -> Unit, getByName:
     val navController = LocalNavHostController.current
     val userState = authViewModel.currentUser().collectAsState()
     var queryStr by rememberSaveable { mutableStateOf("") }
-    var invalidInput by rememberSaveable { mutableStateOf(false) }
+    var triedAddingItemWhileLoggedOut by rememberSaveable { mutableStateOf(false) }
 
     StringSearchList(
         items = magicItems,
@@ -92,7 +92,7 @@ fun ItemScreen(magicItems: List<MagicItem>, remove: (String) -> Unit, getByName:
                 if (userState.value != null) {
                     navController.navigate(Route.ItemForm.route)
                 } else {
-                    invalidInput = true
+                    triedAddingItemWhileLoggedOut = true
                 }
             },
             modifier = Modifier
@@ -103,8 +103,8 @@ fun ItemScreen(magicItems: List<MagicItem>, remove: (String) -> Unit, getByName:
         }
     }
 
-    if (invalidInput) {
-        invalidInput = false
+    if (triedAddingItemWhileLoggedOut) {
+        triedAddingItemWhileLoggedOut = false
         makovacs.dnd.ui.components.InvalidFormInput("Please sign in to create items.")
     }
 }
