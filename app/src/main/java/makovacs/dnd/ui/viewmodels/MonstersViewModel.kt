@@ -45,7 +45,7 @@ class MonstersViewModel : ViewModel() {
                 Information(
                     listOf(
                         Description("Rampage", "When the gnoll reduces a creature to 0 hit points with a melee attack on its turn, the gnoll can take a bonus action to move up to half its speed and make a bite attack."),
-                        Separator,
+                        Separator(),
                         Header("Actions"),
                         Description("Bite", "Melee Weapon Attack: +4 to hit, reach 5 ft., one creature. Hit: 4 (1d4 + 2) piercing damage."),
                         Description("Spear", "Melee or Ranged Weapon Attack: +4 to hit, reach 5 ft. or range 20/60 ft., one target. Hit: 5 (1d6 + 2) piercing damage, or 6 (1d8 + 2) piercing damage if used with two hands to make a melee attack."),
@@ -71,7 +71,7 @@ class MonstersViewModel : ViewModel() {
                     listOf(
                         Description("Keen Hearing and Smell", "The wolf has advantage on Wisdom (Perception) checks that rely on hearing or smell."),
                         Description("Pack Tactics", "The wolf has advantage on attack rolls against a creature if at least one of the wolf's allies is within 5 feet of the creature and the ally isn't incapacitated."),
-                        Separator,
+                        Separator(),
                         Header("Actions"),
                         Description("Bite", "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 7 (2d4 + 2) piercing damage. If the target is a creature, it must succeed on a DC 11 Strength saving throw or be knocked prone.")
                     )

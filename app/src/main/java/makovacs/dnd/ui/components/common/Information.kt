@@ -193,7 +193,7 @@ fun InformationEntryCreator(
             when (types[selectedTypeIndex!!]) {
                 InformationEntryTypes.SEPARATOR -> {
                     Button({
-                        onSubmit(Separator)
+                        onSubmit(Separator())
                     }) {
                         Text(stringResource(R.string.save))
                     }
