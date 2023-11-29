@@ -14,6 +14,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
@@ -27,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import makovacs.dnd.MyApp
 import makovacs.dnd.data.dnd.Monster
 import makovacs.dnd.ui.components.ConfirmDeleteDialog
 import makovacs.dnd.ui.components.MonsterDetails
@@ -85,8 +87,23 @@ fun MonsterDetailsScreen(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Icon(Icons.Default.Edit, null /* Described by Text */)
-                    Spacer(Modifier.weight(1f).width(4.dp))
+                    Spacer(
+                        Modifier
+                            .weight(1f)
+                            .width(4.dp))
                     Text("Edit")
+                }
+
+                OutlinedButton(
+                    { MyApp.appModule.monstersRepository.addMonster(monster) },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Icon(Icons.Default.Share, null /* Described by Text */)
+                    Spacer(
+                        Modifier
+                            .weight(1f)
+                            .width(4.dp))
+                    Text("Share")
                 }
 
                 // Delete Button
@@ -97,7 +114,10 @@ fun MonsterDetailsScreen(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Icon(Icons.Default.Delete, null /* Described by Text */)
-                        Spacer(Modifier.weight(1f).width(4.dp))
+                        Spacer(
+                            Modifier
+                                .weight(1f)
+                                .width(4.dp))
                         Text("Delete")
                     }
                 }

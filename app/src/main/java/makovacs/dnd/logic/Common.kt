@@ -51,3 +51,25 @@ fun String.normalizeForInsensitiveComparisons() = Normalizer2.getNFKCCasefoldIns
 fun String.ellipsis(maxLength: Int): String {
     return if (this.length > maxLength) "${this.substring(0, maxLength - 3)}..." else this
 }
+
+/**
+ * Encodes this string with
+ * [percent encoding](https://en.wikipedia.org/wiki/Percent-encoding#Percent-encoding_in_a_URI),
+ * leaving only 'a'-'z', 'A'-'Z', '0'-'9', '_' and '-' intact.
+ */
+fun String.strictUriEncode() = this
+    .flatMap { c ->
+        if (
+            c in 'a'..'z'
+            || c in 'A'..'Z'
+            || c in '0'..'9'
+            || c == '_'
+            || c == '-'
+        ) {
+            listOf(c)
+        } else {
+            // Percent encode the character
+            c.toString().toByteArray().flatMap { "%${it.toString(16)}".asIterable() }
+        }
+    }
+    .joinToString("")

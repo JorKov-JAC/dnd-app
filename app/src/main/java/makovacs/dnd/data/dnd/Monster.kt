@@ -38,6 +38,55 @@ data class Monster(
     val tags: List<String>,
     val information: Information
 ) {
+    /**
+     * A class which contains the serializable data for a [Monster].
+     *
+     * All fields in this class match a field with the same name in [Monster].
+     */
+    data class SerializableMonster(
+        val name: String,
+        val description: String,
+        val size: CreatureSize,
+        val armorClass: Int,
+        val hitDiceCount: Int,
+        val speed: Int,
+        val abilityScores: AbilityScores,
+        val challengeRating: Float,
+        val imageDesc: String?,
+        val tags: List<String>,
+        val information: Information
+    )
+
+    /**
+     * A class which contains both the serializable and non-serializable data
+     * for a [Monster].
+     *
+     * All fields in this class besides [serializableData] match a field with
+     * the same name in [Monster].
+     *
+     * @param serializableData The part of a monster which can be serialized.
+     */
+    data class SerializableAndNonSerializableData(
+        val serializableData: SerializableMonster,
+        val imageBitmap: Bitmap?
+    ) {
+        fun toMonster() = serializableData.run {
+            Monster(
+                name,
+                description,
+                size,
+                armorClass,
+                hitDiceCount,
+                speed,
+                abilityScores,
+                challengeRating,
+                imageBitmap,
+                imageDesc,
+                tags,
+                information
+            )
+        }
+    }
 
     init {
         if (name.isBlank()) throw IllegalArgumentException("Name cannot be blank.")
@@ -160,6 +209,26 @@ data class Monster(
     // TODO Handle case where constitution modifier is negative (min hit-points is 1, so then the
     //      average should consider that).
     val avgHitPoints get() = hitDice.avg + abilityScores.con.abilityModifier * hitDiceCount
+
+    /**
+     * Splits this instance's serializable and non-serializable data.
+     */
+    fun splitSerializableData() = SerializableAndNonSerializableData(
+        SerializableMonster(
+            name,
+            description,
+            size,
+            armorClass,
+            hitDiceCount,
+            speed,
+            abilityScores,
+            challengeRating,
+            imageDesc,
+            tags,
+            information
+        ),
+        imageBitmap
+    )
 
     /**
      * Checks if [other] is equal to this.
