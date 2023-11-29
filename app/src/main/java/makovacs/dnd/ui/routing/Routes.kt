@@ -46,7 +46,7 @@ val LocalNavHostController = compositionLocalOf<NavHostController> {
  * Shows the appropriate page based on [LocalNavHostController].
  */
 @Composable
-fun Router(modifier: Modifier = Modifier, magicItemsVM: MagicItemsViewModel = viewModel()) {
+fun Router(modifier: Modifier = Modifier, magicItemsVM: MagicItemsViewModel = viewModel(factory = MagicItemsViewModel.MagicItemsViewModelFactory())) {
     val navHostController = LocalNavHostController.current
 
     NavHost(navHostController, startDestination = Route.About.route, modifier = modifier) {
@@ -144,7 +144,8 @@ fun Router(modifier: Modifier = Modifier, magicItemsVM: MagicItemsViewModel = vi
             ItemScreen(
                 magicItemsVM.magicItems,
                 magicItemsVM::removeByName,
-                magicItemsVM::getByName
+                magicItemsVM::getByName,
+                magicItemsVM::getAllItems
             )
         }
         composable(Route.SingleItem.route) {

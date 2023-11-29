@@ -38,7 +38,7 @@ import makovacs.dnd.ui.routing.Route
  * detailed overview of just the clicked on item and allows the user to delete it. Contains a button to remove all the items from the list.
  */
 @Composable
-fun ItemScreen(magicItems: List<MagicItem>, remove: (String) -> Unit, getByName: (String) -> MagicItem?) {
+fun ItemScreen(magicItems: List<MagicItem>, remove: (String) -> Unit, getByName: (String) -> MagicItem?, getAllItems: () -> Unit) {
     val navController = LocalNavHostController.current
 
     var queryStr by rememberSaveable { mutableStateOf("") }
@@ -79,6 +79,10 @@ fun ItemScreen(magicItems: List<MagicItem>, remove: (String) -> Unit, getByName:
                 )
             }
         }
+    }
+
+    Button(onClick = { getAllItems() }) {
+        Text("test")
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
