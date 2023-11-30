@@ -34,6 +34,7 @@ import makovacs.dnd.ui.screens.monsters.MonstersSelectScreen
 import makovacs.dnd.ui.screens.monsters.NewMonsterScreen
 import makovacs.dnd.ui.viewmodels.LocalMonstersViewModel
 import makovacs.dnd.ui.viewmodels.MagicItemsViewModel
+import makovacs.dnd.ui.viewmodels.MagicItemsViewModelFactory
 
 /**
  * [NavHostController] provider.
@@ -46,7 +47,7 @@ val LocalNavHostController = compositionLocalOf<NavHostController> {
  * Shows the appropriate page based on [LocalNavHostController].
  */
 @Composable
-fun Router(modifier: Modifier = Modifier, magicItemsVM: MagicItemsViewModel = viewModel(factory = MagicItemsViewModel.MagicItemsViewModelFactory())) {
+fun Router(modifier: Modifier = Modifier, magicItemsVM: MagicItemsViewModel = viewModel(factory = MagicItemsViewModelFactory())) {
     val navHostController = LocalNavHostController.current
 
     NavHost(navHostController, startDestination = Route.About.route, modifier = modifier) {
@@ -138,7 +139,8 @@ fun Router(modifier: Modifier = Modifier, magicItemsVM: MagicItemsViewModel = vi
         }
 
         composable(Route.ItemForm.route) {
-            InputForm(magicItemsVM::add)
+            InputForm(
+                magicItemsVM::addItem)
         }
         composable(Route.ItemsList.route) {
             ItemScreen(

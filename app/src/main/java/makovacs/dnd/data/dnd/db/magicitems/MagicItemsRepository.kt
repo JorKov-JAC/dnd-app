@@ -17,7 +17,8 @@ class MagicItemsRepository(val db: FirebaseFirestore, val auth: AuthRepository) 
 
         if(auth.currentUser().value != null)
         {
-            dbMagicId.document(auth.currentUser().value.toString()).set(item)
+            //dbMagicId.document(auth.currentUser().value.toString()).set(item)
+            dbMagicId.add(item)
                 .addOnSuccessListener {
                     println("Item saved.")
                 }
@@ -47,7 +48,7 @@ class MagicItemsRepository(val db: FirebaseFirestore, val auth: AuthRepository) 
                     trySend(item)
                 } else {
                     println("Item is / has become null")
-                    //trySend(MagicItem()) // If there is no saved profile, then send a default object
+                    //trySend(MagicItem("", "", "", "")) // If there is no saved profile, then send a default object
                 }
             } else {
                 // The user document does not exist or has no data

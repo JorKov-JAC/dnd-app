@@ -102,7 +102,7 @@ val Int.abilityModifier get() = (this / 2 - 5).coerceIn(-5, 10)
  * Must be a valid number of sides (see [typicalPossibleSides]).
  * @throws IllegalArgumentException Thrown when [count] or [sides] are invalid.
  */
-data class Dice(val count: Int, val sides: Int) {
+data class Dice(val count: Int = 1, val sides: Int = 2) {
     init {
         if (count <= 0) throw IllegalArgumentException("Must have at least 1 die.")
         if (sides < 2) throw IllegalArgumentException("Must have at least 2 sides.")
