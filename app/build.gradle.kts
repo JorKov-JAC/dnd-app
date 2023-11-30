@@ -69,7 +69,7 @@ android {
 
 dependencies {
     implementation("com.google.firebase:firebase-firestore-ktx")
-    implementation("com.google.firebase:firebase-storage")
+    implementation("com.google.firebase:firebase-storage-ktx")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation(platform("com.google.firebase:firebase-bom:32.5.0"))
     implementation("androidx.core:core-ktx:1.9.0")

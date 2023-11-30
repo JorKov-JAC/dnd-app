@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import kotlinx.coroutines.runBlocking
 import makovacs.dnd.MyApp
 import makovacs.dnd.data.dnd.Monster
 import makovacs.dnd.ui.components.ConfirmDeleteDialog
@@ -95,7 +96,7 @@ fun MonsterDetailsScreen(
                 }
 
                 OutlinedButton(
-                    { MyApp.appModule.monstersRepository.addMonster(monster) },
+                    { runBlocking { MyApp.appModule.monstersRepository.addMonster(monster) } },
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Icon(Icons.Default.Share, null /* Described by Text */)

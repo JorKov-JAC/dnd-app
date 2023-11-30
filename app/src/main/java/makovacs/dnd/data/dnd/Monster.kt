@@ -38,56 +38,6 @@ data class Monster(
     val tags: List<String>,
     val information: Information
 ) {
-    /**
-     * A class which contains the serializable data for a [Monster].
-     *
-     * All fields in this class match a field with the same name in [Monster].
-     */
-    data class SerializableMonster(
-        val name: String,
-        val description: String,
-        val size: CreatureSize,
-        val armorClass: Int,
-        val hitDiceCount: Int,
-        val speed: Int,
-        val abilityScores: AbilityScores,
-        val challengeRating: Float,
-        val imageDesc: String?,
-        val tags: List<String>,
-        val information: Information
-    )
-
-    /**
-     * A class which contains both the serializable and non-serializable data
-     * for a [Monster].
-     *
-     * All fields in this class besides [serializableData] match a field with
-     * the same name in [Monster].
-     *
-     * @param serializableData The part of a monster which can be serialized.
-     */
-    data class SerializableAndNonSerializableData(
-        val serializableData: SerializableMonster,
-        val imageBitmap: Bitmap?
-    ) {
-        fun toMonster() = serializableData.run {
-            Monster(
-                name,
-                description,
-                size,
-                armorClass,
-                hitDiceCount,
-                speed,
-                abilityScores,
-                challengeRating,
-                imageBitmap,
-                imageDesc,
-                tags,
-                information
-            )
-        }
-    }
-
     init {
         if (name.isBlank()) throw IllegalArgumentException("Name cannot be blank.")
         if (name.trim() != name) throw IllegalArgumentException("Name cannot have surrounding whitespace.")
@@ -125,9 +75,6 @@ data class Monster(
             else -> cr.toInt().toString()
         }
     }
-
-    /** Unique Monster ID */
-    val id get() = name
 
     /** [description] without modifications. */
     val rawDescription get() = description
@@ -211,33 +158,13 @@ data class Monster(
     val avgHitPoints get() = hitDice.avg + abilityScores.con.abilityModifier * hitDiceCount
 
     /**
-     * Splits this instance's serializable and non-serializable data.
-     */
-    fun splitSerializableData() = SerializableAndNonSerializableData(
-        SerializableMonster(
-            name,
-            description,
-            size,
-            armorClass,
-            hitDiceCount,
-            speed,
-            abilityScores,
-            challengeRating,
-            imageDesc,
-            tags,
-            information
-        ),
-        imageBitmap
-    )
-
-    /**
      * Checks if [other] is equal to this.
      *
      * Note that equality is based on whether the two objects would conflict
-     * (i.e. their [ids][id] would match), not necessarily that all values are equal.
+     * (i.e. their [names][name] would match), not necessarily that all values are equal.
      */
     override fun equals(other: Any?) = other is Monster &&
-        id.normalizeForInsensitiveComparisons() == other.id.normalizeForInsensitiveComparisons()
+        name.normalizeForInsensitiveComparisons() == other.name.normalizeForInsensitiveComparisons()
     override fun hashCode() = name.hashCode()
     override fun toString() = name
 }

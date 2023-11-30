@@ -4,10 +4,7 @@
 
 package makovacs.dnd.data.dnd
 
-import android.os.Parcelable
 import androidx.annotation.Size
-import kotlinx.parcelize.IgnoredOnParcel
-import kotlinx.parcelize.Parcelize
 import makovacs.dnd.data.dnd.Dice.Companion.typicalPossibleSides
 import makovacs.dnd.logic.ellipsis
 
@@ -21,9 +18,8 @@ import makovacs.dnd.logic.ellipsis
  * @param wis A wisdom score.
  * @param cha A charisma score.
  */
-@Parcelize
-data class AbilityScores(val str: Int, val dex: Int, val con: Int, val int: Int, val wis: Int, val cha: Int) :
-    Parcelable {
+@com.google.firebase.firestore.IgnoreExtraProperties // Doesn't work?
+data class AbilityScores(val str: Int, val dex: Int, val con: Int, val int: Int, val wis: Int, val cha: Int) {
     init {
         // Validate ranges
         arrayOf(str, dex, con, int, wis, cha)
@@ -64,8 +60,8 @@ data class AbilityScores(val str: Int, val dex: Int, val con: Int, val int: Int,
      *
      * Ordering is the same as found in the primary constructor.
      */
-    @IgnoredOnParcel
-    val abilityCopiers = listOf<(Int) -> AbilityScores>(
+    @get:com.google.firebase.firestore.Exclude
+    val abilityCopiers get() = listOf<(Int) -> AbilityScores>(
         { copy(str = it) },
         { copy(dex = it) },
         { copy(con = it) },
@@ -79,8 +75,8 @@ data class AbilityScores(val str: Int, val dex: Int, val con: Int, val int: Int,
      *
      * Ordering is the same as found in the primary constructor.
      */
-    @IgnoredOnParcel
-    val scoreList = listOf(str, dex, con, int, wis, cha)
+    @get:com.google.firebase.firestore.Exclude
+    val scoreList get() = listOf(str, dex, con, int, wis, cha)
 }
 
 // TODO Make a separate Ability value class instead of using Ints?
@@ -101,6 +97,7 @@ val Int.abilityModifier get() = (this / 2 - 5).coerceIn(-5, 10)
  * Must be a valid number of sides (see [typicalPossibleSides]).
  * @throws IllegalArgumentException Thrown when [count] or [sides] are invalid.
  */
+@com.google.firebase.firestore.IgnoreExtraProperties
 data class Dice(val count: Int, val sides: Int) {
     init {
         if (count <= 0) throw IllegalArgumentException("Must have at least 1 die.")
@@ -218,6 +215,8 @@ enum class InformationEntryTypes(val displayName: String) {
  * Note that redundant entries (like duplicate separators) will be quietly filtered.
  */
 class Information(entries: List<InformationEntry>) {
+    constructor(): this(emptyList())
+
     val entries: List<InformationEntry>
 
     init {
