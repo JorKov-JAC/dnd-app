@@ -13,12 +13,10 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.FirebaseApp
-import kotlinx.coroutines.runBlocking
 import makovacs.dnd.ui.layouts.MainLayout
 import makovacs.dnd.ui.routing.LocalNavHostController
 import makovacs.dnd.ui.routing.Router
 import makovacs.dnd.ui.theme.AppTheme
-import makovacs.dnd.ui.util.toBitmap
 import makovacs.dnd.ui.viewmodels.LocalMonstersViewModel
 import makovacs.dnd.ui.viewmodels.MonstersViewModel
 
@@ -28,13 +26,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         FirebaseApp.initializeApp(this)
         setContent {
-            // TODO Temporary
-            val gnollsBitmap = R.drawable.gnolls.toBitmap()
-            val wolfBitmap = R.drawable.wolf.toBitmap()
-            val defaultInitializedViewModel = runBlocking { MonstersViewModel().initializeToDefaultData(gnollsBitmap, wolfBitmap) }
-            val monstersVm = viewModel {
-                defaultInitializedViewModel
-            }
+            val monstersVm = viewModel { MonstersViewModel() }
 
             AppTheme {
                 // A surface container using the 'background' color from the theme
