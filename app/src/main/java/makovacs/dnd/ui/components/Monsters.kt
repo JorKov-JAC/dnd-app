@@ -219,7 +219,7 @@ fun MonstersSearchList(
         queryModifier = MonsterQuery.Companion::fromString,
         mapper = { query, monster -> if (query.matches(monster)) monster.name else null },
         label = "Query (ex: \"Gnoll +Humanoid -Small\")",
-        key = { it.name },
+        key = null,
         modifier = Modifier
             .padding(4.dp)
             .then(modifier)

@@ -7,8 +7,6 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import makovacs.dnd.MyApp
@@ -20,6 +18,7 @@ import makovacs.dnd.data.dnd.Information
 import makovacs.dnd.data.dnd.Monster
 import makovacs.dnd.data.dnd.MonsterQuery
 import makovacs.dnd.data.dnd.Separator
+import makovacs.dnd.logic.normalizeForInsensitiveComparisons
 
 ///**
 // * [ViewModel] for the list of [monsters][Monster] stored in the encyclopedia.
@@ -237,10 +236,11 @@ class MonstersViewModel : ViewModel() {
      * @param monster The monster to add.
      */
     suspend fun addMonster(monster: Monster) {
-        val preexisting = repository
-            .getMonster(monster.name)
-            .stateIn(viewModelScope, SharingStarted.Eagerly, null)
-            .value
+        // Check for name conflicts;
+        // these aren't strictly enforced, two users might add/edit two monsters with the same
+        // resulting name, but we avoid them here:
+        val newMonsterComparableName = monster.name.normalizeForInsensitiveComparisons()
+        val preexisting = monsters.value?.find { it.name.normalizeForInsensitiveComparisons() == newMonsterComparableName }
         if (preexisting != null) error("\"${preexisting.name}\" already exists!")
 
         repository.addMonster(monster)
@@ -268,6 +268,16 @@ class MonstersViewModel : ViewModel() {
      * @return [The updated monster][newMonster].
      */
     fun updateMonster(oldMonster: Monster, newMonster: Monster): Monster {
+        // Check for name conflicts;
+        // these aren't strictly enforced, two users might add/edit two monsters with the same
+        // resulting name, but we avoid them here:
+        val newMonsterComparableName = newMonster.name.normalizeForInsensitiveComparisons()
+        if (oldMonster.name.normalizeForInsensitiveComparisons() != newMonsterComparableName) {
+            // Name has changed, is it conflicting?
+            val preexisting = monsters.value?.find { it.name.normalizeForInsensitiveComparisons() == newMonsterComparableName }
+            if (preexisting != null) error("\"${preexisting.name}\" already exists!")
+        }
+
         runBlocking { repository.updateMonster(oldMonster, newMonster) }
         return newMonster
 //        removeMonster(oldName)
