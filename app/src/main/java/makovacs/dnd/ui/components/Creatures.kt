@@ -155,15 +155,8 @@ fun CreatureTags(tags: List<String>, modifier: Modifier = Modifier) {
  */
 @Composable
 fun CreatureImage(imageBitmap: Bitmap?, imageDesc: String?, modifier: Modifier = Modifier) {
-    // No desc if no image
-    assert(if (imageBitmap == null) imageDesc == null else true)
-
     @Suppress("NAME_SHADOWING")
-    val imageDesc = if (imageBitmap == null) {
-        stringResource(R.string.noImage)
-    } else {
-        imageDesc ?: stringResource(R.string.genericMonsterImageDesc)
-    }
+    val imageDesc = imageDesc ?: stringResource(R.string.genericMonsterImageDesc)
 
     Image(
         painter = (imageBitmap ?: R.drawable.no_img.toBitmap()).toPainter(),

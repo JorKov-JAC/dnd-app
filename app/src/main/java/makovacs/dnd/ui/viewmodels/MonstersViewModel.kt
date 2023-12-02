@@ -1,8 +1,15 @@
 package makovacs.dnd.ui.viewmodels
 
 import android.graphics.Bitmap
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import makovacs.dnd.MyApp
 import makovacs.dnd.data.dnd.AbilityScores
@@ -13,7 +20,6 @@ import makovacs.dnd.data.dnd.Information
 import makovacs.dnd.data.dnd.Monster
 import makovacs.dnd.data.dnd.MonsterQuery
 import makovacs.dnd.data.dnd.Separator
-import java.util.Date
 
 ///**
 // * [ViewModel] for the list of [monsters][Monster] stored in the encyclopedia.
@@ -88,8 +94,9 @@ import java.util.Date
 //     * @param monster The monster to add.
 //     */
 //    fun addMonster(monster: Monster) {
-//        val preexisting = _monsters.find { it == monster }
-//        if (_monsters.contains(monster)) error("\"$preexisting\" already exists!")
+//        val comparisonName = monster.name.normalizeForInsensitiveComparisons()
+//        val preexisting = _monsters.find { it.name.normalizeForInsensitiveComparisons() == comparisonName }
+//        if (preexisting != null) error("\"${preexisting.name}\" already exists!")
 //
 //        _monsters.add(monster)
 //    }
@@ -229,22 +236,25 @@ class MonstersViewModel : ViewModel() {
      *
      * @param monster The monster to add.
      */
-    fun addMonster(monster: Monster) {
-        val preexisting = runBlocking { repository.getMonster(monster.name) }
-        if (preexisting != null) error("\"$preexisting\" already exists!")
+    suspend fun addMonster(monster: Monster) {
+        val preexisting = repository
+            .getMonster(monster.name)
+            .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+            .value
+        if (preexisting != null) error("\"${preexisting.name}\" already exists!")
 
-        runBlocking { repository.addMonster(monster) }
+        repository.addMonster(monster)
     }
 
     /**
-     * Removes a [Monster] based on its [name][Monster.name].
+     * Removes [monster] from the compendium.
      *
-     * @param name The [name][Monster.name] of the monster to remove.
+     * @param monster The monster to remove.
      * @return The removed monster.
-     * @throws IllegalStateException Thrown if there is no monster with [name] in the model.
      */
-    fun removeMonster(name: String): Monster {
-        return getMonster("Gnoll")!! // TODO
+    fun removeMonster(monster: Monster) {
+        runBlocking { repository.deleteMonster(monster) }
+//        return getMonster("Gnoll")!! // TODO
 //        val index = _monsters.indexOfFirst { it.name == name }
 //        if (index < 0) error("Monster with name \"$name\" not found")
 //        return _monsters.removeAt(index)
@@ -253,36 +263,79 @@ class MonstersViewModel : ViewModel() {
     /**
      * Updates a monster.
      *
-     * @param oldName The [Monster's name][Monster.name] before the update.
-     * @param updatedMonster The monster after the update.
-     * @return [The updated monster][updatedMonster].
+     * @param oldMonster The monster before the update.
+     * @param newMonster The monster after the update.
+     * @return [The updated monster][newMonster].
      */
-    fun updateMonster(oldName: String, updatedMonster: Monster): Monster {
-        removeMonster(oldName)
-        addMonster(updatedMonster)
-        return updatedMonster
+    fun updateMonster(oldMonster: Monster, newMonster: Monster): Monster {
+        runBlocking { repository.updateMonster(oldMonster, newMonster) }
+        return newMonster
+//        removeMonster(oldName)
+//        addMonster(updatedMonster)
+//        return updatedMonster
     }
 
     /**
      * Gets the monster with the given [name][Monster.name].
      *
      * @param name The [Monster.name] of the monster to get.
-     * @return The matching monster, or null if there is none.
+     * @return The matching monster, or null if there is none or the monsters haven't been loaded
+     * yet.
      */
-    fun getMonster(name: String): Monster? = monsters.find { it.name == name }
+    @Composable
+    fun getMonster(name: String): Monster? {
+        val monsters = monsters.collectAsState().value
+        println(monsters)
+        return monsters?.find { it.name == name }
+    }
 
-    private var lastFetchTime: Date = Date(0)
-    private var cachedMonsters: List<Monster>? = null
+//    private var lastFetchTime: Date = Date(0)
+//    private var cachedMonsters: List<Monster>? = null
+//    /**
+//     * The list of monsters in the model.
+//     */
+//    val monsters: List<Monster> get() = if (Date().time - lastFetchTime.time > 5000) {
+//        cachedMonsters = runBlocking { repository.queryMonsters(MonsterQuery("", emptyList(), emptySet())) }
+//        lastFetchTime = Date()
+//        cachedMonsters!!
+//    } else {
+//        println("Used cache!")
+//        cachedMonsters!!
+//    }
     /**
      * The list of monsters in the model.
+     *
+     * @return The latest list of monsters, or null if the monsters are still being loaded.
      */
-    val monsters: List<Monster> get() = if (Date().time - lastFetchTime.time > 1000) {
-        cachedMonsters = runBlocking { repository.queryMonsters(MonsterQuery("", emptyList(), emptySet())) }
-        lastFetchTime = Date()
-        cachedMonsters!!
-    } else {
-        cachedMonsters!!
+    val monsters by lazy {
+        val state = MutableStateFlow<List<Monster>?>(null)
+        viewModelScope.launch {
+            repository
+                .queryMonsters(MonsterQuery("", emptyList(), emptySet()))
+                .collect {
+                    state.value = it
+                    println("~~~~~~~~")
+                    println(it)
+                    println(state.value)
+                    println("~~~~~~~~")
+                }
+        }
+        state
     }
+//    val monsters: StateFlow<List<Monster>?> by lazy {
+//        repository
+//            .queryMonsters(MonsterQuery("", emptyList(), emptySet()))
+//            .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+//    }
+//    @get:Composable
+//    val monsters: List<Monster>? by lazy {
+//        var state by mutableStateOf(null)
+//        @SuppressLint("FlowOperatorInvokedInComposition") @Composable get() = repository
+//            .queryMonsters(MonsterQuery("", emptyList(), emptySet()))
+//            .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+//            .collectAsState()
+//            .value
+//    }
 }
 
 // TODO Temporary(?) until Monster data is persisted and we can safely recreate the VM:

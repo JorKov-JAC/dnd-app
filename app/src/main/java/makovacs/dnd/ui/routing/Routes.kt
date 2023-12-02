@@ -17,6 +17,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
+import kotlinx.coroutines.runBlocking
 import makovacs.dnd.ui.routing.Route.Companion.NAME_KEY
 import makovacs.dnd.ui.routing.Route.Companion.QUERY_KEY
 import makovacs.dnd.ui.screens.AboutScreen
@@ -89,9 +90,10 @@ fun Router(modifier: Modifier = Modifier, magicItemsVM: MagicItemsViewModel = vi
         composable(Route.MonsterDetailsRoute.route) {
             val monstersVm = LocalMonstersViewModel.current
             val name = it.arguments!!.getString(NAME_KEY)!! // Must have a name
+            val monster = monstersVm.getMonster(name)
             MonsterDetailsScreen(
-                monster = monstersVm.getMonster(name),
-                onDelete = { monstersVm.removeMonster(name) }
+                monster = monster,
+                onDelete = { monster?.let { monstersVm.removeMonster(monster) } }
             )
         }
 
@@ -99,7 +101,7 @@ fun Router(modifier: Modifier = Modifier, magicItemsVM: MagicItemsViewModel = vi
             val monstersVm = LocalMonstersViewModel.current
 
             NewMonsterScreen {
-                monstersVm.addMonster(it)
+                runBlocking { monstersVm.addMonster(it) }
 
                 // Go to the new monster's page
                 navHostController.popBackStack()
@@ -128,7 +130,7 @@ fun Router(modifier: Modifier = Modifier, magicItemsVM: MagicItemsViewModel = vi
             }
 
             EditMonsterScreen(monster) { oldMonster, newMonster ->
-                monstersVm.updateMonster(oldMonster.name, newMonster)
+                monstersVm.updateMonster(oldMonster, newMonster)
                 updateOccurred = true
 
                 // Go to the monster's page

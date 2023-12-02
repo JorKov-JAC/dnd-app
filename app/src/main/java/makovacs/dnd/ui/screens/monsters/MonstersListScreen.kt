@@ -4,8 +4,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -26,25 +28,32 @@ import makovacs.dnd.ui.viewmodels.LocalMonstersViewModel
 fun MonstersListScreen(modifier: Modifier = Modifier) {
     val navHostController = LocalNavHostController.current
     val monstersVm = LocalMonstersViewModel.current
+    val monsters = monstersVm.monsters.collectAsState().value
 
     var query by rememberSaveable { mutableStateOf("") }
 
-    Box(modifier = modifier.fillMaxSize()) {
-        MonstersSearchList(
-            monsters = monstersVm.monsters,
-            onClick = {
-                navHostController.navigate(Route.MonsterDetailsRoute.go(it.name))
-            },
-            queryStr = query,
-            setQueryStr = { query = it }
-        )
-        Button(
-            onClick = { navHostController.navigate(Route.NewMonsterRoute.route) },
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(8.dp)
-        ) {
-            Text("+")
+    if (monsters == null) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+    } else {
+        Box(modifier = modifier.fillMaxSize()) {
+            MonstersSearchList(
+                monsters = monsters,
+                onClick = {
+                    navHostController.navigate(Route.MonsterDetailsRoute.go(it.name))
+                },
+                queryStr = query,
+                setQueryStr = { query = it }
+            )
+            Button(
+                onClick = { navHostController.navigate(Route.NewMonsterRoute.route) },
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(8.dp)
+            ) {
+                Text("+")
+            }
         }
     }
 }

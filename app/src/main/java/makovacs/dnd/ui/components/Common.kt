@@ -645,6 +645,7 @@ fun EditableStringList(
                         val comparableStr = uniqueOn(str)
                         val preexisting = mutableList.find { other -> comparableStr == uniqueOn(other) }
                         if (preexisting != null) {
+                            // TODO This should probably support a custom ToString function
                             errorMsg = alreadyExistsFormat.format(preexisting)
                             return@Button
                         }
@@ -681,6 +682,7 @@ fun EditableStringList(
                             preexisting != null &&
                             preexisting != item // Ignore conflicts with itself
                         ) {
+                            // TODO This should probably support a custom ToString function
                             errorMsg = alreadyExistsFormat.format(preexisting)
                             return@Button
                         }
