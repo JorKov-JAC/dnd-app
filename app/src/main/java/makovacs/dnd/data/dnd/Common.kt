@@ -185,10 +185,7 @@ data class Description(val title: String? = null, val text: String) : Informatio
 /**
  * A separator which delimits sections of information.
  */
-class Separator : InformationEntry() {
-    // We need a dummy variable to be able to serialize this class.
-    @Deprecated("This is just a dummy variable, do not use it.", level = DeprecationLevel.HIDDEN)
-    val separatorDummyVar = 0
+object Separator : InformationEntry() {
     override fun toString() = "Separator"
 }
 
@@ -226,7 +223,7 @@ class Information(entries: List<InformationEntry>) {
             .filterNot { (index, it) ->
                 it is Separator &&
                     // Only keep the last of consecutive separators and drop any at the end
-                    entries.getOrElse(index + 1) { Separator() } is Separator
+                    entries.getOrElse(index + 1) { Separator } is Separator
             }
             .map { it.value }
             .toList()

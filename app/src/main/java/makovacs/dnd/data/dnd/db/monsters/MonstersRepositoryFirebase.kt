@@ -35,8 +35,8 @@ import java.util.WeakHashMap
 class MonstersRepositoryFirebase(val authRepository: AuthRepository) : MonstersRepository {
 	companion object {
 		const val MAX_PNG_SIDE_LENGTH = 256
-		const val MAX_JPG_SIDE_LENGTH = 384
-		const val JPG_QUALITY = 85
+		const val MAX_JPEG_SIDE_LENGTH = 384
+		const val JPEG_QUALITY = 85
 		const val MAX_IMAGE_DOWNLOAD_BYTES = 20L * 1024 * 1024 // 20 MiB
 	}
 
@@ -109,11 +109,11 @@ class MonstersRepositoryFirebase(val authRepository: AuthRepository) : MonstersR
 		} else {
 			bitmap
 				// Limit size
-				.fit(MAX_JPG_SIDE_LENGTH, MAX_JPG_SIDE_LENGTH)
+				.fit(MAX_JPEG_SIDE_LENGTH, MAX_JPEG_SIDE_LENGTH)
 				// Compress and re-encode
 				.compress(
 					Bitmap.CompressFormat.JPEG,
-					JPG_QUALITY,
+					JPEG_QUALITY,
 					bitmapStream
 				)
 		}
@@ -253,7 +253,7 @@ class MonstersRepositoryFirebase(val authRepository: AuthRepository) : MonstersR
 			tags,
 			Information(information.map {
 				when (InformationEntryTypes.values()[(it["type"] as Long).toInt()]) {
-					InformationEntryTypes.SEPARATOR -> Separator()
+					InformationEntryTypes.SEPARATOR -> Separator
 					InformationEntryTypes.DESCRIPTION -> Description(title = it["title"] as String?, text = it["text"] as String)
 					InformationEntryTypes.HEADER -> Header(text = it["text"] as String)
 				}
