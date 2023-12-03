@@ -275,9 +275,6 @@ class MonstersViewModel : ViewModel() {
 
         runBlocking { repository.updateMonster(oldMonster, newMonster) }
         return newMonster
-//        removeMonster(oldName)
-//        addMonster(updatedMonster)
-//        return updatedMonster
     }
 
     /**
@@ -288,10 +285,9 @@ class MonstersViewModel : ViewModel() {
      * yet.
      */
     @Composable
-    fun getMonster(name: String): Monster? {
+    fun getMonster(id: String): Monster? {
         val monsters = monsters.collectAsState().value
-        println(monsters)
-        return monsters?.find { it.name == name }
+        return monsters?.find { it.id == id }
     }
 
 //    private var lastFetchTime: Date = Date(0)

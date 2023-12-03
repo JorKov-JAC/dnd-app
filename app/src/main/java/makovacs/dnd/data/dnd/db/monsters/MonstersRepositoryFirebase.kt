@@ -28,6 +28,7 @@ import makovacs.dnd.data.dnd.Monster
 import makovacs.dnd.data.dnd.MonsterQuery
 import makovacs.dnd.data.dnd.Separator
 import makovacs.dnd.data.dnd.users.AuthRepository
+import makovacs.dnd.logic.generateUid
 import java.io.ByteArrayOutputStream
 import java.util.WeakHashMap
 import kotlin.math.min
@@ -117,20 +118,16 @@ class MonstersRepositoryFirebase(val authRepository: AuthRepository) : MonstersR
 	}
 
 	override suspend fun addMonster(monster: Monster) {
-//		val user = authRepository.currentUser().value
-
-		val firestoreMonster = FirestoreMonster.fromMonster(monster)
-		val docRef = collection.add(firestoreMonster).await()
-		firestoreMonster.id = docRef.id
+		collection.add(FirestoreMonster.fromMonster(monster))
 
 		// Store image bitmap
 		val bitmap = monster.imageBitmap
 		if (bitmap != null) {
-			setMonsterBitmap(firestoreMonster.id!!, bitmap)
+			setMonsterBitmap(monster.id, bitmap)
 		}
 	}
 
-	override suspend fun getMonster(name: String): Flow<Monster?> {
+	override suspend fun getMonster(id: String): Flow<Monster?> {
 //		val queryResults = collection
 //			.whereEqualTo("name", name)
 //			.limit(1) // Optimization; might hit local cache first
@@ -151,9 +148,9 @@ class MonstersRepositoryFirebase(val authRepository: AuthRepository) : MonstersR
 //
 //		return createMonster(firestoreMonster, getImage(firestoreMonster.id!!))
 
-		return queryMonsters(MonsterQuery(name, emptyList(), emptySet()))
-			.map {
-				it?.firstOrNull { it.name == name }
+		return queryMonsters(MonsterQuery("", emptyList(), emptySet()))
+			.map { monsters ->
+				monsters?.firstOrNull { it.id == id }
 			}
 	}
 
@@ -184,7 +181,7 @@ class MonstersRepositoryFirebase(val authRepository: AuthRepository) : MonstersR
 	}
 
 	override suspend fun deleteMonster(monster: Monster) {
-		val id = firestoreMonstersFromMonsters.value[monster]!!.id!!
+		val id = monster.id
 		imagesStorage.child("$id.png").delete()
 		collection.document(id).delete()
 	}
@@ -195,7 +192,7 @@ class MonstersRepositoryFirebase(val authRepository: AuthRepository) : MonstersR
 		val newFirestoreMonster = FirestoreMonster.fromMonster(newMonster)
 		newFirestoreMonster.imageMutations = if (newMonster.imageBitmap != oldMonster.imageBitmap) {
 			if (newMonster.imageBitmap != null) {
-				setMonsterBitmap(oldFirestoreMonster.id!!, newMonster.imageBitmap)
+				setMonsterBitmap(oldMonster.id, newMonster.imageBitmap)
 			}
 			oldFirestoreMonster.imageMutations + 1
 		} else {
@@ -205,10 +202,14 @@ class MonstersRepositoryFirebase(val authRepository: AuthRepository) : MonstersR
 		// This deletion is done regardless of if a bitmap existed before in case it just hasn't
 		// loaded yet
 		if (newMonster.imageBitmap == null) {
-			imagesStorage.child("${oldFirestoreMonster.id}.png").delete()
+			imagesStorage.child("${oldMonster.id}.png").delete()
 		}
 
-		collection.document(oldFirestoreMonster.id!!).set(newFirestoreMonster)
+		collection
+			.document(oldMonster.id)
+			.set(newFirestoreMonster)
+			// Don't await; otherwise it will block when network is down
+			//.await()
 	}
 
 	private suspend fun getImage(id: String): Bitmap? {
@@ -233,6 +234,7 @@ class MonstersRepositoryFirebase(val authRepository: AuthRepository) : MonstersR
 
 	private fun createMonster(firestoreMonster: FirestoreMonster, imageBitmap: Bitmap?): Monster {
 		val monster = firestoreMonster.run { Monster(
+			id ?: generateUid(),
 			name,
 			description,
 			size,

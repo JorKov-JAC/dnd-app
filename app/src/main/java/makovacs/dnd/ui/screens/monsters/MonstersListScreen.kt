@@ -41,7 +41,7 @@ fun MonstersListScreen(modifier: Modifier = Modifier) {
             MonstersSearchList(
                 monsters = monsters,
                 onClick = {
-                    navHostController.navigate(Route.MonsterDetailsRoute.go(it.name))
+                    navHostController.navigate(Route.MonsterDetailsRoute.go(it.id))
                 },
                 queryStr = query,
                 setQueryStr = { query = it }

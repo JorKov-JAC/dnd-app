@@ -32,6 +32,7 @@ fun NewMonsterScreen(modifier: Modifier = Modifier, onSubmit: (newMonster: Monst
         MonsterEditor(
             submitButtonText = stringResource(R.string.create),
             vm = viewModel(),
+            submittedMonsterId = null,
             onSubmit = onSubmit
         )
     }

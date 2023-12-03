@@ -6,7 +6,7 @@ import makovacs.dnd.data.dnd.MonsterQuery
 
 interface MonstersRepository {
     suspend fun addMonster(monster: Monster)
-    suspend fun getMonster(name: String): Flow<Monster?>
+    suspend fun getMonster(id: String): Flow<Monster?>
 
     /**
      * Gets all monsters which at least match the provided query.

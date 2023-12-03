@@ -38,7 +38,8 @@ fun EditMonsterScreen(
 
         MonsterEditor(
             vm = viewModel { MonsterEditorViewModel(monster) },
-            submitButtonText = stringResource(R.string.save)
+            submitButtonText = stringResource(R.string.save),
+            submittedMonsterId = monster.id
         ) {
             onSubmit(monster, it)
         }

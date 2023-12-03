@@ -80,7 +80,7 @@ fun MonsterDetailsScreen(
             ) {
                 // Edit Button
                 OutlinedButton(
-                    { navHostController.navigate(Route.EditMonsterRoute.go(monster.name)) },
+                    { navHostController.navigate(Route.EditMonsterRoute.go(monster.id)) },
                     contentPadding = PaddingValues(horizontal = 16.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
