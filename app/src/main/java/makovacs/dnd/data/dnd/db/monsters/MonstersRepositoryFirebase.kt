@@ -118,13 +118,10 @@ class MonstersRepositoryFirebase(val authRepository: AuthRepository) : MonstersR
 	}
 
 	override suspend fun addMonster(monster: Monster) {
-		collection.add(FirestoreMonster.fromMonster(monster))
+		collection.document(monster.id).set(FirestoreMonster.fromMonster(monster))
 
 		// Store image bitmap
-		val bitmap = monster.imageBitmap
-		if (bitmap != null) {
-			setMonsterBitmap(monster.id, bitmap)
-		}
+		monster.imageBitmap?.let { setMonsterBitmap(monster.id, it) }
 	}
 
 	override suspend fun getMonster(id: String): Flow<Monster?> {
