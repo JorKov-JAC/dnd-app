@@ -2,7 +2,6 @@ package makovacs.dnd.data.dnd.db.monsters
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import androidx.core.graphics.scale
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.DocumentId
 import com.google.firebase.firestore.firestore
@@ -28,14 +27,16 @@ import makovacs.dnd.data.dnd.Monster
 import makovacs.dnd.data.dnd.MonsterQuery
 import makovacs.dnd.data.dnd.Separator
 import makovacs.dnd.data.dnd.users.AuthRepository
+import makovacs.dnd.logic.fit
 import makovacs.dnd.logic.generateUid
 import java.io.ByteArrayOutputStream
 import java.util.WeakHashMap
-import kotlin.math.min
 
 class MonstersRepositoryFirebase(val authRepository: AuthRepository) : MonstersRepository {
 	companion object {
-		const val MAX_IMAGE_LENGTH = 512
+		const val MAX_PNG_SIDE_LENGTH = 256
+		const val MAX_JPG_SIDE_LENGTH = 384
+		const val JPG_QUALITY = 85
 		const val MAX_IMAGE_DOWNLOAD_BYTES = 20L * 1024 * 1024 // 20 MiB
 	}
 
@@ -94,25 +95,32 @@ class MonstersRepositoryFirebase(val authRepository: AuthRepository) : MonstersR
 	private suspend fun setMonsterBitmap(firestoreMonsterId: String, bitmap: Bitmap) {
 		val bitmapStream = ByteArrayOutputStream()
 
-		val aspectRatio = bitmap.width.toFloat() / bitmap.height
-		val width = min(
-			MAX_IMAGE_LENGTH,
-			(MAX_IMAGE_LENGTH * aspectRatio).toInt().coerceAtLeast(1)
-		)
-		val height = (width / aspectRatio).toInt().coerceAtLeast(1)
+		if (bitmap.hasAlpha()) {
+			Bitmap.CompressFormat.PNG
+			bitmap
+				// Limit size
+				.fit(MAX_PNG_SIDE_LENGTH, MAX_PNG_SIDE_LENGTH)
+				// Compress and re-encode
+				.compress(
+					Bitmap.CompressFormat.PNG,
+					100, // Ignored by PNG
+					bitmapStream
+				)
+		} else {
+			bitmap
+				// Limit size
+				.fit(MAX_JPG_SIDE_LENGTH, MAX_JPG_SIDE_LENGTH)
+				// Compress and re-encode
+				.compress(
+					Bitmap.CompressFormat.JPEG,
+					JPG_QUALITY,
+					bitmapStream
+				)
+		}
 
-		bitmap
-			// Limit size
-			.scale(width, height)
-			// Compress and re-encode
-			.compress(
-				Bitmap.CompressFormat.PNG,
-				/* Ignored by PNG */ 100,
-				bitmapStream
-			)
 
 		imagesStorage
-			.child("${firestoreMonsterId}.png")
+			.child(firestoreMonsterId)
 			.putBytes(bitmapStream.toByteArray())
 			.await()
 	}
@@ -179,7 +187,7 @@ class MonstersRepositoryFirebase(val authRepository: AuthRepository) : MonstersR
 
 	override suspend fun deleteMonster(monster: Monster) {
 		val id = monster.id
-		imagesStorage.child("$id.png").delete()
+		imagesStorage.child(id).delete()
 		collection.document(id).delete()
 	}
 
@@ -199,7 +207,7 @@ class MonstersRepositoryFirebase(val authRepository: AuthRepository) : MonstersR
 		// This deletion is done regardless of if a bitmap existed before in case it just hasn't
 		// loaded yet
 		if (newMonster.imageBitmap == null) {
-			imagesStorage.child("${oldMonster.id}.png").delete()
+			imagesStorage.child(oldMonster.id).delete()
 		}
 
 		collection
@@ -212,7 +220,7 @@ class MonstersRepositoryFirebase(val authRepository: AuthRepository) : MonstersR
 	private suspend fun getImage(id: String): Bitmap? {
 		return try {
 			val imageBitmapBytes = imagesStorage
-				.child("$id.png")
+				.child(id)
 				.getBytes(MAX_IMAGE_DOWNLOAD_BYTES)
 				.await()
 
