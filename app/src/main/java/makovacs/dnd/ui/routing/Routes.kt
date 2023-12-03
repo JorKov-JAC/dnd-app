@@ -11,13 +11,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController.Companion.KEY_DEEP_LINK_INTENT
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.launch
 import makovacs.dnd.data.dnd.Monster
 import makovacs.dnd.ui.routing.Route.Companion.ID_KEY
 import makovacs.dnd.ui.routing.Route.Companion.QUERY_KEY
@@ -102,7 +103,7 @@ fun Router(modifier: Modifier = Modifier, magicItemsVM: MagicItemsViewModel = vi
             val monstersVm = LocalMonstersViewModel.current
 
             NewMonsterScreen {
-                runBlocking { monstersVm.addMonster(it) }
+                monstersVm.viewModelScope.launch { monstersVm.addMonster(it) }
 
                 // Go to the new monster's page
                 navHostController.popBackStack()

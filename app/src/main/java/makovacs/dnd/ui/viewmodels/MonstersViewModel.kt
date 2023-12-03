@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import makovacs.dnd.MyApp
 import makovacs.dnd.data.dnd.Monster
 import makovacs.dnd.data.dnd.MonsterQuery
@@ -248,7 +247,7 @@ class MonstersViewModel : ViewModel() {
      * @return The removed monster.
      */
     fun removeMonster(monster: Monster) {
-        runBlocking { repository.deleteMonster(monster) }
+        viewModelScope.launch { repository.deleteMonster(monster) }
 //        return getMonster("Gnoll")!! // TODO
 //        val index = _monsters.indexOfFirst { it.name == name }
 //        if (index < 0) error("Monster with name \"$name\" not found")
@@ -273,7 +272,7 @@ class MonstersViewModel : ViewModel() {
             if (preexisting != null) error("\"${preexisting.name}\" already exists!")
         }
 
-        runBlocking { repository.updateMonster(oldMonster, newMonster) }
+        viewModelScope.launch { repository.updateMonster(oldMonster, newMonster) }
         return newMonster
     }
 
