@@ -18,7 +18,6 @@ import makovacs.dnd.logic.ellipsis
  * @param wis A wisdom score.
  * @param cha A charisma score.
  */
-@com.google.firebase.firestore.IgnoreExtraProperties // Doesn't work?
 data class AbilityScores(val str: Int, val dex: Int, val con: Int, val int: Int, val wis: Int, val cha: Int) {
     init {
         // Validate ranges
@@ -60,7 +59,6 @@ data class AbilityScores(val str: Int, val dex: Int, val con: Int, val int: Int,
      *
      * Ordering is the same as found in the primary constructor.
      */
-    @get:com.google.firebase.firestore.Exclude
     val abilityCopiers get() = listOf<(Int) -> AbilityScores>(
         { copy(str = it) },
         { copy(dex = it) },
@@ -75,7 +73,6 @@ data class AbilityScores(val str: Int, val dex: Int, val con: Int, val int: Int,
      *
      * Ordering is the same as found in the primary constructor.
      */
-    @get:com.google.firebase.firestore.Exclude
     val scoreList get() = listOf(str, dex, con, int, wis, cha)
 }
 
@@ -97,7 +94,6 @@ val Int.abilityModifier get() = (this / 2 - 5).coerceIn(-5, 10)
  * Must be a valid number of sides (see [typicalPossibleSides]).
  * @throws IllegalArgumentException Thrown when [count] or [sides] are invalid.
  */
-@com.google.firebase.firestore.IgnoreExtraProperties
 data class Dice(val count: Int, val sides: Int) {
     init {
         if (count <= 0) throw IllegalArgumentException("Must have at least 1 die.")
@@ -212,8 +208,6 @@ enum class InformationEntryTypes(val displayName: String) {
  * Note that redundant entries (like duplicate separators) will be quietly filtered.
  */
 class Information(entries: List<InformationEntry>) {
-    constructor(): this(emptyList())
-
     val entries: List<InformationEntry>
 
     init {

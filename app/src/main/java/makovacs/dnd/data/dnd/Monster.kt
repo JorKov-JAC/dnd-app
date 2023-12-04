@@ -42,13 +42,11 @@ data class Monster(
     val imageBitmap: Bitmap?,
     val imageDesc: String?,
     val tags: List<String>,
-    val information: Information,
+    val information: Information
 ) {
     init {
         if (name.isBlank()) throw IllegalArgumentException("Name cannot be blank.")
         if (name.trim() != name) throw IllegalArgumentException("Name cannot have surrounding whitespace.")
-        // No longer makes sense since bitmaps might not be loaded immediately:
-        // if (imageBitmap == null && imageDesc != null) throw IllegalArgumentException("There is no image, so there should be no image description.")
         if (armorClass < 0) throw IllegalArgumentException("Armor class must be non-negative.")
         if (hitDiceCount <= 0) throw IllegalArgumentException("Must have at least 1 hit die.")
         if (speed < 0 || // Non-negative
@@ -163,17 +161,6 @@ data class Monster(
     // TODO Handle case where constitution modifier is negative (min hit-points is 1, so then the
     //      average should consider that).
     val avgHitPoints get() = hitDice.avg + abilityScores.con.abilityModifier * hitDiceCount
-
-//    /**
-//     * Checks if [other] is equal to this.
-//     *
-//     * Note that equality is based on whether the two objects would conflict
-//     * (i.e. their [names][name] would match), not necessarily that all values are equal.
-//     */
-//    override fun equals(other: Any?) = other is Monster &&
-//        name.normalizeForInsensitiveComparisons() == other.name.normalizeForInsensitiveComparisons()
-//    override fun hashCode() = name.hashCode()
-//    override fun toString() = name
 }
 
 /**

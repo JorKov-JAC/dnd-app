@@ -101,6 +101,7 @@ fun String.strictUriEncode() = this
             || c == '_'
             || c == '-'
         ) {
+            // Leave the character as-is
             listOf(c)
         } else {
             // Percent encode the character

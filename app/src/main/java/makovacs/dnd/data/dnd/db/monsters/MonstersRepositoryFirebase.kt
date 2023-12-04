@@ -26,65 +26,88 @@ import makovacs.dnd.data.dnd.InformationEntryTypes
 import makovacs.dnd.data.dnd.Monster
 import makovacs.dnd.data.dnd.MonsterQuery
 import makovacs.dnd.data.dnd.Separator
-import makovacs.dnd.data.dnd.users.AuthRepository
 import makovacs.dnd.logic.fit
 import makovacs.dnd.logic.generateUid
 import java.io.ByteArrayOutputStream
 import java.util.WeakHashMap
 
-class MonstersRepositoryFirebase(val authRepository: AuthRepository) : MonstersRepository {
+/**
+ * An implementation of [MonstersRepository] using Firebase.
+ */
+class MonstersRepositoryFirebase : MonstersRepository {
 	companion object {
+		/** Max width and height of a [Monster.imageBitmap] if it's stored as a PNG. */
 		const val MAX_PNG_SIDE_LENGTH = 256
+		/** Max width and height of a [Monster.imageBitmap] if it's stored as a JPEG. */
 		const val MAX_JPEG_SIDE_LENGTH = 384
+		/** Quality used to encode [Monster.imageBitmap] as a JPEG. */
 		const val JPEG_QUALITY = 85
-		const val MAX_IMAGE_DOWNLOAD_BYTES = 20L * 1024 * 1024 // 20 MiB
+		/** Maximum size of a monster image to download. */
+		const val MAX_IMAGE_DOWNLOAD_BYTES = 10L * 1024 * 1024 // 10 MiB
 	}
 
+	/**
+	 * The Firestore monsters collection.
+	 */
 	private val collection = Firebase.firestore.collection("monsters")
+
+	/**
+	 * The Firebase Storage directory for monster images.
+	 */
 	private val imagesStorage = Firebase.storage.reference.child("monsters/images")
 
+	/**
+	 * Map from [Monster]s to their origin [FirestoreMonster]s.
+	 */
 	private val firestoreMonstersFromMonsters = MutableStateFlow(WeakHashMap<Monster, FirestoreMonster>())
+
+	/**
+	 * Map from [Monster.id]s to their [Monster.imageBitmap]s.
+	 */
 	private val monsterBitmapsFromIds = MutableStateFlow(mapOf<String, Bitmap?>())
+
+	/**
+	 * All of the monsters in the repository.
+	 */
 	@OptIn(DelicateCoroutinesApi::class)
 	private val monsters by lazy {
+		// The result flow which will provide the monsters:
 		val flow = MutableStateFlow<List<FirestoreMonster>?>(null)
 
-		collection.orderBy("name").addSnapshotListener { value, error ->
+		collection.orderBy("name").addSnapshotListener { snapshot, error ->
 			flow.update { flow ->
-				println("========")
-				println("Update started")
-				println("========")
+				// Handle errors:
 				if (error != null) {
 					println("Couldn't add snapshot listener for monsters: $error")
 					return@addSnapshotListener
 				}
 
+				if (snapshot == null) {
+					return@update flow // Do nothing
+				}
+
+				val monsters = snapshot.toObjects<FirestoreMonster>()
+
+				// > Handle monster images
+				// Maps every monster's ID to the image mutation number from the last snapshot:
 				val oldImageMutationCounts = flow?.associate {
 					it.id to it.imageMutations
 				} ?: emptyMap()
 
-				if (value == null) {
-					return@update flow // Do nothing
-				}
-
-				val monsters = value.toObjects<FirestoreMonster>()
-
-				monsters.forEach { monster ->
-					if ((oldImageMutationCounts[monster.id!!] ?: -1) != monster.imageMutations) {
-						// I really don't care if this succeeds, just gonna use GlobalScope
+				// Update each monster's image if its mutation number has changed:
+				for (monster in monsters) {
+					val id = monster.id!!
+					if (oldImageMutationCounts[id]?.equals(monster.imageMutations) != true) {
+						// Update the image in a thread pool:
 						GlobalScope.launch {
-							val image = getImage(monster.id!!)
+							val image = getImage(id)
 							monsterBitmapsFromIds.update {
-								// TODO Copying map to work around conflation like this is gross
-								it + mapOf(monster.id!! to image)
+								it + mapOf(id to image)
 							}
 						}
 					}
 				}
 
-				println("========")
-				println("Update finished")
-				println("========")
 				monsters
 			}
 		}
@@ -92,7 +115,104 @@ class MonstersRepositoryFirebase(val authRepository: AuthRepository) : MonstersR
 		flow
 	}
 
-	private suspend fun setMonsterBitmap(firestoreMonsterId: String, imageMutations: Int, bitmap: Bitmap) {
+	// Documented in interface
+	override suspend fun addMonster(monster: Monster) {
+		// Add monster
+		collection
+			.document(monster.id)
+			.set(FirestoreMonster.fromMonster(monster, imageMutations = 0))
+
+		// Store image bitmap
+		monster.imageBitmap?.let { setMonsterImage(monster.id, 0, it) }
+	}
+
+	// Documented in interface
+	override suspend fun deleteMonster(monster: Monster) {
+		val id = monster.id
+		imagesStorage.child(id).delete()
+		collection.document(id).delete()
+	}
+
+	// Documented in interface
+	override fun getAtLeast(query: MonsterQuery): Flow<List<Monster>?> {
+		return monsters.combine(monsterBitmapsFromIds) { monsters, monsterBitmapsFromIds ->
+			monsters?.mapNotNull {
+				tryCreateMonster(it, monsterBitmapsFromIds[it.id])
+			}
+		}
+	}
+
+	// Documented in interface
+	override suspend fun getMonster(id: String): Flow<Monster?> {
+		return getAtLeast(MonsterQuery("", emptyList(), emptySet()))
+			.map { monsters ->
+				monsters?.firstOrNull { it.id == id }
+			}
+	}
+
+	// Documented in interface
+	override suspend fun updateMonster(oldMonster: Monster, newMonster: Monster) {
+		val oldFirestoreMonster = firestoreMonstersFromMonsters.value[oldMonster]!!
+
+		val newFirestoreMonster = FirestoreMonster.fromMonster(
+			newMonster,
+			oldFirestoreMonster.imageMutations
+		)
+
+		// Send the update
+		val firestoreTask = collection
+			.document(oldMonster.id)
+			.set(newFirestoreMonster)
+
+		// Handle updating the image
+		if (newMonster.imageBitmap == null) {
+			// This deletion is done regardless of if a bitmap existed before in case it just hasn't
+			// loaded yet
+			imagesStorage.child(oldMonster.id).delete()
+		} else if (newMonster.imageBitmap != oldMonster.imageBitmap) {
+			// Update the image
+			setMonsterImage(oldMonster.id, oldFirestoreMonster.imageMutations, newMonster.imageBitmap)
+		}
+
+		firestoreTask.await()
+	}
+
+	/**
+	 * Gets the image for the given monster id.
+	 *
+	 * @param id The [Monster.id] of the monster to get the image for.
+	 * @returns The image's bitmap, or null if it could not be retrieved.
+	 */
+	private suspend fun getImage(id: String): Bitmap? {
+		return try {
+			// Get bitmap bytes:
+			val imageBitmapBytes = imagesStorage
+				.child(id)
+				.getBytes(MAX_IMAGE_DOWNLOAD_BYTES)
+				.await()
+
+			// Decode in another thread:
+			coroutineScope {
+				BitmapFactory.decodeByteArray(
+					imageBitmapBytes,
+					0,
+					imageBitmapBytes.size
+				)
+			} ?: throw Exception("Could not decode bitmap")
+		} catch (ex: Exception) {
+			println("Could not get monster image with id \"$id\": $ex")
+			null
+		}
+	}
+
+	/**
+	 * Updates a monster's image.
+	 *
+	 * @param monsterId The ID of the monster to set the image for.
+	 * @param imageMutations The monster's current image mutation number.
+	 * @param bitmap The new bitmap to use.
+	 */
+	private suspend fun setMonsterImage(monsterId: String, imageMutations: Int, bitmap: Bitmap) {
 		val bitmapStream = ByteArrayOutputStream()
 
 		if (bitmap.hasAlpha()) {
@@ -120,127 +240,22 @@ class MonstersRepositoryFirebase(val authRepository: AuthRepository) : MonstersR
 
 
 		imagesStorage
-			.child(firestoreMonsterId)
+			.child(monsterId)
 			.putBytes(bitmapStream.toByteArray())
 			.await()
-		collection.document(firestoreMonsterId).update("imageMutations", imageMutations + (0..63).random())
+		collection.document(monsterId).update("imageMutations", imageMutations + (0..63).random())
 	}
 
-	override suspend fun addMonster(monster: Monster) {
-		collection.document(monster.id).set(FirestoreMonster.fromMonster(monster, imageMutations = 0))
-
-		// Store image bitmap
-		monster.imageBitmap?.let { setMonsterBitmap(monster.id, 0, it) }
-	}
-
-	override suspend fun getMonster(id: String): Flow<Monster?> {
-//		val queryResults = collection
-//			.whereEqualTo("name", name)
-//			.limit(1) // Optimization; might hit local cache first
-//			.get()
-//			.await()
-//			.toObjects<FirestoreMonster>()
-//
-//		if (queryResults.isEmpty()) return null
-//
-//		val firestoreMonster = queryResults[0]
-//
-//		println("=========")
-//		println("getMonster")
-//		println("---------")
-//		println(firestoreMonster)
-//		println(firestoreMonster.id)
-//		println("=========")
-//
-//		return createMonster(firestoreMonster, getImage(firestoreMonster.id!!))
-
-		return queryMonsters(MonsterQuery("", emptyList(), emptySet()))
-			.map { monsters ->
-				monsters?.firstOrNull { it.id == id }
-			}
-	}
-
-	override fun queryMonsters(query: MonsterQuery): Flow<List<Monster>?> {
-//		val monsters = collection.get().await().toObjects<FirestoreMonster>()
-//		monsters.forEach {
-//			println("=========")
-//			println("queryMonsters")
-//			println("---------")
-//			println(it)
-//			println(it.id)
-//			println("=========")
-//		}
-//		return monsters.map {
-//			createMonster(
-//				it,
-//				getImage(it.id!!)
-//			)
-//		}
-		return monsters.combine(monsterBitmapsFromIds) { monsters, monsterBitmapsFromIds ->
-			monsters?.mapNotNull {
-				tryCreateMonster(it, monsterBitmapsFromIds[it.id])
-			}
-		}
-//		return monsters.map { it?.let{it.map {inner ->
-//			createMonster(inner, null)
-//		} }}
-	}
-
-	override suspend fun deleteMonster(monster: Monster) {
-		val id = monster.id
-		imagesStorage.child(id).delete()
-		collection.document(id).delete()
-	}
-
-	override suspend fun updateMonster(oldMonster: Monster, newMonster: Monster) {
-		val oldFirestoreMonster = firestoreMonstersFromMonsters.value[oldMonster]!!
-
-		val newFirestoreMonster = FirestoreMonster.fromMonster(
-			newMonster,
-			oldFirestoreMonster.imageMutations
-		)
-
-		// Send the update
-		collection
-			.document(oldMonster.id)
-			.set(newFirestoreMonster)
-			// Don't await; otherwise it will block when network is down
-			//.await()
-
-		if (newMonster.imageBitmap == null) {
-			// This deletion is done regardless of if a bitmap existed before in case it just hasn't
-			// loaded yet
-			imagesStorage.child(oldMonster.id).delete()
-		} else if (newMonster.imageBitmap != oldMonster.imageBitmap) {
-			// Update the image
-			setMonsterBitmap(oldMonster.id, oldFirestoreMonster.imageMutations, newMonster.imageBitmap)
-		}
-
-
-	}
-
-	private suspend fun getImage(id: String): Bitmap? {
-		return try {
-			val imageBitmapBytes = imagesStorage
-				.child(id)
-				.getBytes(MAX_IMAGE_DOWNLOAD_BYTES)
-				.await()
-
-			coroutineScope {
-				BitmapFactory.decodeByteArray(
-					imageBitmapBytes,
-					0,
-					imageBitmapBytes.size
-				)
-			} ?: throw Exception("Could not decode bitmap")
-		} catch (ex: Exception) {
-			println("Could not get monster image with id \"$id\": $ex")
-			null
-		}
-	}
-
+	/**
+	 * Tries to convert a [FirestoreMonster] to a [Monster].
+	 *
+	 * @param firestoreMonster The monster data from Firestore.
+	 * @param imageBitmap The [Monster.imageBitmap] to use.
+	 * @return The converted monster, or null if conversion failed.
+	 */
 	private fun tryCreateMonster(firestoreMonster: FirestoreMonster, imageBitmap: Bitmap?): Monster? {
 		return try {
+			// Create the monster
 			val monster = firestoreMonster.run {
 				Monster(
 					id ?: generateUid(),
@@ -257,6 +272,7 @@ class MonstersRepositoryFirebase(val authRepository: AuthRepository) : MonstersR
 					imageDesc,
 					tags,
 					Information(information.map {
+						// > Convert map into an entry
 						when (InformationEntryTypes.values()[(it["type"] as Long).toInt()]) {
 							InformationEntryTypes.SEPARATOR -> Separator
 							InformationEntryTypes.DESCRIPTION -> Description(
@@ -269,6 +285,7 @@ class MonstersRepositoryFirebase(val authRepository: AuthRepository) : MonstersR
 				)
 			}
 
+			// Associate the firestore data to the created monster
 			firestoreMonstersFromMonsters.update {
 				val copy = WeakHashMap(it)
 				copy[monster] = firestoreMonster
@@ -277,7 +294,7 @@ class MonstersRepositoryFirebase(val authRepository: AuthRepository) : MonstersR
 
 			monster
 		} catch (ex: Exception) {
-			println("Couldn't deserialize monster $firestoreMonster: $ex")
+			println("Couldn't convert Firebase monster $firestoreMonster: $ex")
 			null
 		}
 	}
@@ -289,6 +306,8 @@ class MonstersRepositoryFirebase(val authRepository: AuthRepository) : MonstersR
  * Almost all fields in this class match a field with the same name in [Monster].
  *
  * @param id This id of this monster's Firestore document.
+ * @param imageMutations A number representing the mutation number of the current fetched image
+ * bitmap. This number is changed to tell clients to refresh their images.
  */
 private data class FirestoreMonster(
 	@DocumentId
@@ -308,7 +327,7 @@ private data class FirestoreMonster(
 	val information: List<MutableMap<String, Any?>>
 ) {
 	/**
-	 * Don't use this constructor, it is only used during deserialization
+	 * Don't use this constructor, it is only used during deserialization.
 	 */
 	private constructor(): this(
 		null,
@@ -328,6 +347,12 @@ private data class FirestoreMonster(
 	)
 
 	companion object {
+		/**
+		 * Creates a new instance from a given monster.
+		 *
+		 * @param monster The monster to base the instance off of.
+		 * @param imageMutations The [FirestoreMonster.imageMutations] to use.
+		 */
 		fun fromMonster(monster: Monster, imageMutations: Int) = monster.run { FirestoreMonster(
 			null,
 			ownerUserId,
@@ -343,9 +368,10 @@ private data class FirestoreMonster(
 			imageDesc,
 			tags,
 			information.entries.map {
+				// > Convert every entry into a map
 				val map = mutableMapOf<String, Any?>()
 
-				val type = when(it) {
+				map["type"] = when(it) {
 					is Separator -> InformationEntryTypes.SEPARATOR.ordinal
 					is Description -> {
 						map["title"] = it.title
@@ -358,7 +384,6 @@ private data class FirestoreMonster(
 					}
 				}
 
-				map["type"] = type
 				map
 			}
 		) }

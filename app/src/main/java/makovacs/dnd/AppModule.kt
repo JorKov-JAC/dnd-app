@@ -21,6 +21,6 @@ class AppModule(
     }
 
     val monstersRepository: MonstersRepository by lazy {
-        MonstersRepositoryFirebase(authRepository)
+        MonstersRepositoryFirebase()
     }
 }

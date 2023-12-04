@@ -228,6 +228,10 @@ sealed class Route(val route: String) {
 
     /** Route for [EditMonsterScreen]. */
     object EditMonsterRoute : Route("monsters/edit/{$ID_KEY}") {
+        /**
+         * Creates a route string with the given arguments.
+         * @param id The [Monster.id] of the monster to edit.
+         */
         fun go(id: String) = "monsters/edit/${Uri.encode(id)}"
     }
 

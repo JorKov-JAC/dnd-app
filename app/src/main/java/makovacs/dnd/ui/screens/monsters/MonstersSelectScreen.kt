@@ -7,7 +7,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -34,7 +33,8 @@ fun MonstersSelectScreen(
     initialQuery: String = "",
     onSelect: (Monster) -> Unit
 ) {
-    val monsters = monstersVm.monsters.collectAsState().value
+    val monsters = monstersVm.monsters
+    var query by rememberSaveable { mutableStateOf(initialQuery) }
 
     Column(modifier = modifier) {
         Text(
@@ -48,8 +48,6 @@ fun MonstersSelectScreen(
                 CircularProgressIndicator()
             }
         } else {
-            var query by rememberSaveable { mutableStateOf(initialQuery) }
-
             MonstersSearchList(
                 monsters = monsters,
                 onClick = onSelect,
