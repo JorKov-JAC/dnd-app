@@ -19,11 +19,12 @@ class MagicItemsViewModel(private val magicItemsRepository: MagicItemsRepository
     val magicItemsDb: StateFlow<List<MagicItem>> = _magicItemsDb.asStateFlow()
 
     val magicItems: List<MagicItem>
-        get() = _magicItems
+        get() = _magicItemsDb.value
 
 
     fun remove(item: MagicItem) {
-        _magicItems.remove(item)
+        //_magicItems.remove(item)
+
     }
 
     fun removeByName(name: String) {

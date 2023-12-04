@@ -6,6 +6,7 @@ package makovacs.dnd.data.dnd
 
 import android.os.Parcelable
 import androidx.annotation.Size
+import com.google.firebase.firestore.Exclude
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import makovacs.dnd.data.dnd.Dice.Companion.typicalPossibleSides
@@ -125,7 +126,7 @@ data class Dice(val count: Int = 1, val sides: Int = 2) {
     fun roll() = (1..count).sumOf { (1..sides).random() }
 
     /** Gets the average value of rolling all of these dice. */
-    val avg get() = (sides + 1f) / 2f * count
+    val avg @Exclude get() = (sides + 1f) / 2f * count
 
     override fun toString() = "${count}d$sides"
 }

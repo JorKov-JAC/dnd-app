@@ -60,6 +60,8 @@ class MagicItemsRepository(val db: FirebaseFirestore, val auth: AuthRepository) 
 
     }
 
+    //suspend fun delete()
+
 
 
 }

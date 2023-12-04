@@ -42,6 +42,7 @@ fun ItemScreen(magicItems: List<MagicItem>, remove: (String) -> Unit, getByName:
     val navController = LocalNavHostController.current
 
     var queryStr by rememberSaveable { mutableStateOf("") }
+    getAllItems()
 
     StringSearchList(
         items = magicItems,
