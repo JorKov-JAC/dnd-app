@@ -5,10 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewModelScope
@@ -35,6 +31,8 @@ import makovacs.dnd.ui.screens.monsters.MonsterDetailsScreen
 import makovacs.dnd.ui.screens.monsters.MonstersListScreen
 import makovacs.dnd.ui.screens.monsters.MonstersSelectScreen
 import makovacs.dnd.ui.screens.monsters.NewMonsterScreen
+import makovacs.dnd.ui.util.getCurrentUser
+import makovacs.dnd.ui.util.popBackStackOnce
 import makovacs.dnd.ui.viewmodels.LocalMonstersViewModel
 import makovacs.dnd.ui.viewmodels.MagicItemsViewModel
 
@@ -93,16 +91,31 @@ fun Router(modifier: Modifier = Modifier, magicItemsVM: MagicItemsViewModel = vi
             val monstersVm = LocalMonstersViewModel.current
             val id = it.arguments!!.getString(ID_KEY)!! // Must have an id
             val monster = monstersVm.getMonster(id)
+
+            // Monster doesn't exist, maybe we navigated backward after it was deleted
+            if (monster == null) {
+                popBackStackOnce()
+                return@composable
+            }
+
             MonsterDetailsScreen(
                 monster = monster,
-                onDelete = { monster?.let { monstersVm.removeMonster(monster) } }
+                onDelete = { monstersVm.removeMonster(monster) }
             )
         }
 
         composable(Route.NewMonsterRoute.route) {
+            val user = getCurrentUser()
+
+            // Prevent unauthenticated users from accessing this route:
+            if (user == null) {
+                popBackStackOnce()
+                return@composable
+            }
+
             val monstersVm = LocalMonstersViewModel.current
 
-            NewMonsterScreen {
+            NewMonsterScreen(userId = user.id) {
                 monstersVm.viewModelScope.launch { monstersVm.addMonster(it) }
 
                 // Go to the new monster's page
@@ -112,20 +125,21 @@ fun Router(modifier: Modifier = Modifier, magicItemsVM: MagicItemsViewModel = vi
         }
 
         composable(Route.EditMonsterRoute.route) {
+            val user = getCurrentUser()
+
             val monstersVm = LocalMonstersViewModel.current
             val id = it.arguments!!.getString(ID_KEY)!! // Must have an id
             val monster = monstersVm.getMonster(id)
 
-            if (monster == null) {
-                // Only pop once:
-                var poppedStack by rememberSaveable { mutableStateOf(false) }
-                if (poppedStack) return@composable
-                poppedStack = true
-
-                // Monster doesn't exist; this might happen if the monster is deleted at the
-                // same time. This would be really rare, we'll just pop back out.
-                navHostController.popBackStack()
-
+            if (
+                // User must be authenticated:
+                user == null
+                // Monster must exist (might occur if navigated backward)
+                || monster == null
+                // Current user must own the monster
+                || user.id != monster.ownerUserId
+            ) {
+                popBackStackOnce()
                 return@composable
             }
 

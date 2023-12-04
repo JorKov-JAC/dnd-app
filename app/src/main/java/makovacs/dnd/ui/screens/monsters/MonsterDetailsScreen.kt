@@ -32,6 +32,7 @@ import makovacs.dnd.ui.components.ConfirmDeleteDialog
 import makovacs.dnd.ui.components.MonsterDetails
 import makovacs.dnd.ui.routing.LocalNavHostController
 import makovacs.dnd.ui.routing.Route
+import makovacs.dnd.ui.util.getCurrentUser
 
 /**
  * Shows detailed information about a given monster.
@@ -47,23 +48,12 @@ import makovacs.dnd.ui.routing.Route
  */
 @Composable
 fun MonsterDetailsScreen(
-    monster: Monster?,
+    monster: Monster,
     onDelete: (() -> Unit)?,
     modifier: Modifier = Modifier
 ) {
+    val user = getCurrentUser()
     val navHostController = LocalNavHostController.current
-
-    if (monster == null) {
-        // Probably navigated backward to a deleted/moved entry, go further back
-
-        // We're fudging the "no side-effects" rule here by navigating like this, so make sure we
-        // only do it once:
-        var alreadyNavigatedUp by rememberSaveable { mutableStateOf(false) }
-        if (!alreadyNavigatedUp) navHostController.navigateUp()
-        alreadyNavigatedUp = true
-
-        return
-    }
 
     Column(modifier = modifier.verticalScroll(rememberScrollState())) {
         var deleteConfirmationVisible by rememberSaveable { mutableStateOf(false) }
@@ -78,33 +68,37 @@ fun MonsterDetailsScreen(
                     .padding(16.dp)
                     .width(IntrinsicSize.Min)
             ) {
-                // Edit Button
-                OutlinedButton(
-                    { navHostController.navigate(Route.EditMonsterRoute.go(monster.id)) },
-                    contentPadding = PaddingValues(horizontal = 16.dp),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Icon(Icons.Default.Edit, null /* Described by Text */)
-                    Spacer(
-                        Modifier
-                            .weight(1f)
-                            .width(4.dp))
-                    Text("Edit")
-                }
-
-                // Delete Button
-                if (onDelete != null) {
-                    Button(
-                        { deleteConfirmationVisible = true },
+                if (user?.run { id == monster.ownerUserId } == true) {
+                    // Edit Button
+                    OutlinedButton(
+                        { navHostController.navigate(Route.EditMonsterRoute.go(monster.id)) },
                         contentPadding = PaddingValues(horizontal = 16.dp),
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Icon(Icons.Default.Delete, null /* Described by Text */)
+                        Icon(Icons.Default.Edit, null /* Described by Text */)
                         Spacer(
                             Modifier
                                 .weight(1f)
-                                .width(4.dp))
-                        Text("Delete")
+                                .width(4.dp)
+                        )
+                        Text("Edit")
+                    }
+
+                    // Delete Button
+                    if (onDelete != null) {
+                        Button(
+                            { deleteConfirmationVisible = true },
+                            contentPadding = PaddingValues(horizontal = 16.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Icon(Icons.Default.Delete, null /* Described by Text */)
+                            Spacer(
+                                Modifier
+                                    .weight(1f)
+                                    .width(4.dp)
+                            )
+                            Text("Delete")
+                        }
                     }
                 }
             }

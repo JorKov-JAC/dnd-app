@@ -19,6 +19,7 @@ import makovacs.dnd.data.dnd.Monster
 import makovacs.dnd.ui.components.MonstersSearchList
 import makovacs.dnd.ui.routing.LocalNavHostController
 import makovacs.dnd.ui.routing.Route
+import makovacs.dnd.ui.util.getCurrentUser
 import makovacs.dnd.ui.viewmodels.LocalMonstersViewModel
 
 /**
@@ -26,6 +27,8 @@ import makovacs.dnd.ui.viewmodels.LocalMonstersViewModel
  */
 @Composable
 fun MonstersListScreen(modifier: Modifier = Modifier) {
+    val user = getCurrentUser()
+
     val navHostController = LocalNavHostController.current
     val monstersVm = LocalMonstersViewModel.current
     val monsters = monstersVm.monsters.collectAsState().value
@@ -46,13 +49,24 @@ fun MonstersListScreen(modifier: Modifier = Modifier) {
                 queryStr = query,
                 setQueryStr = { query = it }
             )
-            Button(
-                onClick = { navHostController.navigate(Route.NewMonsterRoute.route) },
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(8.dp)
-            ) {
-                Text("+")
+            if (user == null) {
+                Button(
+                    {navHostController.navigate(Route.SignIn.route)},
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(8.dp)
+                ) {
+                    Text("Sign-In to Add Monsters")
+                }
+            } else {
+                Button(
+                    onClick = { navHostController.navigate(Route.NewMonsterRoute.route) },
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(8.dp)
+                ) {
+                    Text("+")
+                }
             }
         }
     }

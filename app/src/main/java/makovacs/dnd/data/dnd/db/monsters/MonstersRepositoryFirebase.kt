@@ -242,6 +242,7 @@ class MonstersRepositoryFirebase(val authRepository: AuthRepository) : MonstersR
 	private fun createMonster(firestoreMonster: FirestoreMonster, imageBitmap: Bitmap?): Monster {
 		val monster = firestoreMonster.run { Monster(
 			id ?: generateUid(),
+			ownerUserId,
 			name,
 			description,
 			size,
@@ -282,6 +283,7 @@ class MonstersRepositoryFirebase(val authRepository: AuthRepository) : MonstersR
 private data class FirestoreMonster(
 	@DocumentId
 	var id: String?,
+	val ownerUserId: String?,
 	val name: String,
 	val description: String,
 	val size: CreatureSize,
@@ -295,7 +297,11 @@ private data class FirestoreMonster(
 	val tags: List<String>,
 	val information: List<MutableMap<String, Any?>>
 ) {
-	constructor(): this(
+	/**
+	 * Don't use this constructor, it is only used during deserialization
+	 */
+	private constructor(): this(
+		null,
 		null,
 		"",
 		"",
@@ -314,6 +320,7 @@ private data class FirestoreMonster(
 	companion object {
 		fun fromMonster(monster: Monster, imageMutations: Int) = monster.run { FirestoreMonster(
 			null,
+			ownerUserId,
 			name,
 			rawDescription,
 			size,

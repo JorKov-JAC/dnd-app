@@ -45,6 +45,7 @@ import makovacs.dnd.ui.components.common.InformationEditor
  * @param submitButtonText The text shown on the submit button.
  * @param submittedMonsterId The [Monster.id] of the monster to create, or null if a new one should
  * be generated automatically.
+ * @param submittedMonsterOwnerUserId The [Monster.ownerUserId] of the monster to create.
  * @param onSubmit Called with the new [Monster].
  * Should throw with a user-readable error message on failure.
  */
@@ -54,6 +55,7 @@ fun MonsterEditor(
     vm: MonsterEditorViewModel,
     submitButtonText: String,
     submittedMonsterId: String?,
+    submittedMonsterOwnerUserId: String?,
     modifier: Modifier = Modifier,
     onSubmit: (newMonster: Monster) -> Unit
 ) {
@@ -173,6 +175,7 @@ fun MonsterEditor(
                 onSubmit(
                     Monster(
                         submittedMonsterId ?: generateUid(),
+                        submittedMonsterOwnerUserId,
                         vm.name.normalizeAndClean(),
                         vm.description,
                         vm.size ?: error("Missing Size."),

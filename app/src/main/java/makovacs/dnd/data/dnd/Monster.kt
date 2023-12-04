@@ -1,6 +1,7 @@
 package makovacs.dnd.data.dnd
 
 import android.graphics.Bitmap
+import makovacs.dnd.data.dnd.users.User
 import makovacs.dnd.logic.generateUid
 import makovacs.dnd.logic.normalizeForInsensitiveComparisons
 import kotlin.math.floor
@@ -12,6 +13,7 @@ import kotlin.math.truncate
  * Two instances are considered equal if their [names][name] match.
  *
  * @param id A unique ID for this monster. See [generateUid].
+ * @param ownerUserId The [User.id] of the owning user, or null if there is no owner.
  * @param name The monster's name.
  * @param description A full description of the monster.
  * @param abilityScores The monster's [Ability Scores](https://www.dndbeyond.com/sources/basic-rules/monsters#AbilityScores).
@@ -28,6 +30,7 @@ import kotlin.math.truncate
  */
 data class Monster(
     val id: String,
+    val ownerUserId: String?,
     val name: String,
     private val description: String,
     val size: CreatureSize,

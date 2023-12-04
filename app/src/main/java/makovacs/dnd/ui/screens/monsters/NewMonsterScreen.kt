@@ -21,7 +21,7 @@ import makovacs.dnd.ui.components.monsters.MonsterEditor
  * Should throw with a user-readable error message on failure.
  */
 @Composable
-fun NewMonsterScreen(modifier: Modifier = Modifier, onSubmit: (newMonster: Monster) -> Unit) {
+fun NewMonsterScreen(userId: String?, modifier: Modifier = Modifier, onSubmit: (newMonster: Monster) -> Unit) {
     Column(modifier = modifier.verticalScroll(rememberScrollState())) {
         Text(
             stringResource(id = R.string.newMonster),
@@ -33,6 +33,7 @@ fun NewMonsterScreen(modifier: Modifier = Modifier, onSubmit: (newMonster: Monst
             submitButtonText = stringResource(R.string.create),
             vm = viewModel(),
             submittedMonsterId = null,
+            submittedMonsterOwnerUserId = userId,
             onSubmit = onSubmit
         )
     }
