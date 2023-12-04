@@ -177,8 +177,8 @@ class MonstersRepositoryFirebase(val authRepository: AuthRepository) : MonstersR
 //			)
 //		}
 		return monsters.combine(monsterBitmapsFromIds) { monsters, monsterBitmapsFromIds ->
-			monsters?.map {
-				createMonster(it, monsterBitmapsFromIds[it.id])
+			monsters?.mapNotNull {
+				tryCreateMonster(it, monsterBitmapsFromIds[it.id])
 			}
 		}
 //		return monsters.map { it?.let{it.map {inner ->
@@ -239,37 +239,47 @@ class MonstersRepositoryFirebase(val authRepository: AuthRepository) : MonstersR
 		}
 	}
 
-	private fun createMonster(firestoreMonster: FirestoreMonster, imageBitmap: Bitmap?): Monster {
-		val monster = firestoreMonster.run { Monster(
-			id ?: generateUid(),
-			ownerUserId,
-			name,
-			description,
-			size,
-			armorClass,
-			hitDiceCount,
-			speed,
-			AbilityScores.from(abilityScores),
-			challengeRating,
-			imageBitmap,
-			imageDesc,
-			tags,
-			Information(information.map {
-				when (InformationEntryTypes.values()[(it["type"] as Long).toInt()]) {
-					InformationEntryTypes.SEPARATOR -> Separator
-					InformationEntryTypes.DESCRIPTION -> Description(title = it["title"] as String?, text = it["text"] as String)
-					InformationEntryTypes.HEADER -> Header(text = it["text"] as String)
-				}
-			})
-		) }
+	private fun tryCreateMonster(firestoreMonster: FirestoreMonster, imageBitmap: Bitmap?): Monster? {
+		return try {
+			val monster = firestoreMonster.run {
+				Monster(
+					id ?: generateUid(),
+					ownerUserId,
+					name,
+					description,
+					size,
+					armorClass,
+					hitDiceCount,
+					speed,
+					AbilityScores.from(abilityScores),
+					challengeRating,
+					imageBitmap,
+					imageDesc,
+					tags,
+					Information(information.map {
+						when (InformationEntryTypes.values()[(it["type"] as Long).toInt()]) {
+							InformationEntryTypes.SEPARATOR -> Separator
+							InformationEntryTypes.DESCRIPTION -> Description(
+								title = it["title"] as String?,
+								text = it["text"] as String
+							)
+							InformationEntryTypes.HEADER -> Header(text = it["text"] as String)
+						}
+					})
+				)
+			}
 
-		firestoreMonstersFromMonsters.update {
-			val copy = WeakHashMap(it)
-			copy[monster] = firestoreMonster
-			copy
+			firestoreMonstersFromMonsters.update {
+				val copy = WeakHashMap(it)
+				copy[monster] = firestoreMonster
+				copy
+			}
+
+			monster
+		} catch (ex: Exception) {
+			println("Couldn't deserialize monster $firestoreMonster: $ex")
+			null
 		}
-
-		return monster
 	}
 }
 
@@ -303,13 +313,13 @@ private data class FirestoreMonster(
 	private constructor(): this(
 		null,
 		null,
+		"Untitled",
 		"",
-		"",
-		CreatureSize.TINY,
+		CreatureSize.MEDIUM,
 		0,
+		1,
 		0,
-		0,
-		emptyList(),
+		List(6) { AbilityScores.validScoreRange.first },
 		0f,
 		0,
 		null,
