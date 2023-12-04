@@ -92,7 +92,7 @@ class MonstersRepositoryFirebase(val authRepository: AuthRepository) : MonstersR
 		flow
 	}
 
-	private suspend fun setMonsterBitmap(firestoreMonsterId: String, bitmap: Bitmap) {
+	private suspend fun setMonsterBitmap(firestoreMonsterId: String, imageMutations: Int, bitmap: Bitmap) {
 		val bitmapStream = ByteArrayOutputStream()
 
 		if (bitmap.hasAlpha()) {
@@ -123,13 +123,14 @@ class MonstersRepositoryFirebase(val authRepository: AuthRepository) : MonstersR
 			.child(firestoreMonsterId)
 			.putBytes(bitmapStream.toByteArray())
 			.await()
+		collection.document(firestoreMonsterId).update("imageMutations", imageMutations + (0..63).random())
 	}
 
 	override suspend fun addMonster(monster: Monster) {
-		collection.document(monster.id).set(FirestoreMonster.fromMonster(monster))
+		collection.document(monster.id).set(FirestoreMonster.fromMonster(monster, imageMutations = 0))
 
 		// Store image bitmap
-		monster.imageBitmap?.let { setMonsterBitmap(monster.id, it) }
+		monster.imageBitmap?.let { setMonsterBitmap(monster.id, 0, it) }
 	}
 
 	override suspend fun getMonster(id: String): Flow<Monster?> {
@@ -194,27 +195,28 @@ class MonstersRepositoryFirebase(val authRepository: AuthRepository) : MonstersR
 	override suspend fun updateMonster(oldMonster: Monster, newMonster: Monster) {
 		val oldFirestoreMonster = firestoreMonstersFromMonsters.value[oldMonster]!!
 
-		val newFirestoreMonster = FirestoreMonster.fromMonster(newMonster)
-		newFirestoreMonster.imageMutations = if (newMonster.imageBitmap != oldMonster.imageBitmap) {
-			if (newMonster.imageBitmap != null) {
-				setMonsterBitmap(oldMonster.id, newMonster.imageBitmap)
-			}
-			oldFirestoreMonster.imageMutations + 1
-		} else {
+		val newFirestoreMonster = FirestoreMonster.fromMonster(
+			newMonster,
 			oldFirestoreMonster.imageMutations
-		}
+		)
 
-		// This deletion is done regardless of if a bitmap existed before in case it just hasn't
-		// loaded yet
-		if (newMonster.imageBitmap == null) {
-			imagesStorage.child(oldMonster.id).delete()
-		}
-
+		// Send the update
 		collection
 			.document(oldMonster.id)
 			.set(newFirestoreMonster)
 			// Don't await; otherwise it will block when network is down
 			//.await()
+
+		if (newMonster.imageBitmap == null) {
+			// This deletion is done regardless of if a bitmap existed before in case it just hasn't
+			// loaded yet
+			imagesStorage.child(oldMonster.id).delete()
+		} else if (newMonster.imageBitmap != oldMonster.imageBitmap) {
+			// Update the image
+			setMonsterBitmap(oldMonster.id, oldFirestoreMonster.imageMutations, newMonster.imageBitmap)
+		}
+
+
 	}
 
 	private suspend fun getImage(id: String): Bitmap? {
@@ -310,7 +312,7 @@ private data class FirestoreMonster(
 	)
 
 	companion object {
-		fun fromMonster(monster: Monster) = monster.run { FirestoreMonster(
+		fun fromMonster(monster: Monster, imageMutations: Int) = monster.run { FirestoreMonster(
 			null,
 			name,
 			rawDescription,
@@ -320,7 +322,7 @@ private data class FirestoreMonster(
 			speed,
 			abilityScores.scoreList,
 			challengeRating,
-			0,
+			imageMutations,
 			imageDesc,
 			tags,
 			information.entries.map {
