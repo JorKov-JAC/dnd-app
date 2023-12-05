@@ -165,13 +165,16 @@ class MonstersRepositoryFirebase : MonstersRepository {
 			.set(newFirestoreMonster)
 
 		// Handle updating the image
-		if (newMonster.imageBitmap == null) {
-			// This deletion is done regardless of if a bitmap existed before in case it just hasn't
-			// loaded yet
-			imagesStorage.child(oldMonster.id).delete()
-		} else if (newMonster.imageBitmap != oldMonster.imageBitmap) {
-			// Update the image
-			setMonsterImage(oldMonster.id, oldFirestoreMonster.imageMutations, newMonster.imageBitmap)
+		if (newMonster.imageBitmap != oldMonster.imageBitmap ||
+				// Always delete if new image is null since there might be one that just hasn't
+				// loaded yet:
+				newMonster.imageBitmap == null) {
+
+			setMonsterImage(
+				oldMonster.id,
+				oldFirestoreMonster.imageMutations,
+				newMonster.imageBitmap
+			)
 		}
 
 		firestoreTask.await()
@@ -210,40 +213,55 @@ class MonstersRepositoryFirebase : MonstersRepository {
 	 *
 	 * @param monsterId The ID of the monster to set the image for.
 	 * @param imageMutations The monster's current image mutation number.
-	 * @param bitmap The new bitmap to use.
+	 * @param bitmap The new bitmap to use, or null if the bitmap should be deleted.
 	 */
-	private suspend fun setMonsterImage(monsterId: String, imageMutations: Int, bitmap: Bitmap) {
-		val bitmapStream = ByteArrayOutputStream()
+	private suspend fun setMonsterImage(monsterId: String, imageMutations: Int, bitmap: Bitmap?) {
+		if (bitmap != null) {
+			// > Upload new image
 
-		if (bitmap.hasAlpha()) {
-			Bitmap.CompressFormat.PNG
-			bitmap
-				// Limit size
-				.fit(MAX_PNG_SIDE_LENGTH, MAX_PNG_SIDE_LENGTH)
-				// Compress and re-encode
-				.compress(
-					Bitmap.CompressFormat.PNG,
-					100, // Ignored by PNG
-					bitmapStream
-				)
+			val bitmapStream = ByteArrayOutputStream()
+
+			if (bitmap.hasAlpha()) {
+				Bitmap.CompressFormat.PNG
+				bitmap
+					// Limit size
+					.fit(MAX_PNG_SIDE_LENGTH, MAX_PNG_SIDE_LENGTH)
+					// Compress and re-encode
+					.compress(
+						Bitmap.CompressFormat.PNG,
+						100, // Ignored by PNG
+						bitmapStream
+					)
+			} else {
+				bitmap
+					// Limit size
+					.fit(MAX_JPEG_SIDE_LENGTH, MAX_JPEG_SIDE_LENGTH)
+					// Compress and re-encode
+					.compress(
+						Bitmap.CompressFormat.JPEG,
+						JPEG_QUALITY,
+						bitmapStream
+					)
+			}
+
+			imagesStorage
+				.child(monsterId)
+				.putBytes(bitmapStream.toByteArray())
+				.await()
 		} else {
-			bitmap
-				// Limit size
-				.fit(MAX_JPEG_SIDE_LENGTH, MAX_JPEG_SIDE_LENGTH)
-				// Compress and re-encode
-				.compress(
-					Bitmap.CompressFormat.JPEG,
-					JPEG_QUALITY,
-					bitmapStream
-				)
+			// > Delete any existing images
+
+			imagesStorage.child(monsterId).delete()
 		}
 
-
-		imagesStorage
-			.child(monsterId)
-			.putBytes(bitmapStream.toByteArray())
-			.await()
-		collection.document(monsterId).update("imageMutations", imageMutations + (0..63).random())
+		// Update firestore monster's mutations so that
+		collection
+			.document(monsterId)
+			.update(
+				"imageMutations",
+				// Add a random number in case of extremely rare simultaneous updates:
+				imageMutations + (0..127).random()
+			)
 	}
 
 	/**
