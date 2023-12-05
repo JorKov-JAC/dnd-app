@@ -22,17 +22,19 @@ class MagicItemsViewModel(private val magicItemsRepository: MagicItemsRepository
         get() = _magicItemsDb.value
 
 
-    fun remove(item: MagicItem) {
-        //_magicItems.remove(item)
-
+    fun removeByName(name: String) {
+        viewModelScope.launch {
+            magicItemsRepository.delete(name)
+            getAllItems()
+        }
     }
-
+/*
     fun removeByName(name: String) {
         _magicItems.removeIf { item -> item.name == name }
     }
-
+*/
     fun getByName(name: String): MagicItem? {
-        var magicItem = _magicItems.find { item -> item.name == name }
+        var magicItem = _magicItemsDb.value.find { item -> item.name == name }
         return magicItem?.copy()
     }
 

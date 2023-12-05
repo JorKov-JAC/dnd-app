@@ -11,14 +11,16 @@ import makovacs.dnd.data.dnd.users.ProfileData
 
 class MagicItemsRepository(val db: FirebaseFirestore, val auth: AuthRepository) {
     val dbMagicId: CollectionReference = db.collection("MagicItems")
-
-
     suspend fun saveMagicItem(item: MagicItem) {
 
         if(auth.currentUser().value != null)
         {
             //dbMagicId.document(auth.currentUser().value.toString()).set(item)
-            dbMagicId.add(item)
+
+            val itemDb = dbMagicId.document(auth.currentUser().value?.email ?: "null")
+                .collection("Items")
+
+            itemDb.add(item)
                 .addOnSuccessListener {
                     println("Item saved.")
                 }
@@ -33,10 +35,10 @@ class MagicItemsRepository(val db: FirebaseFirestore, val auth: AuthRepository) 
     }
 
     suspend fun getMagicItems(): Flow<List<MagicItem>> = callbackFlow {
+        val document = dbMagicId.document(auth.currentUser().value?.email ?: "null")
+            .collection("Items")
 
-        //val document = dbMagicId.document(auth.currentUser().value.toString())
-
-        val subscription = dbMagicId.addSnapshotListener{ snapshot, error ->
+        val subscription = document.addSnapshotListener{ snapshot, error ->
             if (error != null) {
                 println("Listen failed: $error")
                 return@addSnapshotListener
@@ -48,19 +50,39 @@ class MagicItemsRepository(val db: FirebaseFirestore, val auth: AuthRepository) 
                     trySend(item)
                 } else {
                     println("Item is / has become null")
-                    //trySend(MagicItem("", "", "", "")) // If there is no saved profile, then send a default object
+                    trySend(listOf<MagicItem>()) // If there is no saved profile, then send a default object
                 }
             } else {
                 // The user document does not exist or has no data
-                println("Profile does not exist")
-                //trySend() // send default object
+                println("Item does not exist")
+                trySend(listOf<MagicItem>()) // send default object
             }
         }
         awaitClose { subscription.remove() }
 
     }
 
-    //suspend fun delete()
+    suspend fun delete(name: String)
+    {
+        if (auth.currentUser().value != null) {
+            val collection = dbMagicId.document(auth.currentUser().value?.email ?: "null")
+                .collection("Items")
+
+            collection.whereEqualTo("name", name).get().addOnSuccessListener { documents ->
+                for(document in documents)
+                {
+                    collection.document(document.id)
+                        .delete()
+                        .addOnSuccessListener { println("Item $name successfully deleted!") }
+                        .addOnFailureListener { error -> println("Error deleting item $name: $error") }
+                }
+            }
+
+
+        } else {
+            println("Delete failed: User is not authenticated")
+        }
+    }
 
 
 
