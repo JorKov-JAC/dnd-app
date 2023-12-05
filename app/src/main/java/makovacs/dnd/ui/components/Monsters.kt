@@ -3,6 +3,9 @@
 package makovacs.dnd.ui.components
 
 import android.graphics.Bitmap
+import android.provider.MediaStore
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -22,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -162,24 +166,50 @@ fun MonsterBitmapSelector(bitmap: Bitmap?, setBitmap: (Bitmap?, String?) -> Unit
     // TODO This is gross, decodes image on every recompose:
     val defaultBitmap = R.drawable.no_img.toBitmap()
 
+    val context = LocalContext.current
+
+    /** Activity launcher used to get an image via an implicit GET_CONTENT intent. */
+    val getImageActivityLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) {
+        if (it == null) return@rememberLauncherForActivityResult
+
+        // getBitmap is deprecated, but alternatives seem to require a higher SDK version
+        @Suppress("DEPRECATION")
+        setBitmap(
+            MediaStore.Images.Media.getBitmap(context.contentResolver, it),
+            null /* Cannot assume image description */
+        )
+    }
+
     val imageOfFormat = stringResource(R.string.imageOf_format)
 
     Card(modifier = modifier) {
         DropdownSelector(
             listOf(
+                null to "Custom", // Get image from phone
                 R.drawable.gnolls.toBitmap() to stringResource(id = R.string.gnolls),
                 R.drawable.wolf.toBitmap() to stringResource(id = R.string.wolf),
                 R.drawable.imp.toBitmap() to stringResource(id = R.string.imp)
             ),
-            setValue = { _, it -> setBitmap(it.first, imageOfFormat.format(it.second)) },
+            setValue = { _, it ->
+                if (it.first == null) {
+                    // No image signifies the "Custom" option, get an image from the phone:
+                    getImageActivityLauncher.launch("image/*")
+                } else {
+                    setBitmap(it.first, imageOfFormat.format(it.second))
+                }
+            },
             reset = { setBitmap(null, null) },
             choiceName = { it.second },
             choiceIcon = {
-                Image(
-                    it.first.toPainter(),
-                    imageOfFormat.format(it.second),
-                    modifier = Modifier.sizeIn(maxWidth = 150.dp, maxHeight = 150.dp)
-                )
+                it.first?.let { bitmap ->
+                    Image(
+                        bitmap.toPainter(),
+                        imageOfFormat.format(it.second),
+                        modifier = Modifier.sizeIn(maxWidth = 150.dp, maxHeight = 150.dp)
+                    )
+                }
             },
             modifier = Modifier.padding(8.dp)
         ) {
