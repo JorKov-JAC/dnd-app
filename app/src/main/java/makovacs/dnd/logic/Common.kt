@@ -95,11 +95,11 @@ fun generateUid(): String {
 fun String.strictUriEncode() = this
     .flatMap { c ->
         if (
-            c in 'a'..'z'
-            || c in 'A'..'Z'
-            || c in '0'..'9'
-            || c == '_'
-            || c == '-'
+            c in 'a'..'z' ||
+            c in 'A'..'Z' ||
+            c in '0'..'9' ||
+            c == '_' ||
+            c == '-'
         ) {
             // Leave the character as-is
             listOf(c)

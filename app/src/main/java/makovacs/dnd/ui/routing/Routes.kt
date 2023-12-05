@@ -133,11 +133,11 @@ fun Router(modifier: Modifier = Modifier, magicItemsVM: MagicItemsViewModel = vi
 
             if (
                 // User must be authenticated:
-                user == null
+                user == null ||
                 // Monster must exist (might occur if navigated backward)
-                || monster == null
+                monster == null ||
                 // Current user must own the monster
-                || user.id != monster.ownerUserId
+                user.id != monster.ownerUserId
             ) {
                 popBackStackOnce()
                 return@composable
