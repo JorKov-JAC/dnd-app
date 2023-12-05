@@ -25,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -49,6 +50,7 @@ fun ItemScreen(magicItems: List<MagicItem>, remove: (String) -> Unit, getByName:
     var queryStr by rememberSaveable { mutableStateOf("") }
     getAllItems()
     var triedAddingItemWhileLoggedOut by rememberSaveable { mutableStateOf(false) }
+    val context = LocalContext.current
 
     StringSearchList(
         items = magicItems,
@@ -72,9 +74,10 @@ fun ItemScreen(magicItems: List<MagicItem>, remove: (String) -> Unit, getByName:
                     .size(80.dp)
                     .border(BorderStroke(1.dp, Color.Black))
                     .background(Color.White)
-
+                var id =  context.resources.getIdentifier(item?.image ?: "R.drawable.dndmisc",
+                    "drawable", "makovacs.dnd")
                 Image(
-                    painterResource(id = item?.imageId ?: R.drawable.dndmisc),
+                    painterResource(id = id),
                     contentDescription = "...",
                     modifier = imageModifier
                 )

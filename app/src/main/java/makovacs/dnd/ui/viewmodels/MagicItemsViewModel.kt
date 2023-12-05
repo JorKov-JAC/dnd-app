@@ -41,7 +41,7 @@ class MagicItemsViewModel(private val magicItemsRepository: MagicItemsRepository
         source: String,
         rarity: String,
         description: String,
-        pictureId: Int,
+        pictureId: String,
         damageDice: Dice?,
         damageType: DamageType
     ) {
@@ -72,7 +72,7 @@ class MagicItemsViewModel(private val magicItemsRepository: MagicItemsRepository
                 source: String,
                 rarity: String,
                 description: String,
-                pictureId: Int,
+                pictureId: String,
                 damageDice: Dice?,
                 damageType: DamageType)
     {

@@ -1,6 +1,7 @@
 package makovacs.dnd.ui.screens.magicitems
 
 import android.app.AlertDialog
+import android.content.res.Resources
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -49,7 +50,7 @@ import makovacs.dnd.ui.routing.Route
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InputForm(add: (String, String, String, String, Int, Dice?, DamageType) -> Unit) {
+fun InputForm(add: (String, String, String, String, String, Dice?, DamageType) -> Unit) {
     var name by rememberSaveable { mutableStateOf("") }
     var sourceBook by rememberSaveable { mutableStateOf("") }
     var rarity by rememberSaveable { mutableStateOf("") }
@@ -111,13 +112,13 @@ fun InputForm(add: (String, String, String, String, Int, Dice?, DamageType) -> U
         )
 
         val pictures = listOf(
-            R.drawable.dndaxe,
-            R.drawable.dndbag,
-            R.drawable.dndbook,
-            R.drawable.dndbow,
-            R.drawable.dndpotion,
-            R.drawable.dndshield,
-            R.drawable.dndmisc
+            "dndaxe",
+            "dndbag",
+            "dndbook",
+            "dndbow",
+            "dndpotion",
+            "dndshield",
+            "dndmisc"
         )
         Card(
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer),
@@ -230,15 +231,12 @@ fun InputForm(add: (String, String, String, String, Int, Dice?, DamageType) -> U
         }
 
         Row {
-            val context = LocalContext.current
-            val drawableId = context.resources.getIdentifier(
-                "${pictures[selectedIndex]}",
-                "drawable",
-                context.packageName
-            )
+
+            val drawable = pictures[selectedIndex]
 
             Button(onClick = {
                 if (name == "" || rarity == "" || sourceBook == "" || description == "") {
+
                     invalidInput = true
                     errorMessage = "No boxes may be empty."
                     return@Button
@@ -257,7 +255,7 @@ fun InputForm(add: (String, String, String, String, Int, Dice?, DamageType) -> U
                     }
                 }
 
-                add(name, sourceBook, rarity, description, drawableId, damageDice, damageType)
+                add(name, sourceBook, rarity, description, drawable, damageDice, damageType)
                 navController.navigate(Route.SingleItem.go(name))
             }) {
                 Text("Add Item")

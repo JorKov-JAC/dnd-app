@@ -7,7 +7,7 @@ data class MagicItem(
     var sourceBook: String = "empty",
     var rarity: String = "empty",
     var description: String = "empty",
-    var imageId: Int = R.drawable.dndmisc,
+    var image: String = "R.drawable.dndmisc",
     var damageDice: Dice? = null,
     var damageType: DamageType = DamageType.None
 
