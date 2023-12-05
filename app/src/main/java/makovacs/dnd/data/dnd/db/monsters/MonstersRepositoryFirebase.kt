@@ -263,7 +263,7 @@ class MonstersRepositoryFirebase : MonstersRepository {
             .update(
                 "imageMutations",
                 // Add a random number in case of extremely rare simultaneous updates:
-                imageMutations + (0..127).random()
+                imageMutations + (1..128).random()
             )
     }
 
