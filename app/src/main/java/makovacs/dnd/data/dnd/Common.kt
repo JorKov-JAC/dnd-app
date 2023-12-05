@@ -4,13 +4,9 @@
 
 package makovacs.dnd.data.dnd
 
-import android.os.Parcelable
 import androidx.annotation.Size
-import kotlinx.parcelize.IgnoredOnParcel
-import kotlinx.parcelize.Parcelize
 import makovacs.dnd.data.dnd.Dice.Companion.typicalPossibleSides
 import makovacs.dnd.logic.ellipsis
-import kotlin.streams.asSequence
 
 /**
  * A collection of stats such as strength and dexterity.
@@ -22,9 +18,7 @@ import kotlin.streams.asSequence
  * @param wis A wisdom score.
  * @param cha A charisma score.
  */
-@Parcelize
-data class AbilityScores(val str: Int, val dex: Int, val con: Int, val int: Int, val wis: Int, val cha: Int) :
-    Parcelable {
+data class AbilityScores(val str: Int, val dex: Int, val con: Int, val int: Int, val wis: Int, val cha: Int) {
     init {
         // Validate ranges
         arrayOf(str, dex, con, int, wis, cha)
@@ -65,8 +59,7 @@ data class AbilityScores(val str: Int, val dex: Int, val con: Int, val int: Int,
      *
      * Ordering is the same as found in the primary constructor.
      */
-    @IgnoredOnParcel
-    val abilityCopiers = listOf<(Int) -> AbilityScores>(
+    val abilityCopiers get() = listOf<(Int) -> AbilityScores>(
         { copy(str = it) },
         { copy(dex = it) },
         { copy(con = it) },
@@ -80,8 +73,7 @@ data class AbilityScores(val str: Int, val dex: Int, val con: Int, val int: Int,
      *
      * Ordering is the same as found in the primary constructor.
      */
-    @IgnoredOnParcel
-    val scoreList = listOf(str, dex, con, int, wis, cha)
+    val scoreList get() = listOf(str, dex, con, int, wis, cha)
 }
 
 // TODO Make a separate Ability value class instead of using Ints?

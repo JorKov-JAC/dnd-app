@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -47,7 +48,7 @@ fun MonsterCard(monster: Monster, modifier: Modifier = Modifier) {
                 monster.imageBitmap,
                 monster.imageDesc,
                 modifier = Modifier
-                    .sizeIn(maxWidth = 100.dp, maxHeight = 100.dp)
+                    .size(100.dp)
                     .padding(8.dp)
                     .align(Alignment.CenterVertically)
             )
@@ -82,8 +83,8 @@ fun MonsterDetails(monster: Monster, modifier: Modifier = Modifier) {
                 imageBitmap = monster.imageBitmap,
                 imageDesc = monster.imageDesc,
                 modifier = Modifier
+                    .size(200.dp)
                     .padding(8.dp)
-                    .sizeIn(maxWidth = 150.dp, maxHeight = 150.dp)
                     .align(Alignment.CenterHorizontally)
             )
 
@@ -184,7 +185,8 @@ fun MonsterBitmapSelector(bitmap: Bitmap?, setBitmap: (Bitmap?, String?) -> Unit
         ) {
             Image(
                 painter = (bitmap ?: defaultBitmap).toPainter(),
-                contentDescription = null // Useless unless we implement user-provided descriptions
+                contentDescription = null, // Useless unless we implement user-provided descriptions
+                modifier = Modifier.size(200.dp)
             )
 
             Icon(

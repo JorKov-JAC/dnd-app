@@ -26,11 +26,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         FirebaseApp.initializeApp(this)
         setContent {
-            // TODO Temporary(?)
-            val defaultInitializedViewModel = MonstersViewModel().initializeToDefaultData()
-            val monstersVm = viewModel {
-                defaultInitializedViewModel
-            }
+            val monstersVm = viewModel { MonstersViewModel() }
 
             AppTheme {
                 // A surface container using the 'background' color from the theme
