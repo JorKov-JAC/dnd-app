@@ -194,6 +194,7 @@ data class MonsterQuery(
 
             matches
                 .map { it.value.normalizeForInsensitiveComparisons() }
+                .filter { it.isNotEmpty() }
                 .forEach {
                     // Based on first character, it's either a name or positive/negative tag
                     val firstChar = it[0]
