@@ -7,16 +7,16 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import makovacs.dnd.data.dnd.MagicItem
 import makovacs.dnd.data.dnd.users.AuthRepository
-import makovacs.dnd.data.dnd.users.ProfileData
 
+/*
+ * The repository that interacts with the Firestore database containing the magic items
+ */
 class MagicItemsRepository(val db: FirebaseFirestore, val auth: AuthRepository) {
     val dbMagicId: CollectionReference = db.collection("MagicItems")
+
+    // adds a new magic item to the user's collection of magic items
     suspend fun saveMagicItem(item: MagicItem) {
-
-        if(auth.currentUser().value != null)
-        {
-            //dbMagicId.document(auth.currentUser().value.toString()).set(item)
-
+        if (auth.currentUser().value != null) {
             val itemDb = dbMagicId.document(auth.currentUser().value?.email ?: "null")
                 .collection("Items")
 
@@ -27,18 +27,17 @@ class MagicItemsRepository(val db: FirebaseFirestore, val auth: AuthRepository) 
                 .addOnFailureListener { e ->
                     println("Error saving item: $e")
                 }
-        }
-        else
-        {
+        } else {
             println("user not logged in")
         }
     }
 
+    // get's the user's collection of magic items from the database
     suspend fun getMagicItems(): Flow<List<MagicItem>> = callbackFlow {
         val document = dbMagicId.document(auth.currentUser().value?.email ?: "null")
             .collection("Items")
 
-        val subscription = document.addSnapshotListener{ snapshot, error ->
+        val subscription = document.addSnapshotListener { snapshot, error ->
             if (error != null) {
                 println("Listen failed: $error")
                 return@addSnapshotListener
@@ -59,31 +58,43 @@ class MagicItemsRepository(val db: FirebaseFirestore, val auth: AuthRepository) 
             }
         }
         awaitClose { subscription.remove() }
-
     }
 
-    suspend fun delete(name: String)
-    {
+    // deletes all the magic items in the user's collection with a name matching the passed in one
+    suspend fun delete(name: String) {
         if (auth.currentUser().value != null) {
             val collection = dbMagicId.document(auth.currentUser().value?.email ?: "null")
                 .collection("Items")
 
             collection.whereEqualTo("name", name).get().addOnSuccessListener { documents ->
-                for(document in documents)
-                {
+                for (document in documents) {
                     collection.document(document.id)
                         .delete()
                         .addOnSuccessListener { println("Item $name successfully deleted!") }
                         .addOnFailureListener { error -> println("Error deleting item $name: $error") }
                 }
             }
-
-
         } else {
             println("Delete failed: User is not authenticated")
         }
     }
 
+    // to be used when a user is deleting their account to get rid of all the stored items
+    suspend fun deleteAll() {
+        if (auth.currentUser().value != null) {
+            val collection = dbMagicId.document(auth.currentUser().value?.email ?: "null")
+                .collection("Items")
 
-
+            collection.get().addOnSuccessListener { documents ->
+                for (document in documents) {
+                    collection.document(document.id)
+                        .delete()
+                        .addOnSuccessListener { println("Items successfully deleted!") }
+                        .addOnFailureListener { error -> println("Error deleting items: $error") }
+                }
+            }
+        } else {
+            println("Delete failed: User is not authenticated")
+        }
+    }
 }

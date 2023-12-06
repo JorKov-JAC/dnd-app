@@ -29,8 +29,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import makovacs.dnd.R
 import makovacs.dnd.data.dnd.MagicItem
 import makovacs.dnd.logic.normalizeForInsensitiveComparisons
 import makovacs.dnd.ui.components.StringSearchList
@@ -74,8 +72,11 @@ fun ItemScreen(magicItems: List<MagicItem>, remove: (String) -> Unit, getByName:
                     .size(80.dp)
                     .border(BorderStroke(1.dp, Color.Black))
                     .background(Color.White)
-                var id =  context.resources.getIdentifier(item?.image ?: "R.drawable.dndmisc",
-                    "drawable", "makovacs.dnd")
+                var id = context.resources.getIdentifier(
+                    item?.image ?: "R.drawable.dndmisc",
+                    "drawable",
+                    "makovacs.dnd"
+                )
                 Image(
                     painterResource(id = id),
                     contentDescription = "...",

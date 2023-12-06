@@ -1,7 +1,5 @@
 package makovacs.dnd.data.dnd
 
-import makovacs.dnd.R
-
 data class MagicItem(
     var name: String = "empty",
     var sourceBook: String = "empty",

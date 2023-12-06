@@ -27,7 +27,7 @@ import makovacs.dnd.ui.viewmodels.AuthViewModel
 import makovacs.dnd.ui.viewmodels.AuthViewModelFactory
 
 @Composable
-fun Account(authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory())) {
+fun Account(deleteAll: () -> Unit, authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory())) {
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     val navController = LocalNavHostController.current
@@ -54,7 +54,10 @@ fun Account(authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFact
                 val builder = AlertDialog.Builder(context)
                 builder.setTitle("Account Deletion")
                 builder.setMessage("Are you sure you want to delete your account")
-                builder.setPositiveButton("Confirm") { _, _ -> authViewModel.delete() }
+                builder.setPositiveButton("Confirm") { _, _ ->
+                    deleteAll()
+                    authViewModel.delete()
+                }
                 builder.setNeutralButton("Close") { _, _ -> }
 
                 builder.show()

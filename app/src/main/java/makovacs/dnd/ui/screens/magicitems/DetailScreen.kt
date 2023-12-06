@@ -17,7 +17,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import makovacs.dnd.R
 import makovacs.dnd.data.dnd.MagicItem
 
 /*
@@ -35,8 +34,11 @@ fun DetailScreen(name: String, remove: (String) -> Unit, getByName: (String) -> 
         )
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            var id =  context.resources.getIdentifier(item?.image ?: "dndmisc",
-                "drawable", "makovacs.dnd")
+            var id = context.resources.getIdentifier(
+                item?.image ?: "dndmisc",
+                "drawable",
+                "makovacs.dnd"
+            )
             Image(
                 painterResource(id = id),
                 contentDescription = "Magic item",

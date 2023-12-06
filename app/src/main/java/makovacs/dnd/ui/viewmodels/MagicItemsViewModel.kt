@@ -12,33 +12,43 @@ import makovacs.dnd.data.dnd.DamageType
 import makovacs.dnd.data.dnd.Dice
 import makovacs.dnd.data.dnd.MagicItem
 import makovacs.dnd.data.dnd.db.magicitems.MagicItemsRepository
-
+/*
+ * ViewModel for the magic items created in the app and stored in the repository
+ */
 class MagicItemsViewModel(private val magicItemsRepository: MagicItemsRepository) : ViewModel() {
-    private var _magicItems = mutableListOf<MagicItem>()
-    private val _magicItemsDb = MutableStateFlow(listOf<MagicItem>())
-    val magicItemsDb: StateFlow<List<MagicItem>> = _magicItemsDb.asStateFlow()
+    private val _magicItems = MutableStateFlow(listOf<MagicItem>())
+    val magicItemsDb: StateFlow<List<MagicItem>> = _magicItems.asStateFlow()
 
+    // the list containing the magic items
     val magicItems: List<MagicItem>
-        get() = _magicItemsDb.value
+        get() = _magicItems.value
 
-
+    // takes the name of the item and deletes all items owned by the user with the same name
     fun removeByName(name: String) {
         viewModelScope.launch {
             magicItemsRepository.delete(name)
+            // gets all the items to update the db
             getAllItems()
         }
     }
-/*
-    fun removeByName(name: String) {
-        _magicItems.removeIf { item -> item.name == name }
-    }
-*/
+
+    // gets a copy of a magic item with the name matching the passed in string
     fun getByName(name: String): MagicItem? {
-        var magicItem = _magicItemsDb.value.find { item -> item.name == name }
+        var magicItem = _magicItems.value.find { item -> item.name == name }
         return magicItem?.copy()
     }
 
-    fun add(
+    // gets all the items corresponding to the signed in user and puts them in the list
+    fun getAllItems() {
+        viewModelScope.launch {
+            magicItemsRepository.getMagicItems().collect { magicItems ->
+                _magicItems.value = magicItems
+            }
+        }
+    }
+
+    // adds a magic item with the specified values into the user's magic item collection
+    fun addItem(
         name: String,
         source: String,
         rarity: String,
@@ -47,43 +57,17 @@ class MagicItemsViewModel(private val magicItemsRepository: MagicItemsRepository
         damageDice: Dice?,
         damageType: DamageType
     ) {
-        _magicItems.add(
-            MagicItem(
-                name,
-                source,
-                rarity,
-                description,
-                pictureId,
-                damageDice,
-                damageType
-            )
-        )
-    }
-
-    fun getAllItems() {
         viewModelScope.launch {
-            magicItemsRepository.getMagicItems().collect { magicItems ->
-                _magicItemsDb.value = magicItems
-            }
-
+            magicItemsRepository.saveMagicItem(MagicItem(name, source, rarity, description, pictureId, damageDice, damageType))
         }
     }
 
-    fun addItem(
-        name: String,
-                source: String,
-                rarity: String,
-                description: String,
-                pictureId: String,
-                damageDice: Dice?,
-                damageType: DamageType)
-    {
+    // deletes all the user's magic items
+    fun deleteAll() {
         viewModelScope.launch {
-           magicItemsRepository.saveMagicItem(MagicItem(name, source, rarity, description, pictureId, damageDice, damageType))
-
+            magicItemsRepository.deleteAll()
         }
     }
-
 }
 
 class MagicItemsViewModelFactory : ViewModelProvider.Factory {

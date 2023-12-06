@@ -1,7 +1,6 @@
 package makovacs.dnd.ui.screens.magicitems
 
 import android.app.AlertDialog
-import android.content.res.Resources
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -32,7 +31,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import makovacs.dnd.R
 import makovacs.dnd.data.dnd.DamageType
 import makovacs.dnd.data.dnd.Dice
 import makovacs.dnd.data.dnd.toDice
@@ -231,12 +229,10 @@ fun InputForm(add: (String, String, String, String, String, Dice?, DamageType) -
         }
 
         Row {
-
             val drawable = pictures[selectedIndex]
 
             Button(onClick = {
                 if (name == "" || rarity == "" || sourceBook == "" || description == "") {
-
                     invalidInput = true
                     errorMessage = "No boxes may be empty."
                     return@Button

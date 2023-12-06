@@ -6,8 +6,6 @@ package makovacs.dnd.data.dnd
 
 import androidx.annotation.Size
 import com.google.firebase.firestore.Exclude
-import kotlinx.parcelize.IgnoredOnParcel
-import kotlinx.parcelize.Parcelize
 import makovacs.dnd.data.dnd.Dice.Companion.typicalPossibleSides
 import makovacs.dnd.logic.ellipsis
 

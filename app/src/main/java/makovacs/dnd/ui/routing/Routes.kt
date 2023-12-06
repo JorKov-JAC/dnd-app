@@ -155,7 +155,8 @@ fun Router(modifier: Modifier = Modifier, magicItemsVM: MagicItemsViewModel = vi
 
         composable(Route.ItemForm.route) {
             InputForm(
-                magicItemsVM::addItem)
+                magicItemsVM::addItem
+            )
         }
         composable(Route.ItemsList.route) {
             ItemScreen(
@@ -179,7 +180,7 @@ fun Router(modifier: Modifier = Modifier, magicItemsVM: MagicItemsViewModel = vi
             SignIn()
         }
         composable(Route.Account.route) {
-            Account()
+            Account(magicItemsVM::deleteAll)
         }
     }
 }
