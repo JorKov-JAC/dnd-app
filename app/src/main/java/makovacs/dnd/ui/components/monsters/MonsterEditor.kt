@@ -27,6 +27,7 @@ import makovacs.dnd.data.dnd.CreatureSize
 import makovacs.dnd.data.dnd.Information
 import makovacs.dnd.data.dnd.InformationEntry
 import makovacs.dnd.data.dnd.Monster
+import makovacs.dnd.logic.generateUid
 import makovacs.dnd.logic.normalizeAndClean
 import makovacs.dnd.logic.normalizeForInsensitiveComparisons
 import makovacs.dnd.logic.swap
@@ -40,8 +41,11 @@ import makovacs.dnd.ui.components.common.InformationEditor
 /**
  * Allows the user to input information to create a new [Monster].
  *
- * @param submitButtonText The text shown on the submit button.
  * @param vm The view-model to use for storing the editor's current data.
+ * @param submitButtonText The text shown on the submit button.
+ * @param submittedMonsterId The [Monster.id] of the monster to create, or null if a new one should
+ * be generated automatically.
+ * @param submittedMonsterOwnerUserId The [Monster.ownerUserId] of the monster to create.
  * @param onSubmit Called with the new [Monster].
  * Should throw with a user-readable error message on failure.
  */
@@ -50,6 +54,8 @@ import makovacs.dnd.ui.components.common.InformationEditor
 fun MonsterEditor(
     vm: MonsterEditorViewModel,
     submitButtonText: String,
+    submittedMonsterId: String?,
+    submittedMonsterOwnerUserId: String?,
     modifier: Modifier = Modifier,
     onSubmit: (newMonster: Monster) -> Unit
 ) {
@@ -168,6 +174,8 @@ fun MonsterEditor(
             vm.errorMsg = try {
                 onSubmit(
                     Monster(
+                        submittedMonsterId ?: generateUid(),
+                        submittedMonsterOwnerUserId,
                         vm.name.normalizeAndClean(),
                         vm.description,
                         vm.size ?: error("Missing Size."),

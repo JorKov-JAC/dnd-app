@@ -5,19 +5,18 @@ import android.content.Intent
 import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController.Companion.KEY_DEEP_LINK_INTENT
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
-import makovacs.dnd.ui.routing.Route.Companion.NAME_KEY
+import kotlinx.coroutines.launch
+import makovacs.dnd.data.dnd.Monster
+import makovacs.dnd.ui.routing.Route.Companion.ID_KEY
 import makovacs.dnd.ui.routing.Route.Companion.QUERY_KEY
 import makovacs.dnd.ui.screens.AboutScreen
 import makovacs.dnd.ui.screens.Account
@@ -32,6 +31,8 @@ import makovacs.dnd.ui.screens.monsters.MonsterDetailsScreen
 import makovacs.dnd.ui.screens.monsters.MonstersListScreen
 import makovacs.dnd.ui.screens.monsters.MonstersSelectScreen
 import makovacs.dnd.ui.screens.monsters.NewMonsterScreen
+import makovacs.dnd.ui.util.getCurrentUser
+import makovacs.dnd.ui.util.popBackStackOnce
 import makovacs.dnd.ui.viewmodels.LocalMonstersViewModel
 import makovacs.dnd.ui.viewmodels.MagicItemsViewModel
 import makovacs.dnd.ui.viewmodels.MagicItemsViewModelFactory
@@ -82,59 +83,73 @@ fun Router(modifier: Modifier = Modifier, magicItemsVM: MagicItemsViewModel = vi
                     localContext.finish()
                 } else {
                     // Not called by another activity, just go to the monster's page
-                    navHostController.navigate(Route.MonsterDetailsRoute.go(monster.name))
+                    navHostController.navigate(Route.MonsterDetailsRoute.go(monster.id))
                 }
             }
         }
 
         composable(Route.MonsterDetailsRoute.route) {
             val monstersVm = LocalMonstersViewModel.current
-            val name = it.arguments!!.getString(NAME_KEY)!! // Must have a name
+            val id = it.arguments!!.getString(ID_KEY)!! // Must have an id
+            val monster = monstersVm.getMonster(id)
+
+            // Monster doesn't exist, maybe we navigated backward after it was deleted
+            if (monster == null) {
+                popBackStackOnce()
+                return@composable
+            }
+
             MonsterDetailsScreen(
-                monster = monstersVm.getMonster(name),
-                onDelete = { monstersVm.removeMonster(name) }
+                monster = monster,
+                onDelete = { monstersVm.removeMonster(monster) }
             )
         }
 
         composable(Route.NewMonsterRoute.route) {
+            val user = getCurrentUser()
+
+            // Prevent unauthenticated users from accessing this route:
+            if (user == null) {
+                popBackStackOnce()
+                return@composable
+            }
+
             val monstersVm = LocalMonstersViewModel.current
 
-            NewMonsterScreen {
-                monstersVm.addMonster(it)
+            NewMonsterScreen(userId = user.id) {
+                monstersVm.viewModelScope.launch { monstersVm.addMonster(it) }
 
                 // Go to the new monster's page
                 navHostController.popBackStack()
-                navHostController.navigate(Route.MonsterDetailsRoute.go(it.name))
+                navHostController.navigate(Route.MonsterDetailsRoute.go(it.id))
             }
         }
 
         composable(Route.EditMonsterRoute.route) {
-            /**
-             * True if the monster was *just* edited, in which case we shouldn't do anything since
-             * the monster might have been renamed. Just wait for navigation to kick in.
-             */
-            var updateOccurred by rememberSaveable { mutableStateOf(false) }
-            if (updateOccurred) return@composable
+            val user = getCurrentUser()
 
             val monstersVm = LocalMonstersViewModel.current
-            val name = it.arguments!!.getString(NAME_KEY)!! // Must have a name
-            val monster = monstersVm.getMonster(name)
+            val id = it.arguments!!.getString(ID_KEY)!! // Must have an id
+            val monster = monstersVm.getMonster(id)
 
-            if (monster == null) {
-                // Monster doesn't exist; this might happen if the monster is renamed/deleted at the
-                // same time. This would be really rare, we'll just pop back out.
-                navHostController.popBackStack()
-
+            if (
+                // User must be authenticated:
+                user == null ||
+                // Monster must exist (might occur if navigated backward)
+                monster == null ||
+                // Current user must own the monster
+                user.id != monster.ownerUserId
+            ) {
+                popBackStackOnce()
                 return@composable
             }
 
             EditMonsterScreen(monster) { oldMonster, newMonster ->
-                monstersVm.updateMonster(oldMonster.name, newMonster)
-                updateOccurred = true
+                monstersVm.updateMonster(oldMonster, newMonster)
 
                 // Go to the monster's page
                 navHostController.popBackStack()
-                navHostController.navigate(Route.MonsterDetailsRoute.go(newMonster.name))
+                navHostController.navigate(Route.MonsterDetailsRoute.go(newMonster.id))
             }
         }
 
@@ -174,8 +189,8 @@ fun Router(modifier: Modifier = Modifier, magicItemsVM: MagicItemsViewModel = vi
  */
 sealed class Route(val route: String) {
     companion object {
-        /** Key in the route arguments for a name. */
-        const val NAME_KEY = "name"
+        /** Key in the route arguments for a string ID. */
+        const val ID_KEY = "id"
 
         /** Key in the route arguments for a query. */
         const val QUERY_KEY = "query"
@@ -203,20 +218,24 @@ sealed class Route(val route: String) {
     }
 
     /** Route for [MonsterDetailsScreen]. */
-    object MonsterDetailsRoute : Route("monster/{$NAME_KEY}") {
+    object MonsterDetailsRoute : Route("monster/{$ID_KEY}") {
         /**
          * Creates a route string with the given arguments.
-         * @param name The name of the monster the page is for.
+         * @param id The [Monster.id] of the monster the page is for.
          */
-        fun go(name: String) = "monster/${Uri.encode(name)}"
+        fun go(id: String) = "monster/${Uri.encode(id)}"
     }
 
     /** Route for [NewMonsterScreen]. */
     object NewMonsterRoute : Route("monsters/new")
 
     /** Route for [EditMonsterScreen]. */
-    object EditMonsterRoute : Route("monsters/edit/{name}") {
-        fun go(name: String) = "monsters/edit/${Uri.encode(name)}"
+    object EditMonsterRoute : Route("monsters/edit/{$ID_KEY}") {
+        /**
+         * Creates a route string with the given arguments.
+         * @param id The [Monster.id] of the monster to edit.
+         */
+        fun go(id: String) = "monsters/edit/${Uri.encode(id)}"
     }
 
     object ItemForm : Route("ItemFormRoute")

@@ -1,6 +1,9 @@
 package makovacs.dnd.ui.screens.monsters
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -8,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import makovacs.dnd.data.dnd.Monster
@@ -29,6 +33,9 @@ fun MonstersSelectScreen(
     initialQuery: String = "",
     onSelect: (Monster) -> Unit
 ) {
+    val monsters = monstersVm.monsters
+    var query by rememberSaveable { mutableStateOf(initialQuery) }
+
     Column(modifier = modifier) {
         Text(
             "Select a Monster",
@@ -36,13 +43,17 @@ fun MonstersSelectScreen(
             modifier = Modifier.align(CenterHorizontally)
         )
 
-        var query by rememberSaveable { mutableStateOf(initialQuery) }
-
-        MonstersSearchList(
-            monsters = monstersVm.monsters,
-            onClick = onSelect,
-            queryStr = query,
-            setQueryStr = { query = it }
-        )
+        if (monsters == null) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        } else {
+            MonstersSearchList(
+                monsters = monsters,
+                onClick = onSelect,
+                queryStr = query,
+                setQueryStr = { query = it }
+            )
+        }
     }
 }

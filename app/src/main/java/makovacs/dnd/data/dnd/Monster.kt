@@ -1,6 +1,8 @@
 package makovacs.dnd.data.dnd
 
 import android.graphics.Bitmap
+import makovacs.dnd.data.dnd.users.User
+import makovacs.dnd.logic.generateUid
 import makovacs.dnd.logic.normalizeForInsensitiveComparisons
 import kotlin.math.floor
 import kotlin.math.truncate
@@ -10,6 +12,8 @@ import kotlin.math.truncate
  *
  * Two instances are considered equal if their [names][name] match.
  *
+ * @param id A unique ID for this monster. See [generateUid].
+ * @param ownerUserId The [User.id] of the owning user, or null if there is no owner.
  * @param name The monster's name.
  * @param description A full description of the monster.
  * @param abilityScores The monster's [Ability Scores](https://www.dndbeyond.com/sources/basic-rules/monsters#AbilityScores).
@@ -25,6 +29,8 @@ import kotlin.math.truncate
  * @param information Facts describing the monster.
  */
 data class Monster(
+    val id: String,
+    val ownerUserId: String?,
     val name: String,
     private val description: String,
     val size: CreatureSize,
@@ -38,11 +44,9 @@ data class Monster(
     val tags: List<String>,
     val information: Information
 ) {
-
     init {
         if (name.isBlank()) throw IllegalArgumentException("Name cannot be blank.")
         if (name.trim() != name) throw IllegalArgumentException("Name cannot have surrounding whitespace.")
-        if (imageBitmap == null && imageDesc != null) throw IllegalArgumentException("There is no image, so there should be no image description.")
         if (armorClass < 0) throw IllegalArgumentException("Armor class must be non-negative.")
         if (hitDiceCount <= 0) throw IllegalArgumentException("Must have at least 1 hit die.")
         if (speed < 0 || // Non-negative
@@ -76,9 +80,6 @@ data class Monster(
             else -> cr.toInt().toString()
         }
     }
-
-    /** Unique Monster ID */
-    val id get() = name
 
     /** [description] without modifications. */
     val rawDescription get() = description
@@ -160,17 +161,6 @@ data class Monster(
     // TODO Handle case where constitution modifier is negative (min hit-points is 1, so then the
     //      average should consider that).
     val avgHitPoints get() = hitDice.avg + abilityScores.con.abilityModifier * hitDiceCount
-
-    /**
-     * Checks if [other] is equal to this.
-     *
-     * Note that equality is based on whether the two objects would conflict
-     * (i.e. their [ids][id] would match), not necessarily that all values are equal.
-     */
-    override fun equals(other: Any?) = other is Monster &&
-        id.normalizeForInsensitiveComparisons() == other.id.normalizeForInsensitiveComparisons()
-    override fun hashCode() = name.hashCode()
-    override fun toString() = name
 }
 
 /**

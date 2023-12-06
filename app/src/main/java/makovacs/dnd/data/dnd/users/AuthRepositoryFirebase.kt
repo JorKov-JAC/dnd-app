@@ -6,7 +6,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.tasks.await
-import java.lang.Exception
 
 class AuthRepositoryFirebase(private val auth: FirebaseAuth) : AuthRepository {
     private val currentUserStateFlow = MutableStateFlow(auth.currentUser?.toUser())
@@ -17,6 +16,7 @@ class AuthRepositoryFirebase(private val auth: FirebaseAuth) : AuthRepository {
                 null
             } else {
                 User(
+                    id = it.uid,
                     email = it.email!!
                 )
             }
