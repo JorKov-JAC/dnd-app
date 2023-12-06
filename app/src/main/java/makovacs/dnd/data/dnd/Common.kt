@@ -5,6 +5,7 @@
 package makovacs.dnd.data.dnd
 
 import androidx.annotation.Size
+import com.google.firebase.firestore.Exclude
 import makovacs.dnd.data.dnd.Dice.Companion.typicalPossibleSides
 import makovacs.dnd.logic.ellipsis
 
@@ -94,7 +95,7 @@ val Int.abilityModifier get() = (this / 2 - 5).coerceIn(-5, 10)
  * Must be a valid number of sides (see [typicalPossibleSides]).
  * @throws IllegalArgumentException Thrown when [count] or [sides] are invalid.
  */
-data class Dice(val count: Int, val sides: Int) {
+data class Dice(val count: Int = 1, val sides: Int = 2) {
     init {
         if (count <= 0) throw IllegalArgumentException("Must have at least 1 die.")
         if (sides < 2) throw IllegalArgumentException("Must have at least 2 sides.")
@@ -117,7 +118,7 @@ data class Dice(val count: Int, val sides: Int) {
     fun roll() = (1..count).sumOf { (1..sides).random() }
 
     /** Gets the average value of rolling all of these dice. */
-    val avg get() = (sides + 1f) / 2f * count
+    val avg @Exclude get() = (sides + 1f) / 2f * count
 
     override fun toString() = "${count}d$sides"
 }

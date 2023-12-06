@@ -1,13 +1,13 @@
 package makovacs.dnd.data.dnd
 
 data class MagicItem(
-    var name: String,
-    var sourceBook: String,
-    var rarity: String,
-    var description: String,
-    var imageId: Int,
-    var damageDice: Dice?,
-    var damageType: DamageType
+    var name: String = "empty",
+    var sourceBook: String = "empty",
+    var rarity: String = "empty",
+    var description: String = "empty",
+    var image: String = "R.drawable.dndmisc",
+    var damageDice: Dice? = null,
+    var damageType: DamageType = DamageType.None
 
 ) {
 

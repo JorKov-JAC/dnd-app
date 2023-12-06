@@ -35,6 +35,7 @@ import makovacs.dnd.ui.util.getCurrentUser
 import makovacs.dnd.ui.util.popBackStackOnce
 import makovacs.dnd.ui.viewmodels.LocalMonstersViewModel
 import makovacs.dnd.ui.viewmodels.MagicItemsViewModel
+import makovacs.dnd.ui.viewmodels.MagicItemsViewModelFactory
 
 /**
  * [NavHostController] provider.
@@ -47,7 +48,7 @@ val LocalNavHostController = compositionLocalOf<NavHostController> {
  * Shows the appropriate page based on [LocalNavHostController].
  */
 @Composable
-fun Router(modifier: Modifier = Modifier, magicItemsVM: MagicItemsViewModel = viewModel()) {
+fun Router(modifier: Modifier = Modifier, magicItemsVM: MagicItemsViewModel = viewModel(factory = MagicItemsViewModelFactory())) {
     val navHostController = LocalNavHostController.current
 
     NavHost(navHostController, startDestination = Route.About.route, modifier = modifier) {
@@ -153,13 +154,16 @@ fun Router(modifier: Modifier = Modifier, magicItemsVM: MagicItemsViewModel = vi
         }
 
         composable(Route.ItemForm.route) {
-            InputForm(magicItemsVM::add)
+            InputForm(
+                magicItemsVM::addItem
+            )
         }
         composable(Route.ItemsList.route) {
             ItemScreen(
                 magicItemsVM.magicItems,
                 magicItemsVM::removeByName,
-                magicItemsVM::getByName
+                magicItemsVM::getByName,
+                magicItemsVM::getAllItems
             )
         }
         composable(Route.SingleItem.route) {
@@ -176,7 +180,7 @@ fun Router(modifier: Modifier = Modifier, magicItemsVM: MagicItemsViewModel = vi
             SignIn()
         }
         composable(Route.Account.route) {
-            Account()
+            Account(magicItemsVM::deleteAll)
         }
     }
 }

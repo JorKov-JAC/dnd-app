@@ -14,9 +14,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import makovacs.dnd.R
 import makovacs.dnd.data.dnd.MagicItem
 
 /*
@@ -25,6 +25,8 @@ import makovacs.dnd.data.dnd.MagicItem
 @Composable
 fun DetailScreen(name: String, remove: (String) -> Unit, getByName: (String) -> MagicItem?) {
     var item = getByName(name)
+    val context = LocalContext.current
+
     Card(
         border = BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary),
         colors = CardDefaults.cardColors(
@@ -32,7 +34,11 @@ fun DetailScreen(name: String, remove: (String) -> Unit, getByName: (String) -> 
         )
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            var id = item?.imageId ?: R.drawable.dndmisc
+            var id = context.resources.getIdentifier(
+                item?.image ?: "dndmisc",
+                "drawable",
+                "makovacs.dnd"
+            )
             Image(
                 painterResource(id = id),
                 contentDescription = "Magic item",

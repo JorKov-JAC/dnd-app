@@ -25,10 +25,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import makovacs.dnd.R
 import makovacs.dnd.data.dnd.MagicItem
 import makovacs.dnd.logic.normalizeForInsensitiveComparisons
 import makovacs.dnd.ui.components.StringSearchList
@@ -42,11 +42,13 @@ import makovacs.dnd.ui.viewmodels.AuthViewModelFactory
  * detailed overview of just the clicked on item and allows the user to delete it. Contains a button to remove all the items from the list.
  */
 @Composable
-fun ItemScreen(magicItems: List<MagicItem>, remove: (String) -> Unit, getByName: (String) -> MagicItem?, authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory())) {
+fun ItemScreen(magicItems: List<MagicItem>, remove: (String) -> Unit, getByName: (String) -> MagicItem?, getAllItems: () -> Unit, authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory())) {
     val navController = LocalNavHostController.current
     val userState = authViewModel.currentUser().collectAsState()
     var queryStr by rememberSaveable { mutableStateOf("") }
+    getAllItems()
     var triedAddingItemWhileLoggedOut by rememberSaveable { mutableStateOf(false) }
+    val context = LocalContext.current
 
     StringSearchList(
         items = magicItems,
@@ -70,9 +72,13 @@ fun ItemScreen(magicItems: List<MagicItem>, remove: (String) -> Unit, getByName:
                     .size(80.dp)
                     .border(BorderStroke(1.dp, Color.Black))
                     .background(Color.White)
-
+                var id = context.resources.getIdentifier(
+                    item?.image ?: "R.drawable.dndmisc",
+                    "drawable",
+                    "makovacs.dnd"
+                )
                 Image(
-                    painterResource(id = item?.imageId ?: R.drawable.dndmisc),
+                    painterResource(id = id),
                     contentDescription = "...",
                     modifier = imageModifier
                 )
