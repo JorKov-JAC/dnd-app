@@ -16,8 +16,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
-import makovacs.dnd.data.dnd.Monster
-import makovacs.dnd.ui.components.MonstersSearchList
+import makovacs.dnd.data.dnd.monsters.Monster
+import makovacs.dnd.ui.components.monsters.MonstersSearchList
 import makovacs.dnd.ui.viewmodels.LocalMonstersViewModel
 import makovacs.dnd.ui.viewmodels.MonstersViewModel
 

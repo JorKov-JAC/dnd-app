@@ -3,8 +3,8 @@
 package makovacs.dnd.data.dnd.db.monsters
 
 import kotlinx.coroutines.flow.Flow
-import makovacs.dnd.data.dnd.Monster
-import makovacs.dnd.data.dnd.MonsterQuery
+import makovacs.dnd.data.dnd.monsters.Monster
+import makovacs.dnd.data.dnd.monsters.MonsterQuery
 
 /**
  * A repository for [Monster] entries.

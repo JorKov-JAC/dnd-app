@@ -35,10 +35,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import makovacs.dnd.data.dnd.DamageType
-import makovacs.dnd.data.dnd.Dice
-import makovacs.dnd.data.dnd.toDice
-import makovacs.dnd.ui.components.InvalidFormInput
+import makovacs.dnd.data.dnd.common.Dice
+import makovacs.dnd.data.dnd.common.toDice
+import makovacs.dnd.data.dnd.magicItems.DamageType
+import makovacs.dnd.ui.components.common.InvalidFormInput
 import makovacs.dnd.ui.routing.LocalNavHostController
 import makovacs.dnd.ui.routing.Route
 

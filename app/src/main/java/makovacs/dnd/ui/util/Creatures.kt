@@ -1,18 +1,14 @@
 // Main coding: Jordan
-// Contains UI-specific utility code related to DnD
 
 package makovacs.dnd.ui.util
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
-import makovacs.dnd.R
-import makovacs.dnd.data.dnd.AbilityScores
-import makovacs.dnd.data.dnd.CreatureSize
-import makovacs.dnd.data.dnd.abilityModifier
+import makovacs.dnd.data.dnd.creatures.AbilityScores
+import makovacs.dnd.data.dnd.creatures.abilityModifier
 
 /**
  * Creates a formatted string for every ability score.
@@ -44,17 +40,17 @@ fun AbilityScores.abilityAnnotatedStrings() = (AbilityScores.abilityNames zip sc
 //    R.string.ability_wis,
 //    R.string.ability_cha
 // ).map { stringResource(it) }
-
-/**
- * Gets this size's localized name.
- */
-val CreatureSize.displayName @Composable get() = stringResource(
-    when (this) {
-        CreatureSize.TINY -> R.string.tiny
-        CreatureSize.SMALL -> R.string.small
-        CreatureSize.MEDIUM -> R.string.medium
-        CreatureSize.LARGE -> R.string.large
-        CreatureSize.HUGE -> R.string.huge
-        CreatureSize.GARGANTUAN -> R.string.gargantuan
-    }
-)
+//
+// /**
+// * Gets this size's localized name.
+// */
+// val CreatureSize.displayName @Composable get() = stringResource(
+//    when (this) {
+//        CreatureSize.TINY -> R.string.tiny
+//        CreatureSize.SMALL -> R.string.small
+//        CreatureSize.MEDIUM -> R.string.medium
+//        CreatureSize.LARGE -> R.string.large
+//        CreatureSize.HUGE -> R.string.huge
+//        CreatureSize.GARGANTUAN -> R.string.gargantuan
+//    }
+// )

@@ -22,7 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import makovacs.dnd.data.dnd.users.ResultAuth
-import makovacs.dnd.ui.components.InvalidFormInput
+import makovacs.dnd.logic.isValidEmail
+import makovacs.dnd.ui.components.common.InvalidFormInput
 import makovacs.dnd.ui.routing.LocalNavHostController
 import makovacs.dnd.ui.routing.Route
 import makovacs.dnd.ui.viewmodels.AuthViewModel
@@ -97,11 +98,4 @@ fun SignUp(authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFacto
             Spacer(modifier = Modifier.height(20.dp))
         }
     }
-}
-
-fun isValidEmail(email: String): Boolean {
-    val regex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}\$".toRegex()
-    val found = regex.find(email) ?: false
-
-    return true
 }

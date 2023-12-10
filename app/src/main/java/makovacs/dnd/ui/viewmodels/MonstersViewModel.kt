@@ -10,8 +10,8 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import makovacs.dnd.MyApp
-import makovacs.dnd.data.dnd.Monster
-import makovacs.dnd.data.dnd.MonsterQuery
+import makovacs.dnd.data.dnd.monsters.Monster
+import makovacs.dnd.data.dnd.monsters.MonsterQuery
 import makovacs.dnd.logic.normalizeForInsensitiveComparisons
 
 /**

@@ -21,7 +21,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import makovacs.dnd.data.dnd.MagicItem
+import makovacs.dnd.data.dnd.magicItems.MagicItem
 
 /**
  * A screen showing a large formatted version of the passed in magic item string.

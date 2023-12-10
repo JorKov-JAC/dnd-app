@@ -21,9 +21,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import makovacs.dnd.data.dnd.Monster
-import makovacs.dnd.ui.components.MonstersSearchList
-import makovacs.dnd.ui.components.SignInButtonOrElse
+import makovacs.dnd.data.dnd.monsters.Monster
+import makovacs.dnd.ui.components.common.SignInButtonOrElse
+import makovacs.dnd.ui.components.monsters.MonstersSearchList
 import makovacs.dnd.ui.routing.LocalNavHostController
 import makovacs.dnd.ui.routing.Route
 import makovacs.dnd.ui.viewmodels.LocalMonstersViewModel

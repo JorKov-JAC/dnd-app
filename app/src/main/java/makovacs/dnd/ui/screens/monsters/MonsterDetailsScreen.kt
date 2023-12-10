@@ -29,9 +29,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import makovacs.dnd.data.dnd.Monster
-import makovacs.dnd.ui.components.ConfirmDeleteDialog
-import makovacs.dnd.ui.components.MonsterDetails
+import makovacs.dnd.data.dnd.monsters.Monster
+import makovacs.dnd.ui.components.common.ConfirmDeleteDialog
+import makovacs.dnd.ui.components.monsters.MonsterDetails
 import makovacs.dnd.ui.routing.LocalNavHostController
 import makovacs.dnd.ui.routing.Route
 import makovacs.dnd.ui.util.getCurrentUser

@@ -18,26 +18,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import makovacs.dnd.ui.routing.LocalNavHostController
 import makovacs.dnd.ui.routing.Route
-
-/**
- * Contains information for a navigation button.
- *
- * @param routeObject The route object to get the parameterized route from.
- * @param goRoute The route to navigate to when pressed.
- * @param icon The button's icon.
- * @param label The text underneath the icon describing the route.
- */
-private data class NavButtonInfo(
-    val routeObject: Route,
-    val goRoute: String,
-    val icon: ImageVector,
-    val label: String
-)
 
 /**
  * The main scaffolding layout used throughout the app.
