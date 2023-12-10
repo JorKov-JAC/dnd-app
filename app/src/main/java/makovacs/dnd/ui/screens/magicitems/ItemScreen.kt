@@ -32,6 +32,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import makovacs.dnd.data.dnd.MagicItem
 import makovacs.dnd.logic.normalizeForInsensitiveComparisons
 import makovacs.dnd.ui.components.StringSearchList
+import makovacs.dnd.ui.components.common.ForwardArrow
 import makovacs.dnd.ui.routing.LocalNavHostController
 import makovacs.dnd.ui.routing.Route
 import makovacs.dnd.ui.viewmodels.AuthViewModel
@@ -67,27 +68,31 @@ fun ItemScreen(magicItems: List<MagicItem>, remove: (String) -> Unit, getByName:
                 navController.navigate(Route.SingleItem.go(item.name))
             }
         ) {
-            Row {
-                val imageModifier = Modifier
-                    .size(80.dp)
-                    .border(BorderStroke(1.dp, Color.Black))
-                    .background(Color.White)
-                var id = context.resources.getIdentifier(
-                    item?.image ?: "R.drawable.dndmisc",
-                    "drawable",
-                    "makovacs.dnd"
-                )
-                Image(
-                    painterResource(id = id),
-                    contentDescription = "...",
-                    modifier = imageModifier
-                )
-                Text(
-                    "Name: ${item.name}",
-                    Modifier
-                        .padding(10.dp)
-                        .fillMaxWidth()
-                )
+            Box {
+                Row {
+                    val imageModifier = Modifier
+                        .size(80.dp)
+                        .border(BorderStroke(1.dp, Color.Black))
+                        .background(Color.White)
+                    var id = context.resources.getIdentifier(
+                        item?.image ?: "R.drawable.dndmisc",
+                        "drawable",
+                        "makovacs.dnd"
+                    )
+                    Image(
+                        painterResource(id = id),
+                        contentDescription = "...",
+                        modifier = imageModifier
+                    )
+                    Text(
+                        "Name: ${item.name}",
+                        Modifier
+                            .padding(10.dp)
+                            .fillMaxWidth()
+                    )
+                }
+
+                ForwardArrow(modifier = Modifier.align(Alignment.CenterEnd))
             }
         }
     }

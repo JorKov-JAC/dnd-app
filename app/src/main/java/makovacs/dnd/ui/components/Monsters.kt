@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import makovacs.dnd.R
 import makovacs.dnd.data.dnd.Monster
 import makovacs.dnd.data.dnd.MonsterQuery
+import makovacs.dnd.ui.components.common.ForwardArrow
 import makovacs.dnd.ui.components.common.InformationDisplay
 import makovacs.dnd.ui.util.toBitmap
 import makovacs.dnd.ui.util.toPainter
@@ -264,6 +265,10 @@ fun MonstersSearchList(
             if (onClick != null) cardModifier = cardModifier.clickable { onClick(it) }
 
             MonsterCard(it, cardModifier)
+
+            if (onClick != null) {
+                ForwardArrow(modifier = Modifier.align(Alignment.TopEnd))
+            }
         }
     }
 }
