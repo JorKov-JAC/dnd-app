@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -42,7 +44,7 @@ fun SignUp(authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFacto
     val navController = LocalNavHostController.current
     val signUpResult by authViewModel.signUpResult.collectAsState(ResultAuth.Inactive)
 
-    Column {
+    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
         Button(onClick = { navController.navigate(Route.SignIn.route) }) {
             Text("Sign In")
         }
