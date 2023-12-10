@@ -1,3 +1,4 @@
+// Main coding: Jordan
 // Contains common UI-related helper functions
 
 package makovacs.dnd.ui.util
@@ -19,7 +20,6 @@ import makovacs.dnd.MyApp
 import makovacs.dnd.ui.routing.LocalNavHostController
 
 /**
- * Main coding: Jordan
  * Gets a bitmap from this [DrawableRes] id.
  */
 @Composable

@@ -1,3 +1,5 @@
+// Main coding: Jordan
+
 package makovacs.dnd.ui.viewmodels
 
 import androidx.compose.runtime.Composable
@@ -13,7 +15,6 @@ import makovacs.dnd.data.dnd.MonsterQuery
 import makovacs.dnd.logic.normalizeForInsensitiveComparisons
 
 /**
- * Main coding: Jordan
  * [ViewModel] for the list of [monsters][Monster] stored in the encyclopedia.
  */
 class MonstersViewModel : ViewModel() {

@@ -1,9 +1,10 @@
+// Main coding: Makena
+
 package makovacs.dnd.data.dnd.users
 
 import kotlinx.coroutines.flow.StateFlow
 
 /*
- * Main Coding: Makena
  * The interface that auth repository objects can be interacted through
  */
 

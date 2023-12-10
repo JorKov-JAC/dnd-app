@@ -1,3 +1,5 @@
+// Main coding: Makena
+
 package makovacs.dnd.ui.screens.magicitems
 
 import androidx.compose.foundation.BorderStroke
@@ -38,7 +40,6 @@ import makovacs.dnd.ui.viewmodels.AuthViewModel
 import makovacs.dnd.ui.viewmodels.AuthViewModelFactory
 
 /**
- * Main coding: Makena
  * A screen that displays a simple card containing the photo and name of each magic item along that can be clicked on to lead to a more
  * detailed overview of just the clicked on item and allows the user to delete it. Contains a button to remove all the items from the list.
  * @param magicItems The list of the magic items

@@ -1,8 +1,9 @@
+// Main coding: Makena & Jordan
+
 package makovacs.dnd
 
 import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import makovacs.dnd.data.dnd.db.magicitems.MagicItemsRepository
 import makovacs.dnd.data.dnd.db.monsters.MonstersRepository
@@ -11,7 +12,6 @@ import makovacs.dnd.data.dnd.users.AuthRepository
 import makovacs.dnd.data.dnd.users.AuthRepositoryFirebase
 
 /**
- * Main coding: Makena & Jordan
  * Creates the repositories
  */
 class AppModule(

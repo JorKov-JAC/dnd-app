@@ -1,3 +1,5 @@
+// Main coding: Jordan
+
 package makovacs.dnd.ui.components.common
 
 import androidx.compose.foundation.layout.Arrangement
@@ -38,7 +40,6 @@ import makovacs.dnd.ui.components.EditableList
 import makovacs.dnd.ui.components.StringDropdownSelector
 
 /**
- * Main coding: Jordan
  * Displays a [Description].
  *
  * @param description The description to display.

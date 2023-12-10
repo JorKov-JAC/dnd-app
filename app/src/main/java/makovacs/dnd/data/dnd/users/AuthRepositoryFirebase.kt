@@ -1,3 +1,5 @@
+// Main coding: Makena
+
 package makovacs.dnd.data.dnd.users
 
 import com.google.firebase.auth.FirebaseAuth
@@ -7,7 +9,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.tasks.await
 /**
- * Main Coding: Makena
  * The authentication firebase repository
  * @property FirebaseAuth The connection to the Firebase database
  */

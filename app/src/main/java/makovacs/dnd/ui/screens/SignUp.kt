@@ -1,3 +1,5 @@
+// Main coding: Makena
+
 package makovacs.dnd.ui.screens
 
 import androidx.compose.foundation.layout.Column
@@ -27,7 +29,6 @@ import makovacs.dnd.ui.viewmodels.AuthViewModel
 import makovacs.dnd.ui.viewmodels.AuthViewModelFactory
 
 /**
- * Main coding: Makena
  * The screen where users can sign up to make a new account, or switch to sign up if they already have one
  * @param authViewModel The ViewModel containing the information and logic concerning users
  */

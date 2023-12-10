@@ -1,3 +1,5 @@
+// Main coding: Jordan
+
 package makovacs.dnd.ui.screens.monsters
 
 import androidx.compose.foundation.layout.Column
@@ -16,7 +18,6 @@ import makovacs.dnd.ui.components.monsters.MonsterEditor
 import makovacs.dnd.ui.components.monsters.MonsterEditorViewModel
 
 /**
- * Main coding: Jordan
  * Allows the user to edit a monster's existing information.
  *
  * @param monster The monster to edit.

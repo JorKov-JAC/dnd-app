@@ -1,3 +1,5 @@
+// Main coding: Jordan & Makena
+
 package makovacs.dnd.ui.screens
 
 import androidx.compose.foundation.Image
@@ -20,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import makovacs.dnd.R
 
 /**
- * Main coding: Jordan & Makena
  * The about screen which describes the app and its developers.
  */
 @Composable

@@ -1,3 +1,4 @@
+// Main coding: Jordan
 // Contains UI-specific utility code related to DnD
 
 package makovacs.dnd.ui.util
@@ -14,7 +15,6 @@ import makovacs.dnd.data.dnd.CreatureSize
 import makovacs.dnd.data.dnd.abilityModifier
 
 /**
- * Main coding: Jordan
  * Creates a formatted string for every ability score.
  */
 @Composable

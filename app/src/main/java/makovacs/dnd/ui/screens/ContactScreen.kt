@@ -1,3 +1,5 @@
+// Main coding: Makena & Jordan
+
 package makovacs.dnd.ui.screens
 
 import androidx.compose.foundation.layout.Box
@@ -28,7 +30,6 @@ import androidx.compose.ui.unit.sp
 import makovacs.dnd.R
 
 /**
- * Main coding: Makena & Jordan
  * A not currently functional screen meant to display contact information (phone, email and address)
  * for a company along with a form that could be used to send a message. The fields do not update and
  * the send button is disabled.

@@ -1,3 +1,5 @@
+// Main coding: Makena
+
 package makovacs.dnd.ui.screens
 
 import android.app.AlertDialog
@@ -27,7 +29,6 @@ import makovacs.dnd.ui.viewmodels.AuthViewModel
 import makovacs.dnd.ui.viewmodels.AuthViewModelFactory
 
 /**
- * Main coding: Makena
  * The account page of a user
  *
  * @param deleteAll Deletes all the magic items belonging to a user (when they delete their account)

@@ -1,3 +1,5 @@
+// Main coding: Jordan
+
 package makovacs.dnd.ui.screens.monsters
 
 import androidx.compose.foundation.layout.Column
@@ -15,8 +17,7 @@ import makovacs.dnd.data.dnd.Monster
 import makovacs.dnd.ui.components.monsters.MonsterEditor
 
 /**
- * Main coding: Jordan
- * user to input information to create a new [Monster].
+ * Allows the user to input information to create a new [Monster].
  *
  * @param userId The id to use for [Monster.ownerUserId].
  * @param onSubmit Called with the new [Monster].

@@ -1,3 +1,5 @@
+// Main coding: Jordan
+
 package makovacs.dnd.ui.components.monsters
 
 import android.graphics.Bitmap
@@ -39,7 +41,6 @@ import makovacs.dnd.ui.components.StringDropdownSelector
 import makovacs.dnd.ui.components.common.InformationEditor
 
 /**
- * Main coding: Jordan
  * Allows the user to input information to create a new [Monster].
  *
  * @param vm The view-model to use for storing the editor's current data.

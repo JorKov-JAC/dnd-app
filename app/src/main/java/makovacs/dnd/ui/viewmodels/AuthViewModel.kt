@@ -1,3 +1,5 @@
+// Main coding: Makena
+
 package makovacs.dnd.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
@@ -16,7 +18,6 @@ import makovacs.dnd.data.dnd.users.User
 import java.lang.Exception
 
 /**
- * Main coding: Makena
  * The ViewModel containing the information and logic concerning users
  * @property authRepository The connection to the repository for the users
  */

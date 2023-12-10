@@ -1,9 +1,9 @@
+// Main coding: Makena
+
 package makovacs.dnd.data.dnd.users
 
 /**
- * Main Coding: Makena
- * The authentication firebase repository
- * @property FirebaseAuth The connection to the Firebase database
+ * The result of an authentication attempt.
  */
 sealed class ResultAuth<out T> {
     data class Success<out T>(val data: T) : ResultAuth<T>()

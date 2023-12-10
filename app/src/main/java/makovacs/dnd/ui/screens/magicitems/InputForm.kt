@@ -1,3 +1,5 @@
+// Main coding: Makena
+
 package makovacs.dnd.ui.screens.magicitems
 
 import android.app.AlertDialog
@@ -41,7 +43,6 @@ import makovacs.dnd.ui.routing.LocalNavHostController
 import makovacs.dnd.ui.routing.Route
 
 /**
- * Main coding: Makena
  *
  * Provides an input form for a user to input the name, source book, rarity and description of a Dungeons and Dragons
  * magic item. Contains two buttons, one to add the item to the list of items, and the other to clear the

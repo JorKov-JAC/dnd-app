@@ -1,3 +1,5 @@
+// Main coding: Jordan
+
 package makovacs.dnd.ui.screens.monsters
 
 import androidx.compose.foundation.layout.Box
@@ -20,7 +22,6 @@ import makovacs.dnd.ui.viewmodels.LocalMonstersViewModel
 import makovacs.dnd.ui.viewmodels.MonstersViewModel
 
 /**
- * Main coding: Jordan
  * A screen which allows the user to select a [Monster].
  *
  * @param monstersVm The monsters view model to use. Defaults to the currently provided

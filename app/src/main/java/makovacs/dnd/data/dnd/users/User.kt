@@ -1,7 +1,8 @@
+// Main coding: Makena & Jordan
+
 package makovacs.dnd.data.dnd.users
 
 /**
- * Main Coding: Makena & Jordan
  * Represents a user from the [AuthRepository].
  *
  * @param id The unique ID for this user.

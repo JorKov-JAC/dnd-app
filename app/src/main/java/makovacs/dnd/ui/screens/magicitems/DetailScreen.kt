@@ -1,3 +1,5 @@
+// Main coding: Makena
+
 package makovacs.dnd.ui.screens.magicitems
 
 import androidx.compose.foundation.BorderStroke
@@ -22,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import makovacs.dnd.data.dnd.MagicItem
 
 /**
- * Main coding: Makena
  * A screen showing a large formatted version of the passed in magic item string.
  * @param name the name of the magic item
  * @param remove the function to remove the item based on it's name

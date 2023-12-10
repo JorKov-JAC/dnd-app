@@ -1,3 +1,5 @@
+// Main coding: Jordan
+
 package makovacs.dnd.data.dnd.db.monsters
 
 import kotlinx.coroutines.flow.Flow
@@ -5,7 +7,6 @@ import makovacs.dnd.data.dnd.Monster
 import makovacs.dnd.data.dnd.MonsterQuery
 
 /**
- * Main coding: Jordan
  * A repository for [Monster] entries.
  */
 interface MonstersRepository {

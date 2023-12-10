@@ -1,7 +1,5 @@
-/**
- * Main coding: Jordan
- * Contains common DnD classes and functions.
- */
+// Main coding: Jordan
+// Contains common DnD classes and functions.
 
 package makovacs.dnd.data.dnd
 
@@ -11,7 +9,6 @@ import makovacs.dnd.data.dnd.Dice.Companion.typicalPossibleSides
 import makovacs.dnd.logic.ellipsis
 
 /**
- * Main coding: Jordan
  * A collection of stats such as strength and dexterity.
  *
  * @param str A strength score.

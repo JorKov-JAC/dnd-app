@@ -1,7 +1,8 @@
+// Main coding: Makena
+
 package makovacs.dnd.data.dnd
 
 /**
- * Main coding: Makena
  * Creates an instance of a MagicItem object
  *
  * @property name The name of the item

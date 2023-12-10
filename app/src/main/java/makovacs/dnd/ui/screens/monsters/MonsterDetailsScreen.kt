@@ -1,3 +1,5 @@
+// Main coding: Jordan
+
 package makovacs.dnd.ui.screens.monsters
 
 import androidx.compose.foundation.layout.Arrangement
@@ -35,7 +37,6 @@ import makovacs.dnd.ui.routing.Route
 import makovacs.dnd.ui.util.getCurrentUser
 
 /**
- * Main coding: Jordan
  * Shows detailed information about a given monster.
  *
  * @param monster The monster to show information for.

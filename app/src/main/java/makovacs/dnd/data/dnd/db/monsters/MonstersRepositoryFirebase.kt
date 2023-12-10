@@ -1,3 +1,5 @@
+// Main coding: Jordan
+
 package makovacs.dnd.data.dnd.db.monsters
 
 import android.graphics.Bitmap
@@ -32,7 +34,6 @@ import java.io.ByteArrayOutputStream
 import java.util.WeakHashMap
 
 /**
- * Main coding: Jordan
  * An implementation of [MonstersRepository] using Firebase.
  */
 class MonstersRepositoryFirebase : MonstersRepository {

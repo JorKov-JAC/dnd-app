@@ -1,3 +1,5 @@
+// Main coding: Jordan
+
 package makovacs.dnd.ui.components
 
 import androidx.compose.foundation.background
@@ -65,7 +67,6 @@ import makovacs.dnd.ui.util.getCurrentUser
 import kotlin.math.roundToInt
 
 /**
- * Main coding: Jordan
  * A dialog which displays its contents within a card.
  *
  * @param onDismissRequest Called when the user attempts to dismiss the dialog.

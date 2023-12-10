@@ -1,3 +1,5 @@
+// Main coding: Makena & Jordan
+
 package makovacs.dnd
 
 import android.os.Bundle
@@ -19,9 +21,7 @@ import makovacs.dnd.ui.routing.Router
 import makovacs.dnd.ui.theme.AppTheme
 import makovacs.dnd.ui.viewmodels.LocalMonstersViewModel
 import makovacs.dnd.ui.viewmodels.MonstersViewModel
-/**
- * Main coding: Makena & Jordan
- */
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()

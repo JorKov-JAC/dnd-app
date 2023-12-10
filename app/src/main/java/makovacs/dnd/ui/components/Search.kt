@@ -1,3 +1,5 @@
+// Main coding: Jordan
+
 package makovacs.dnd.ui.components
 
 import androidx.compose.foundation.layout.Column
@@ -19,7 +21,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 
 /**
- * Main coding: Jordan
  * Searches [items] for items that match [query].
  *
  * @param items The items to search through.

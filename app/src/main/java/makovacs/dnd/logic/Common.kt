@@ -1,10 +1,11 @@
+// Main coding: Jordan
+
 package makovacs.dnd.logic
 
 import android.icu.text.Normalizer2
 import java.util.Date
 
 /**
- * Main coding: Jordan
  * Swaps two items in a list.
  *
  * @param a The index of the first item.
