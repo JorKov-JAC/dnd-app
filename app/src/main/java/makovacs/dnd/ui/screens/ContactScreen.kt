@@ -1,10 +1,12 @@
 package makovacs.dnd.ui.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -12,16 +14,24 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import makovacs.dnd.R
@@ -34,8 +44,14 @@ import makovacs.dnd.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContactScreen() {
+    val context = LocalContext.current
     val image = painterResource(id = R.drawable.contactbg)
-    val placeholder: String = ""
+
+    var name by rememberSaveable { mutableStateOf("") }
+    var phone by rememberSaveable { mutableStateOf("") }
+    var email by rememberSaveable { mutableStateOf("") }
+    var message by rememberSaveable { mutableStateOf("") }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -70,6 +86,74 @@ fun ContactScreen() {
                     Row(modifier = Modifier.padding(15.dp)) {
                         Icon(imageVector = Icons.Filled.Home, contentDescription = "Home icon")
                         Text("24 Dnd Street, Neverwinter, 123 456, Forgotten Realms")
+                    }
+
+                    Row(modifier = Modifier.padding(15.dp)) {
+                        TextField(
+                            modifier = Modifier
+                                .padding(4.dp)
+                                .weight(1f),
+                            value = name,
+                            onValueChange = { name = it },
+                            label = { Text("Name") }
+
+                        )
+
+                        TextField(
+                            modifier = Modifier
+                                .padding(4.dp)
+                                .weight(1f),
+                            value = phone,
+                            onValueChange = { phone = it },
+                            label = { Text("Phone") }
+                        )
+                    }
+
+                    TextField(
+                        modifier = Modifier
+                            .padding(horizontal = 19.dp, vertical = 4.dp)
+                            .fillMaxWidth(),
+                        value = email,
+                        onValueChange = { email = it },
+                        label = { Text("Email") }
+
+                    )
+
+                    Row(modifier = Modifier.padding(15.dp)) {
+                        TextField(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(4.dp),
+                            value = message,
+                            onValueChange = { message = it },
+                            label = { Text("Message") }
+
+                        )
+                    }
+
+                    Button(
+                        {
+                            // Simulate sending a message
+                            // (no, the message isn't actually sent)
+                            name = ""
+                            email = ""
+                            phone = ""
+                            message = ""
+
+                            Toast
+                                .makeText(
+                                    context,
+                                    "Your message has been \"received\".",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                        },
+                        // Can only send if all fields have content:
+                        enabled = listOf(name, email, phone, message).all { it.isNotBlank() },
+                        modifier = Modifier
+                            .align(CenterHorizontally)
+                            .padding(8.dp)
+                    ) {
+                        Text(text = "Send")
                     }
                 }
             }
