@@ -1,3 +1,5 @@
+// Main coding: Jordan
+
 package makovacs.dnd.ui.components.common.information.editing
 
 import androidx.compose.foundation.layout.Column

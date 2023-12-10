@@ -1,3 +1,5 @@
+// Main coding: Jordan
+
 package makovacs.dnd.ui.layouts
 
 import androidx.compose.ui.graphics.vector.ImageVector

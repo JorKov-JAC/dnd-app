@@ -1,3 +1,5 @@
+// Main coding: Jordan
+
 package makovacs.dnd.ui.components.creatures
 
 import androidx.compose.material3.Text

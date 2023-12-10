@@ -1,3 +1,5 @@
+// Main coding: Jordan
+
 package makovacs.dnd.data.dnd.creatures
 
 import androidx.annotation.Size

@@ -1,5 +1,4 @@
 // Main coding: Jordan
-// Contains UI-specific utility code related to DnD
 
 package makovacs.dnd.ui.util
 

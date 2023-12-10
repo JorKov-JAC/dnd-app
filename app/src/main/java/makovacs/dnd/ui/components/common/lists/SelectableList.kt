@@ -1,3 +1,5 @@
+// Main coding: Jordan
+
 package makovacs.dnd.ui.components.common.lists
 
 import androidx.compose.foundation.background

@@ -1,3 +1,5 @@
+// Main coding: Jordan
+
 package makovacs.dnd.ui.components.common
 
 import androidx.compose.material.icons.Icons

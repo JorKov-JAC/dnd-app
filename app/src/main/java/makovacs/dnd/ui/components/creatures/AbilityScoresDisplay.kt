@@ -1,3 +1,5 @@
+// Main coding: Jordan
+
 package makovacs.dnd.ui.components.creatures
 
 import androidx.compose.foundation.layout.padding

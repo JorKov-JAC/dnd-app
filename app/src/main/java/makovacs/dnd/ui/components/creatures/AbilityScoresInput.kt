@@ -1,5 +1,4 @@
 // Main coding: Jordan
-// Contains components related to DnD creatures
 
 package makovacs.dnd.ui.components.creatures
 

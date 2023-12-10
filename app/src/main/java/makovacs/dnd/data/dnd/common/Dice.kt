@@ -1,6 +1,9 @@
+// Main coding: Jordan
+
 package makovacs.dnd.data.dnd.common
 
 import com.google.firebase.firestore.Exclude
+import makovacs.dnd.data.dnd.common.Dice.Companion.typicalPossibleSides
 
 /**
  * Represents a number of a dice, each with the same number of sides.
