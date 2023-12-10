@@ -55,7 +55,7 @@ fun MonstersListScreen(modifier: Modifier = Modifier) {
                 setQueryStr = { query = it }
             )
 
-            // Create button
+            // New entry button
             SignInButtonOrElse(
                 signInMessage = "Sign In to Add Monsters",
                 modifier = Modifier

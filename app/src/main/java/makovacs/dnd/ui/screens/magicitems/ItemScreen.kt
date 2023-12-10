@@ -8,14 +8,18 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,10 +33,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import makovacs.dnd.data.dnd.MagicItem
 import makovacs.dnd.logic.normalizeForInsensitiveComparisons
+import makovacs.dnd.ui.components.SignInButtonOrElse
 import makovacs.dnd.ui.components.StringSearchList
 import makovacs.dnd.ui.routing.LocalNavHostController
 import makovacs.dnd.ui.routing.Route
@@ -100,19 +106,19 @@ fun ItemScreen(magicItems: List<MagicItem>, remove: (String) -> Unit, getByName:
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        Button(
-            onClick = {
-                if (userState.value != null) {
-                    navController.navigate(Route.ItemForm.route)
-                } else {
-                    triedAddingItemWhileLoggedOut = true
-                }
-            },
+        // New entry button
+        SignInButtonOrElse(
+            signInMessage = "Sign In to Access Items",
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(8.dp)
         ) {
-            Text("+")
+            Button({ navController.navigate(Route.ItemForm.route) }) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Icon(Icons.Default.Add, null /* Described by text */)
+                    Text("New", textAlign = TextAlign.Center)
+                }
+            }
         }
     }
 
