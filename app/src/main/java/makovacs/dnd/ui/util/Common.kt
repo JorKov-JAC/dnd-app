@@ -19,6 +19,7 @@ import makovacs.dnd.MyApp
 import makovacs.dnd.ui.routing.LocalNavHostController
 
 /**
+ * Main coding: Jordan
  * Gets a bitmap from this [DrawableRes] id.
  */
 @Composable

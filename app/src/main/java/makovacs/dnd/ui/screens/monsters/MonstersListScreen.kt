@@ -27,6 +27,7 @@ import makovacs.dnd.ui.routing.Route
 import makovacs.dnd.ui.viewmodels.LocalMonstersViewModel
 
 /**
+ * Main coding: Jordan
  * Displays the list of [monsters][Monster] from [LocalMonstersViewModel].
  */
 @Composable

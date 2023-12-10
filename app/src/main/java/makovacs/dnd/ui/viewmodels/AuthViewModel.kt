@@ -15,7 +15,13 @@ import makovacs.dnd.data.dnd.users.ResultAuth
 import makovacs.dnd.data.dnd.users.User
 import java.lang.Exception
 
+/**
+ * Main coding: Makena
+ * The ViewModel containing the information and logic concerning users
+ * @property authRepository The connection to the repository for the users
+ */
 class AuthViewModel(val authRepository: AuthRepository) : ViewModel() {
+    // gets the current user
     fun currentUser(): StateFlow<User?> {
         return authRepository.currentUser()
     }
@@ -23,6 +29,7 @@ class AuthViewModel(val authRepository: AuthRepository) : ViewModel() {
     private val _signUpResult = MutableStateFlow<ResultAuth<Boolean>?>(ResultAuth.Inactive)
     val signUpResult: StateFlow<ResultAuth<Boolean>?> = _signUpResult
 
+    // Sends the user's information to the repository to try to sign them up
     fun signUp(email: String, password: String) {
         _signUpResult.update { ResultAuth.InProgress }
         viewModelScope.launch(Dispatchers.IO) {
@@ -41,6 +48,8 @@ class AuthViewModel(val authRepository: AuthRepository) : ViewModel() {
 
     private val _signInResult = MutableStateFlow<ResultAuth<Boolean>?>(ResultAuth.Inactive)
     val signInResult: StateFlow<ResultAuth<Boolean>?> = _signInResult
+
+    // Sends the user's information to the repository to try to sign them in
     fun signIn(email: String, password: String) {
         _signInResult.update { ResultAuth.InProgress }
         viewModelScope.launch(Dispatchers.IO) {
@@ -59,6 +68,8 @@ class AuthViewModel(val authRepository: AuthRepository) : ViewModel() {
 
     private val _signOutResult = MutableStateFlow<ResultAuth<Boolean>?>(ResultAuth.Inactive)
     val signOutResult: StateFlow<ResultAuth<Boolean>?> = _signOutResult
+
+    // Sends the user's information to the repository to try to sign them out
     fun signOut() {
         _signOutResult.update { ResultAuth.InProgress }
 
@@ -76,6 +87,8 @@ class AuthViewModel(val authRepository: AuthRepository) : ViewModel() {
 
     private val _deleteResult = MutableStateFlow<ResultAuth<Boolean>?>(ResultAuth.Inactive)
     val deleteResult: StateFlow<ResultAuth<Boolean>?> = _deleteResult
+
+    // Sends the user's information to the repository to delete their account
     fun delete() {
         _deleteResult.update { ResultAuth.InProgress }
         viewModelScope.launch(Dispatchers.IO) {

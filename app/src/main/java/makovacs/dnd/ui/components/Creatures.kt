@@ -37,6 +37,7 @@ import makovacs.dnd.ui.util.toBitmap
 import makovacs.dnd.ui.util.toPainter
 
 /**
+ * Main coding: Jordan
  * Display's information about a creature's Armor Class and Hit Points.
  *
  * @param ac The creature's Armor Class.

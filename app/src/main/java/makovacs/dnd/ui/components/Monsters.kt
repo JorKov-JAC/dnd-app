@@ -40,6 +40,7 @@ import makovacs.dnd.ui.util.toBitmap
 import makovacs.dnd.ui.util.toPainter
 
 /**
+ * Main coding: Jordan
  * Displays a summary of a monster's information and stats.
  *
  * @param monster The monster whose stats should be shown.

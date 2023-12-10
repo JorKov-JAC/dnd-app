@@ -15,7 +15,8 @@ import makovacs.dnd.data.dnd.Monster
 import makovacs.dnd.ui.components.monsters.MonsterEditor
 
 /**
- * Allows the user to input information to create a new [Monster].
+ * Main coding: Jordan
+ * user to input information to create a new [Monster].
  *
  * @param userId The id to use for [Monster.ownerUserId].
  * @param onSubmit Called with the new [Monster].

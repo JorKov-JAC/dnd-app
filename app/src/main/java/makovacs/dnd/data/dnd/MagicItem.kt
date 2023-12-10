@@ -1,5 +1,17 @@
 package makovacs.dnd.data.dnd
 
+/**
+ * Main coding: Makena
+ * Creates an instance of a MagicItem object
+ *
+ * @property name The name of the item
+ * @property sourceBook The source of the item (ie. name of book or self made)
+ * @property rarity The rarity of the item (ie. rare, uncommon, wondrous)
+ * @property description The description of the item
+ * @property damageDice The amount of damage the item can do
+ * @property damageType The type of damage the item can do
+ *
+ */
 data class MagicItem(
     var name: String = "empty",
     var sourceBook: String = "empty",
@@ -11,6 +23,7 @@ data class MagicItem(
 
 ) {
 
+    // Returns a string with the magic item's information formatted
     override fun toString(): String {
         return if (damageDice != null) {
             "Name: $name \nSource: $sourceBook \nRarity: $rarity \nDescription: $description \n" +
@@ -22,6 +35,7 @@ data class MagicItem(
     }
 }
 
+// a enum of the different damage types a magic item can cause
 enum class DamageType {
     None, Acid, Bludgeoning, Cold, Fire, Force, Lightning, Necrotic, Piercing, Poison, Psychic, Radiant, Slashing, Thunder
 }

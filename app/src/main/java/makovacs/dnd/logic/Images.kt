@@ -6,6 +6,7 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 
 /**
+ * Main coding: Jordan
  * Scales this bitmap to fit within [maxWidth] and [maxHeight] while maintaining its aspect ratio.
  *
  * @param maxWidth The maximum possible width of the resulting image.

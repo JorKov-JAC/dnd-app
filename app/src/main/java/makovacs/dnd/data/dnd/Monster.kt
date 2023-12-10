@@ -8,6 +8,7 @@ import kotlin.math.floor
 import kotlin.math.truncate
 
 /**
+ * Main coding: Jordan
  * Contains information for a D&D monster.
  *
  * Two instances are considered equal if their [names][name] match.

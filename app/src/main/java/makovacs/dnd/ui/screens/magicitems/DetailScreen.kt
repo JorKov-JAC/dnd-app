@@ -21,8 +21,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import makovacs.dnd.data.dnd.MagicItem
 
-/*
-    A screen showing a large formatted version of the passed in magic item string.
+/**
+ * Main coding: Makena
+ * A screen showing a large formatted version of the passed in magic item string.
+ * @param name the name of the magic item
+ * @param remove the function to remove the item based on it's name
+ * @param getByName the function to get the details of the magic item from it's name
  */
 @Composable
 fun DetailScreen(name: String, remove: (String) -> Unit, getByName: (String) -> MagicItem?) {
@@ -55,7 +59,6 @@ fun DetailScreen(name: String, remove: (String) -> Unit, getByName: (String) -> 
                     .padding(10.dp)
                     .fillMaxWidth()
             )
-
         }
     }
 

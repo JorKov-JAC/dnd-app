@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import makovacs.dnd.data.dnd.MagicItem
 import makovacs.dnd.data.dnd.users.AuthRepository
 
-/*
+/**
  * Main Coding: Makena
  * The repository that interacts with the Firestore database containing the magic items
  * @property FirebaseFirestore The connection to the firestore database

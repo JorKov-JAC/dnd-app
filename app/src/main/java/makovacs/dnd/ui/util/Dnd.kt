@@ -14,6 +14,7 @@ import makovacs.dnd.data.dnd.CreatureSize
 import makovacs.dnd.data.dnd.abilityModifier
 
 /**
+ * Main coding: Jordan
  * Creates a formatted string for every ability score.
  */
 @Composable

@@ -38,6 +38,7 @@ import makovacs.dnd.ui.components.EditableList
 import makovacs.dnd.ui.components.StringDropdownSelector
 
 /**
+ * Main coding: Jordan
  * Displays a [Description].
  *
  * @param description The description to display.

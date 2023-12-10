@@ -12,8 +12,11 @@ import makovacs.dnd.data.dnd.DamageType
 import makovacs.dnd.data.dnd.Dice
 import makovacs.dnd.data.dnd.MagicItem
 import makovacs.dnd.data.dnd.db.magicitems.MagicItemsRepository
-/*
+/**
+ * Main coding: Makena
+ *
  * ViewModel for the magic items created in the app and stored in the repository
+ * @property magicItemsRepository The connection to the repository of magic items
  */
 class MagicItemsViewModel(private val magicItemsRepository: MagicItemsRepository) : ViewModel() {
     private val _magicItems = MutableStateFlow(listOf<MagicItem>())

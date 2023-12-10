@@ -38,6 +38,7 @@ import makovacs.dnd.ui.viewmodels.MagicItemsViewModel
 import makovacs.dnd.ui.viewmodels.MagicItemsViewModelFactory
 
 /**
+ * Main coding: Jordan & Makena
  * [NavHostController] provider.
  */
 val LocalNavHostController = compositionLocalOf<NavHostController> {

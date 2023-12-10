@@ -40,13 +40,17 @@ import makovacs.dnd.ui.components.InvalidFormInput
 import makovacs.dnd.ui.routing.LocalNavHostController
 import makovacs.dnd.ui.routing.Route
 
-/*
+/**
+ * Main coding: Makena
+ *
  * Provides an input form for a user to input the name, source book, rarity and description of a Dungeons and Dragons
  * magic item. Contains two buttons, one to add the item to the list of items, and the other to clear the
  * current item information from the text fields. Adding an item brings up a a more detailed page about the item
  * that also allows the user to delete it.
  * Does not allow for underscores or empty fields to be inputted, and calls the composable InvalidFormInput to
  * inform the user they cannot do whichever they were attempting with a passed in error message.
+ *
+ * @param add The function to create a magic item and add it to the list of them
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -73,7 +77,7 @@ fun InputForm(add: (String, String, String, String, String, Dice?, DamageType) -
                 singleLine = true,
                 onValueChange = { name = it },
                 label = { Text("Item name") },
-                placeholder = {Text("ex. Bag of Holding")}
+                placeholder = { Text("ex. Bag of Holding") }
             )
         }
         Row {
@@ -85,7 +89,7 @@ fun InputForm(add: (String, String, String, String, String, Dice?, DamageType) -
                 singleLine = true,
                 onValueChange = { sourceBook = it },
                 label = { Text("Item source") },
-                placeholder = {Text("ex. PHB")}
+                placeholder = { Text("ex. PHB") }
             )
 
             TextField(
@@ -96,7 +100,7 @@ fun InputForm(add: (String, String, String, String, String, Dice?, DamageType) -
                 singleLine = true,
                 onValueChange = { rarity = it },
                 label = { Text("Item rarity") },
-                placeholder = {Text("ex. Uncommon")}
+                placeholder = { Text("ex. Uncommon") }
             )
         }
         Row {
@@ -107,7 +111,7 @@ fun InputForm(add: (String, String, String, String, String, Dice?, DamageType) -
                 value = description,
                 onValueChange = { description = it },
                 label = { Text("Item description") },
-                placeholder = {Text("ex. A bag that can hold anything")}
+                placeholder = { Text("ex. A bag that can hold anything") }
 
             )
         }
@@ -182,7 +186,7 @@ fun InputForm(add: (String, String, String, String, String, Dice?, DamageType) -
                 value = damageDiceStr,
                 onValueChange = { damageDiceStr = it },
                 label = { Text("(Optional) Damage Dice") },
-                placeholder = {Text("ex. 2d8")}
+                placeholder = { Text("ex. 2d8") }
 
             )
 

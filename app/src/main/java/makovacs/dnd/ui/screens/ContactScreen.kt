@@ -27,10 +27,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import makovacs.dnd.R
 
-/*
-    A not currently functional screen meant to display contact information (phone, email and address)
-    for a company along with a form that could be used to send a message. The fields do not update and
-    the send button is disabled.
+/**
+ * Main coding: Makena & Jordan
+ * A not currently functional screen meant to display contact information (phone, email and address)
+ * for a company along with a form that could be used to send a message. The fields do not update and
+ * the send button is disabled.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

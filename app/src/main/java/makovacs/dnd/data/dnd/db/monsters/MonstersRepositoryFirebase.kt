@@ -32,6 +32,7 @@ import java.io.ByteArrayOutputStream
 import java.util.WeakHashMap
 
 /**
+ * Main coding: Jordan
  * An implementation of [MonstersRepository] using Firebase.
  */
 class MonstersRepositoryFirebase : MonstersRepository {

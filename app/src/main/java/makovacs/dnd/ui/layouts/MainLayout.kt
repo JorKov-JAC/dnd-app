@@ -23,6 +23,7 @@ import makovacs.dnd.ui.routing.LocalNavHostController
 import makovacs.dnd.ui.routing.Route
 
 /**
+ * Main coding: Jordan
  * Contains information for a navigation button.
  *
  * @param routeObject The route object to get the parameterized route from.
