@@ -10,14 +10,42 @@ This app catalogues the wealth of information found in the world of Dungeons & D
 - Run the app in Android Studio by clicking **Run > Run 'app'** or pressing **Shift+F10**.
 
 ## Screenshots of application
-About screen:
-
-![image](https://github.com/MakenaH/5A6-group-project/assets/98484926/49e54e3b-7bd2-4c45-a457-c4991b865a8b)
-
-Contact screen:
-
-![image](https://github.com/MakenaH/5A6-group-project/assets/98484926/061c65a1-6b22-4b65-8d45-190f1ab520e6)
-
+### About screen:  
+A screen giving some information about the project and creators.  
+![An about screen](./assets/about.png)  
+   
+### Contact screen:  
+A screen giving some information about how the potential company could be contacted.  
+![A contact screen](./assets/contact.png)  
+  
+### Account screens:  
+The screen to sign in to an account.  
+![A sign in page](./assets/accsignin.png)  
+  
+A screen allowing users to sign out and delete their account.  
+![An account page](./assets/accoverview.png)  
+  
+### Monster screens:  
+A list view of all the created monsters.  
+![A list of monster items](./assets/monscreen.png)  
+  
+A screen allowing the user to create a new monster.  
+![A screen to create a new monster](./assets/moninput.png)  
+  
+A screen showing the details of a monster.  
+![A screen showing a monster's details](./assets/mondetail.png)  
+  
+### Magic screens:  
+A list view of all the created magic items.  
+![A list of magic items](./assets/magscreen.png)  
+    
+A screen allowing the user to create a new magic item.  
+![A screen to create a new magic item](./assets/maginput.png)  
+    
+A screen showing the details of a magic item.  
+![A screen showing a magic item's details](./assets/magitem.png)  
+  
+  
 ## Team members
 - Makena Howat (2139389@johnabbottcollege.net)
 - Jordan Kovacs (2088248@johnabbottcollege.net)
