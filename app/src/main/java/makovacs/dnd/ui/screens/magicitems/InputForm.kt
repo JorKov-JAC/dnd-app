@@ -60,9 +60,9 @@ fun InputForm(add: (String, String, String, String, String, Dice?, DamageType) -
     var sourceBook by rememberSaveable { mutableStateOf("") }
     var rarity by rememberSaveable { mutableStateOf("") }
     var description by rememberSaveable { mutableStateOf("") }
-    var selectedIndex by remember { mutableStateOf(0) }
-    var damageDiceStr by remember { mutableStateOf("") }
-    var damageType by remember { mutableStateOf(DamageType.None) }
+    var selectedIndex by rememberSaveable { mutableStateOf(0) }
+    var damageDiceStr by rememberSaveable { mutableStateOf("") }
+    var damageType by rememberSaveable { mutableStateOf(DamageType.None) }
     val navController = LocalNavHostController.current
 
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
