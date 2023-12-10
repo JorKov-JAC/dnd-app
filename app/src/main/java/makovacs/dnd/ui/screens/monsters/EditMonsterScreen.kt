@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import makovacs.dnd.R
-import makovacs.dnd.data.dnd.Monster
+import makovacs.dnd.data.dnd.monsters.Monster
 import makovacs.dnd.ui.components.monsters.MonsterEditor
 import makovacs.dnd.ui.components.monsters.MonsterEditorViewModel
 

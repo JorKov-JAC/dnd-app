@@ -17,7 +17,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
 import kotlinx.coroutines.launch
-import makovacs.dnd.data.dnd.Monster
+import makovacs.dnd.data.dnd.monsters.Monster
 import makovacs.dnd.ui.routing.Route.Companion.ID_KEY
 import makovacs.dnd.ui.routing.Route.Companion.QUERY_KEY
 import makovacs.dnd.ui.screens.AboutScreen
@@ -38,13 +38,6 @@ import makovacs.dnd.ui.util.popBackStackOnce
 import makovacs.dnd.ui.viewmodels.LocalMonstersViewModel
 import makovacs.dnd.ui.viewmodels.MagicItemsViewModel
 import makovacs.dnd.ui.viewmodels.MagicItemsViewModelFactory
-
-/**
- * [NavHostController] provider.
- */
-val LocalNavHostController = compositionLocalOf<NavHostController> {
-    error("There is no provided NavHostController")
-}
 
 /**
  * Shows the appropriate page based on [LocalNavHostController].
@@ -252,4 +245,11 @@ sealed class Route(val route: String) {
     object SignUp : Route("SignUp")
 
     object Account : Route("Account")
+}
+
+/**
+ * [NavHostController] provider.
+ */
+val LocalNavHostController = compositionLocalOf<NavHostController> {
+    error("There is no provided NavHostController")
 }

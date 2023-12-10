@@ -36,11 +36,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import makovacs.dnd.data.dnd.MagicItem
+import makovacs.dnd.data.dnd.magicItems.MagicItem
 import makovacs.dnd.logic.normalizeForInsensitiveComparisons
-import makovacs.dnd.ui.components.SignInButtonOrElse
-import makovacs.dnd.ui.components.StringSearchList
 import makovacs.dnd.ui.components.common.ForwardArrow
+import makovacs.dnd.ui.components.common.SignInButtonOrElse
+import makovacs.dnd.ui.components.common.search.StringSearchList
 import makovacs.dnd.ui.routing.LocalNavHostController
 import makovacs.dnd.ui.routing.Route
 import makovacs.dnd.ui.viewmodels.AuthViewModel
@@ -129,6 +129,6 @@ fun ItemScreen(magicItems: List<MagicItem>, remove: (String) -> Unit, getByName:
 
     if (triedAddingItemWhileLoggedOut) {
         triedAddingItemWhileLoggedOut = false
-        makovacs.dnd.ui.components.InvalidFormInput("Please sign in to create items.")
+        makovacs.dnd.ui.components.common.InvalidFormInput("Please sign in to create items.")
     }
 }

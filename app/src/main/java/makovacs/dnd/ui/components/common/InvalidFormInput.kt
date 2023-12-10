@@ -1,6 +1,6 @@
 // Main coding: Makena
 
-package makovacs.dnd.ui.components
+package makovacs.dnd.ui.components.common
 
 import android.app.AlertDialog
 import androidx.compose.runtime.Composable

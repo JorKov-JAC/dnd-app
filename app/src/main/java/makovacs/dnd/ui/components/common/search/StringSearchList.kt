@@ -1,6 +1,4 @@
-// Main coding: Jordan
-
-package makovacs.dnd.ui.components
+package makovacs.dnd.ui.components.common.search
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -11,52 +9,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.update
-
-/**
- * Searches [items] for items that match [query].
- *
- * @param items The items to search through.
- * @param query The query to use in [mapper].
- * @param mapper Performs both filtering and sorting of items.
- * It is called with [query] and an individual item, and should return null if the item does not fit
- * [query], otherwise should return a [Comparable] object which can be used to sort valid items.
- * @return The ordered list of matching items, or null if a search is ongoing.
- */
-@Composable
-fun <T, Q, R : Comparable<R>> search(
-    items: Iterable<T>,
-    query: Q,
-    mapper: (query: Q, item: T) -> R?
-): List<T>? {
-    // Use remember because we can just recalculate it
-    val results = remember { MutableStateFlow<List<T>?>(null) }
-
-    LaunchedEffect(items, query, mapper) {
-        // Debounce (don't start searching until changes have momentarily stopped)
-        delay(250)
-
-        // Empty results while searching
-        results.update { null }
-
-        // Search
-        results.update {
-            items.map { it to mapper(query, it) } // Pair each item with its comparable
-                .filter { it.second != null } // Filter out non-matches
-                .sortedBy { it.second } // Sort matches
-                .map { it.first } // Get the original items out of the pairs
-        }
-    }
-
-    return results.collectAsState().value
-}
 
 /**
  * A list of items with a search box at the top.
@@ -107,11 +61,11 @@ fun <T, Q, R : Comparable<R>> StringSearchList(
 
         if (searchResults == null) {
             // Show loading text...
-            Text("Searching", modifier = Modifier.align(CenterHorizontally))
+            Text("Searching", modifier = Modifier.align(Alignment.CenterHorizontally))
         } else {
             // Done searching, show results
             if (searchResults.isEmpty()) {
-                Text("No results.", modifier = Modifier.align(CenterHorizontally))
+                Text("No results.", modifier = Modifier.align(Alignment.CenterHorizontally))
             } else {
                 LazyColumn(modifier = Modifier) {
                     itemsIndexed(

@@ -10,10 +10,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import makovacs.dnd.MyApp
-import makovacs.dnd.data.dnd.DamageType
-import makovacs.dnd.data.dnd.Dice
-import makovacs.dnd.data.dnd.MagicItem
+import makovacs.dnd.data.dnd.common.Dice
 import makovacs.dnd.data.dnd.db.magicitems.MagicItemsRepository
+import makovacs.dnd.data.dnd.magicItems.DamageType
+import makovacs.dnd.data.dnd.magicItems.MagicItem
 /**
  * ViewModel for the magic items created in the app and stored in the repository
  * @property magicItemsRepository The connection to the repository of magic items

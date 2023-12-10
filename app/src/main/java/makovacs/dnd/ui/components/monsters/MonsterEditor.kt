@@ -24,21 +24,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import makovacs.dnd.R
-import makovacs.dnd.data.dnd.AbilityScores
-import makovacs.dnd.data.dnd.CreatureSize
-import makovacs.dnd.data.dnd.Information
-import makovacs.dnd.data.dnd.InformationEntry
-import makovacs.dnd.data.dnd.Monster
+import makovacs.dnd.data.dnd.common.Information
+import makovacs.dnd.data.dnd.common.InformationEntry
+import makovacs.dnd.data.dnd.creatures.AbilityScores
+import makovacs.dnd.data.dnd.creatures.CreatureSize
+import makovacs.dnd.data.dnd.monsters.Monster
 import makovacs.dnd.logic.generateUid
 import makovacs.dnd.logic.normalizeAndClean
 import makovacs.dnd.logic.normalizeForInsensitiveComparisons
 import makovacs.dnd.logic.swap
-import makovacs.dnd.ui.components.AbilityScoresInput
-import makovacs.dnd.ui.components.EditableStringList
-import makovacs.dnd.ui.components.MonsterBitmapSelector
-import makovacs.dnd.ui.components.NullableIntField
-import makovacs.dnd.ui.components.StringDropdownSelector
-import makovacs.dnd.ui.components.common.InformationEditor
+import makovacs.dnd.ui.components.common.NullableIntField
+import makovacs.dnd.ui.components.common.dropdowns.StringDropdownSelector
+import makovacs.dnd.ui.components.common.information.editing.InformationEditor
+import makovacs.dnd.ui.components.common.lists.EditableStringList
+import makovacs.dnd.ui.components.creatures.AbilityScoresInput
 
 /**
  * Allows the user to input information to create a new [Monster].

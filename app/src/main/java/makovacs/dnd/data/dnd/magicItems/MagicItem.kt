@@ -1,6 +1,8 @@
 // Main coding: Makena
 
-package makovacs.dnd.data.dnd
+package makovacs.dnd.data.dnd.magicItems
+
+import makovacs.dnd.data.dnd.common.Dice
 
 /**
  * Creates an instance of a MagicItem object
@@ -34,9 +36,4 @@ data class MagicItem(
                 "Damage Type: ${damageType.name}"
         }
     }
-}
-
-// a enum of the different damage types a magic item can cause
-enum class DamageType {
-    None, Acid, Bludgeoning, Cold, Fire, Force, Lightning, Necrotic, Piercing, Poison, Psychic, Radiant, Slashing, Thunder
 }
