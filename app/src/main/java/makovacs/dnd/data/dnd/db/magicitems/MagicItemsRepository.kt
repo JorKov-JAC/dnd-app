@@ -9,7 +9,10 @@ import makovacs.dnd.data.dnd.MagicItem
 import makovacs.dnd.data.dnd.users.AuthRepository
 
 /*
+ * Main Coding: Makena
  * The repository that interacts with the Firestore database containing the magic items
+ * @property FirebaseFirestore The connection to the firestore database
+ * @property AuthRepository The connection to the authentication repository
  */
 class MagicItemsRepository(val db: FirebaseFirestore, val auth: AuthRepository) {
     val dbMagicId: CollectionReference = db.collection("MagicItems")
