@@ -38,7 +38,14 @@ class MagicItemsRepository(val db: FirebaseFirestore, val auth: AuthRepository) 
 
     // get's the user's collection of magic items from the database
     suspend fun getMagicItems(): Flow<List<MagicItem>> = callbackFlow {
-        val document = dbMagicId.document(auth.currentUser().value?.email ?: "null")
+        val user = auth.currentUser().value
+        if (user == null) {
+            trySend(emptyList())
+            awaitClose {}
+            return@callbackFlow
+        }
+
+        val document = dbMagicId.document(user.email)
             .collection("Items")
 
         val subscription = document.addSnapshotListener { snapshot, error ->
