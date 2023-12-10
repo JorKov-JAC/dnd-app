@@ -1,3 +1,4 @@
+// Main coding: Jordan
 // Contains common UI-related helper functions
 
 package makovacs.dnd.ui.util

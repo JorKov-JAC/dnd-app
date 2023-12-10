@@ -1,3 +1,5 @@
+// Main coding: Makena
+
 package makovacs.dnd.ui.screens
 
 import android.app.AlertDialog
@@ -26,6 +28,12 @@ import makovacs.dnd.ui.routing.Route
 import makovacs.dnd.ui.viewmodels.AuthViewModel
 import makovacs.dnd.ui.viewmodels.AuthViewModelFactory
 
+/**
+ * The account page of a user
+ *
+ * @param deleteAll Deletes all the magic items belonging to a user (when they delete their account)
+ * @param authViewModel The ViewModel containing the information and logic concerning users
+ */
 @Composable
 fun Account(deleteAll: () -> Unit, authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory())) {
     var email by rememberSaveable { mutableStateOf("") }

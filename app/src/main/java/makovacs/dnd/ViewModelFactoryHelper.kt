@@ -1,3 +1,5 @@
+// Main coding: Makena
+
 package makovacs.dnd
 
 import androidx.lifecycle.ViewModel

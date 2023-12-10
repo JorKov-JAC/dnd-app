@@ -1,3 +1,5 @@
+// Main coding: Jordan & Makena
+
 package makovacs.dnd.ui.screens
 
 import androidx.compose.foundation.Image
@@ -9,6 +11,7 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,13 +45,50 @@ fun AboutScreen(modifier: Modifier = Modifier) {
                         .sizeIn(maxWidth = 250.dp, maxHeight = 250.dp)
                 )
 
+                Card(
+                    colors = CardDefaults.cardColors(
+                        MaterialTheme.colorScheme.onSecondary
+                    )
+                ) {
+                    Text(
+                        "About Us",
+                        style = MaterialTheme.typography.headlineMedium,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                            .padding(4.dp)
+                    )
+                    Text(
+                        modifier = Modifier.padding(4.dp),
+                        text = "We are a pair of passionate gamers who enjoy Dungeons & Dragons and the vast world of possibilities it presents. We're creating this app to make that world and its information more accessible.\n"
+                    )
+                }
+
                 Text(
-                    "About Us",
-                    style = MaterialTheme.typography.headlineMedium,
+                    "Makena",
+                    style = MaterialTheme.typography.headlineSmall,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
+                        .padding(4.dp)
+                )
+                Text(
+                    text = "Makena enjoys playing D&D with their friends and loves the recent Baldur's Gate 3.\n",
+                    modifier = Modifier.padding(4.dp)
                 )
 
-                Text("We are a pair of passionate gamers who enjoy Dungeons & Dragons and the vast world of possibilities it presents. We're creating this app to make that world and its information more accessible.\n\nMakena enjoys playing D&D with their friends and loves the recent Baldur's Gate 3.\n\nJordan has always admired D&D from a distance but has only played once and it went terribly. They are scarred for life.")
+                Card(
+                    colors = CardDefaults.cardColors(
+                        MaterialTheme.colorScheme.onSecondary
+                    )
+                ) {
+                    Text(
+                        "Jordan",
+                        style = MaterialTheme.typography.headlineSmall,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                            .padding(4.dp)
+                    )
+                    Text(
+                        text = "Jordan has always admired D&D from a distance but has only played once and it went terribly. They are scarred for life.",
+                        modifier = Modifier.padding(4.dp)
+                    )
+                }
             }
         }
     }

@@ -1,10 +1,12 @@
+// Main coding: Makena
+
 package makovacs.dnd.ui.components
 
 import android.app.AlertDialog
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
-/*
+/**
  * Creates a dialog box that displays the passed in error message about invalid input. Can be closed
  * by clicking on the screen behind it or clicking the Close button on the box.
  */

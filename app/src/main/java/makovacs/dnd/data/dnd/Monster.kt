@@ -1,3 +1,5 @@
+// Main coding: Jordan
+
 package makovacs.dnd.data.dnd
 
 import android.graphics.Bitmap

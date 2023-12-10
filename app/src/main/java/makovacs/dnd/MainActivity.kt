@@ -1,3 +1,5 @@
+// Main coding: Makena & Jordan
+
 package makovacs.dnd
 
 import android.os.Bundle

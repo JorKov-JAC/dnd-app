@@ -1,3 +1,5 @@
+// Main coding: Makena
+
 package makovacs.dnd.ui.screens.magicitems
 
 import androidx.compose.foundation.BorderStroke
@@ -37,9 +39,14 @@ import makovacs.dnd.ui.routing.Route
 import makovacs.dnd.ui.viewmodels.AuthViewModel
 import makovacs.dnd.ui.viewmodels.AuthViewModelFactory
 
-/*
+/**
  * A screen that displays a simple card containing the photo and name of each magic item along that can be clicked on to lead to a more
  * detailed overview of just the clicked on item and allows the user to delete it. Contains a button to remove all the items from the list.
+ * @param magicItems The list of the magic items
+ * @param remove The function to remove the magic item based on it's name
+ * @param getByName The function to retrieve the details of a magic item based on it's name
+ * @param getAllItems The function to get all the items from the database
+ * @param authViewModel The viewmodel containing the information and logic concerning users
  */
 @Composable
 fun ItemScreen(magicItems: List<MagicItem>, remove: (String) -> Unit, getByName: (String) -> MagicItem?, getAllItems: () -> Unit, authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory())) {

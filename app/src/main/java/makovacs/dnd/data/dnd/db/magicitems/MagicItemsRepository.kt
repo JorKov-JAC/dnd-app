@@ -1,3 +1,5 @@
+// Main coding: Makena
+
 package makovacs.dnd.data.dnd.db.magicitems
 
 import com.google.firebase.firestore.CollectionReference
@@ -8,8 +10,10 @@ import kotlinx.coroutines.flow.callbackFlow
 import makovacs.dnd.data.dnd.MagicItem
 import makovacs.dnd.data.dnd.users.AuthRepository
 
-/*
+/**
  * The repository that interacts with the Firestore database containing the magic items
+ * @property FirebaseFirestore The connection to the firestore database
+ * @property AuthRepository The connection to the authentication repository
  */
 class MagicItemsRepository(val db: FirebaseFirestore, val auth: AuthRepository) {
     val dbMagicId: CollectionReference = db.collection("MagicItems")

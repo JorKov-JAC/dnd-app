@@ -1,3 +1,5 @@
+// Main coding: Jordan
+
 package makovacs.dnd.data.dnd.db.monsters
 
 import kotlinx.coroutines.flow.Flow

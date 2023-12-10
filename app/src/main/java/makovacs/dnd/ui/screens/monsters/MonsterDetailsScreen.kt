@@ -1,3 +1,5 @@
+// Main coding: Jordan
+
 package makovacs.dnd.ui.screens.monsters
 
 import androidx.compose.foundation.layout.Arrangement

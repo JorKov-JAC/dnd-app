@@ -1,3 +1,5 @@
+// Main coding: Jordan
+
 package makovacs.dnd.logic
 
 import android.icu.text.Normalizer2

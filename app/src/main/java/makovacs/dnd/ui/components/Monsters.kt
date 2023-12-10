@@ -1,3 +1,5 @@
+// Main coding: Jordan
+
 // Contains components specific to DnD monsters (which are a subcategory of creatures)
 
 package makovacs.dnd.ui.components

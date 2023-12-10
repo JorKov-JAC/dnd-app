@@ -1,6 +1,12 @@
+// Main coding: Makena
+
 package makovacs.dnd.data.dnd.users
 
 import kotlinx.coroutines.flow.StateFlow
+
+/*
+ * The interface that auth repository objects can be interacted through
+ */
 
 interface AuthRepository {
     fun currentUser(): StateFlow<User?>

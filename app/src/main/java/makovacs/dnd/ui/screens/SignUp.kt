@@ -1,3 +1,5 @@
+// Main coding: Makena
+
 package makovacs.dnd.ui.screens
 
 import androidx.compose.foundation.layout.Column
@@ -26,6 +28,10 @@ import makovacs.dnd.ui.routing.Route
 import makovacs.dnd.ui.viewmodels.AuthViewModel
 import makovacs.dnd.ui.viewmodels.AuthViewModelFactory
 
+/**
+ * The screen where users can sign up to make a new account, or switch to sign up if they already have one
+ * @param authViewModel The ViewModel containing the information and logic concerning users
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUp(authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory())) {

@@ -1,3 +1,5 @@
+// Main coding: Makena
+
 package makovacs.dnd.ui.screens.magicitems
 
 import androidx.compose.foundation.BorderStroke
@@ -5,6 +7,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -19,8 +23,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import makovacs.dnd.data.dnd.MagicItem
 
-/*
-    A screen showing a large formatted version of the passed in magic item string.
+/**
+ * A screen showing a large formatted version of the passed in magic item string.
+ * @param name the name of the magic item
+ * @param remove the function to remove the item based on it's name
+ * @param getByName the function to get the details of the magic item from it's name
  */
 @Composable
 fun DetailScreen(name: String, remove: (String) -> Unit, getByName: (String) -> MagicItem?) {
@@ -31,7 +38,8 @@ fun DetailScreen(name: String, remove: (String) -> Unit, getByName: (String) -> 
         border = BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary),
         colors = CardDefaults.cardColors(
             MaterialTheme.colorScheme.tertiaryContainer
-        )
+        ),
+        modifier = Modifier.verticalScroll(rememberScrollState())
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             var id = context.resources.getIdentifier(

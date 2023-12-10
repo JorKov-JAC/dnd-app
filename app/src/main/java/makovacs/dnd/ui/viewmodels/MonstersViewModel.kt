@@ -1,3 +1,5 @@
+// Main coding: Jordan
+
 package makovacs.dnd.ui.viewmodels
 
 import androidx.compose.runtime.Composable

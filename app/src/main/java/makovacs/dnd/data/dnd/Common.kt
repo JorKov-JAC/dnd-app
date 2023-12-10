@@ -1,6 +1,5 @@
-/**
- * Contains common DnD classes and functions.
- */
+// Main coding: Jordan
+// Contains common DnD classes and functions.
 
 package makovacs.dnd.data.dnd
 
