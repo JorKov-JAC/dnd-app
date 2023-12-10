@@ -5,18 +5,17 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Phone
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,8 +41,13 @@ fun ContactScreen() {
             .fillMaxSize()
             .paint(image, contentScale = ContentScale.FillBounds)
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Card(modifier = Modifier.padding(35.dp)) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .align(Alignment.Center)
+                .padding(8.dp)
+        ) {
+            Card {
                 Text(
                     "Contact Us",
                     fontSize = 50.sp,
@@ -51,10 +55,10 @@ fun ContactScreen() {
                 )
             }
 
-            Spacer(modifier = Modifier.padding(15.dp))
+            Spacer(modifier = Modifier.padding(10.dp))
 
-            Card(modifier = Modifier.padding(10.dp)) {
-                Column {
+            Card(modifier = Modifier.padding(horizontal = 10.dp)) {
+                Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                     Row(modifier = Modifier.padding(15.dp)) {
                         Icon(imageVector = Icons.Filled.Phone, contentDescription = "Phone icon")
                         Text("555-555-5555")
@@ -66,54 +70,6 @@ fun ContactScreen() {
                     Row(modifier = Modifier.padding(15.dp)) {
                         Icon(imageVector = Icons.Filled.Home, contentDescription = "Home icon")
                         Text("24 Dnd Street, Neverwinter, 123 456, Forgotten Realms")
-                    }
-
-                    Row(modifier = Modifier.padding(15.dp)) {
-                        TextField(
-                            modifier = Modifier
-                                .padding(4.dp)
-                                .weight(1f),
-                            value = placeholder,
-                            onValueChange = {},
-                            label = { Text("Name") }
-
-                        )
-
-                        TextField(
-                            modifier = Modifier
-                                .padding(4.dp)
-                                .weight(1f),
-                            value = placeholder,
-                            onValueChange = {},
-                            label = { Text("Phone") }
-
-                        )
-
-                        TextField(
-                            modifier = Modifier
-                                .padding(4.dp)
-                                .weight(1f),
-                            value = placeholder,
-                            onValueChange = {},
-                            label = { Text("Email") }
-
-                        )
-                    }
-
-                    Row(modifier = Modifier.padding(15.dp)) {
-                        TextField(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(4.dp),
-                            value = placeholder,
-                            onValueChange = {},
-                            label = { Text("Message") }
-
-                        )
-                    }
-
-                    Button(onClick = { /*TODO*/ }, enabled = false) {
-                        Text(text = "Send")
                     }
                 }
             }
