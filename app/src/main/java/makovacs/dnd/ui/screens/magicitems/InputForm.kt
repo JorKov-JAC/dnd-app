@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -58,7 +60,7 @@ fun InputForm(add: (String, String, String, String, String, Dice?, DamageType) -
     var damageType by remember { mutableStateOf(DamageType.None) }
     val navController = LocalNavHostController.current
 
-    Column {
+    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
         var invalidInput by rememberSaveable { mutableStateOf(false) }
         var errorMessage by rememberSaveable { mutableStateOf("") }
 
@@ -70,8 +72,11 @@ fun InputForm(add: (String, String, String, String, String, Dice?, DamageType) -
                 value = name,
                 singleLine = true,
                 onValueChange = { name = it },
-                label = { Text("Item name") }
+                label = { Text("Item name") },
+                placeholder = {Text("ex. Bag of Holding")}
             )
+        }
+        Row {
             TextField(
                 modifier = Modifier
                     .weight(1f)
@@ -79,7 +84,8 @@ fun InputForm(add: (String, String, String, String, String, Dice?, DamageType) -
                 value = sourceBook,
                 singleLine = true,
                 onValueChange = { sourceBook = it },
-                label = { Text("Item source") }
+                label = { Text("Item source") },
+                placeholder = {Text("ex. PHB")}
             )
 
             TextField(
@@ -89,7 +95,8 @@ fun InputForm(add: (String, String, String, String, String, Dice?, DamageType) -
                 value = rarity,
                 singleLine = true,
                 onValueChange = { rarity = it },
-                label = { Text("Item rarity") }
+                label = { Text("Item rarity") },
+                placeholder = {Text("ex. Uncommon")}
             )
         }
         Row {
@@ -99,7 +106,8 @@ fun InputForm(add: (String, String, String, String, String, Dice?, DamageType) -
                     .padding(4.dp),
                 value = description,
                 onValueChange = { description = it },
-                label = { Text("Item description") }
+                label = { Text("Item description") },
+                placeholder = {Text("ex. A bag that can hold anything")}
 
             )
         }
@@ -120,7 +128,6 @@ fun InputForm(add: (String, String, String, String, String, Dice?, DamageType) -
         )
         Card(
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer),
-            // border =BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
             modifier = Modifier.padding(2.dp)
         ) {
             Text("Type of Magic Item Image", modifier = Modifier.padding(3.dp))
@@ -174,7 +181,8 @@ fun InputForm(add: (String, String, String, String, String, Dice?, DamageType) -
                     .weight(1f),
                 value = damageDiceStr,
                 onValueChange = { damageDiceStr = it },
-                label = { Text("(Optional) Damage Dice") }
+                label = { Text("(Optional) Damage Dice") },
+                placeholder = {Text("ex. 2d8")}
 
             )
 

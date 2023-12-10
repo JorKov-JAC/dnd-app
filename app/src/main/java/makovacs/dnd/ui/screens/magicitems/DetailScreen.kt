@@ -5,6 +5,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -31,7 +33,8 @@ fun DetailScreen(name: String, remove: (String) -> Unit, getByName: (String) -> 
         border = BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary),
         colors = CardDefaults.cardColors(
             MaterialTheme.colorScheme.tertiaryContainer
-        )
+        ),
+        modifier = Modifier.verticalScroll(rememberScrollState())
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             var id = context.resources.getIdentifier(
@@ -52,6 +55,7 @@ fun DetailScreen(name: String, remove: (String) -> Unit, getByName: (String) -> 
                     .padding(10.dp)
                     .fillMaxWidth()
             )
+
         }
     }
 
