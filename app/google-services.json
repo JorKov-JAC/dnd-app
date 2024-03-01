@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "766310596191",
+    "project_id": "dndcompendium-d4d76",
+    "storage_bucket": "dndcompendium-d4d76.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:766310596191:android:02b256e5cddd185d9465ea",
+        "android_client_info": {
+          "package_name": "makovacs.dnd"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2GEnjCgRE3eEdJ0IApUbw7kw_9jy8jX0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
