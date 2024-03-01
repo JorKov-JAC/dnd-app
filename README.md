@@ -8,7 +8,7 @@ This app catalogues the wealth of information found in the world of Dungeons & D
 I handled the "Monsters" part of the project, as well as implementing the search system and various other tasks. Files all have comments at their top stating who programmed what.
 
 ## Quick-start
-- Download the APK and install it on your Android phone or emulator.
+- Download the [APK](../../releases/download/v1.0.0/dnd_compendium.apk) and install it on your Android phone or emulator.
 
 Or:
 - Clone the repository: `git clone https://github.com/JorKov-JAC/dnd-app`
